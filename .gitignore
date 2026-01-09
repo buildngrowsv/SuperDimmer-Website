@@ -15,3 +15,5 @@ dist/
 # Temporary
 *.log
 tmp/
+# Temporary build output (releases go to releases/ folder)
+packaging/output/
