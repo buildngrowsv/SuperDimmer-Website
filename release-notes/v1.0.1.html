@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SuperDimmer v1.0.1 Release Notes</title>
+    <!--
+    PURPOSE:
+    This page is shown in the Sparkle update dialog when users are prompted
+    to update. Keep it clean, scannable, and focused on what changed.
+    
+    The sparkle:releaseNotesLink in appcast.xml points here.
+    Sparkle loads this in a WebView, so it should be self-contained.
+    
+    CREATED: January 10, 2026 for v1.0.1 release
+    -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #1a1816;
+            color: #f5f2eb;
+            padding: 20px;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+        
+        h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #f5f2eb;
+        }
+        
+        .version-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #e8a838 0%, #d4762c 100%);
+            color: #1a1816;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        
+        .date {
+            color: #6b665c;
+            font-size: 13px;
+            margin-bottom: 20px;
+        }
+        
+        h2 {
+            font-size: 1.1rem;
+            color: #e8a838;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+        
+        ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        li {
+            position: relative;
+            padding-left: 20px;
+            margin-bottom: 8px;
+            color: #a39e94;
+        }
+        
+        li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #e8a838;
+            font-weight: bold;
+        }
+        
+        .highlight {
+            color: #f5f2eb;
+            font-weight: 500;
+        }
+        
+        .footer {
+            margin-top: 24px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(245, 242, 235, 0.1);
+            font-size: 12px;
+            color: #6b665c;
+        }
+        
+        a {
+            color: #e8a838;
+            text-decoration: none;
+        }
+        
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>SuperDimmer</h1>
+    <span class="version-badge">v1.0.1</span>
+    <p class="date">January 10, 2026</p>
+    
+    <h2>🐛 Bug Fixes</h2>
+    <ul>
+        <li><span class="highlight">Stability improvements</span> — Fixed various edge cases in brightness detection</li>
+        <li>Improved memory management for overlay windows</li>
+        <li>Fixed potential crash when switching between displays</li>
+    </ul>
+    
+    <h2>🔧 Improvements</h2>
+    <ul>
+        <li>Smoother overlay transitions when brightness changes</li>
+        <li>Better performance on multi-monitor setups</li>
+        <li>Reduced CPU usage during idle periods</li>
+    </ul>
+    
+    <h2>📋 Notes</h2>
+    <ul>
+        <li>This is a maintenance release focused on stability</li>
+        <li>No new features in this release</li>
+    </ul>
+    
+    <div class="footer">
+        <p>Questions? Visit <a href="https://superdimmer.app">superdimmer.app</a> | <a href="https://superdimmer.app/changelog.html">View full changelog</a></p>
+    </div>
+</body>
+</html>

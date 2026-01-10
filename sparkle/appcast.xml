@@ -42,7 +42,37 @@
         
         <!-- 
         ================================================================
-        CURRENT RELEASE - v1.0.0
+        CURRENT RELEASE - v1.0.1
+        ================================================================
+        Maintenance release with stability improvements.
+        
+        NOTE: EdDSA signature placeholder - generate with sign_update tool
+        before shipping to production.
+        ================================================================
+        -->
+        <item>
+            <title>Version 1.0.1</title>
+            <pubDate>Fri, 10 Jan 2026 17:09:00 -0800</pubDate>
+            
+            <sparkle:releaseNotesLink>
+                https://superdimmer.app/release-notes/v1.0.1.html
+            </sparkle:releaseNotesLink>
+            
+            <sparkle:version>6</sparkle:version>
+            <sparkle:shortVersionString>1.0.1</sparkle:shortVersionString>
+            
+            <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
+            
+            <enclosure 
+                url="https://superdimmer.app/releases/SuperDimmer-v1.0.1.dmg" 
+                length="2871440"
+                type="application/octet-stream"
+                sparkle:edSignature="REPLACE_WITH_ACTUAL_SIGNATURE_FROM_SIGN_UPDATE_TOOL=="/>
+        </item>
+        
+        <!-- 
+        ================================================================
+        PREVIOUS RELEASE - v1.0.0
         ================================================================
         Initial release with core dimming features.
         
