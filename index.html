@@ -748,66 +748,135 @@
             75%, 100% { content: "5:00"; }
         }
 
-        /* ---- Capability 4: Inactivity Decay Demo ---- */
-        .decay-demo {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
-            width: 80%;
-        }
-
-        .decay-window {
-            width: 100%;
-            height: 100px;
-            background: #ffffff;
-            border-radius: 12px;
+        /* ---- Capability 4: Active/Inactive Windows Demo ---- */
+        .windows-demo {
             position: relative;
-            overflow: hidden;
+            width: 90%;
+            height: 160px;
         }
 
-        .decay-window::after {
+        .demo-win {
+            position: absolute;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+            transition: all 0.5s ease;
+        }
+
+        .demo-win-titlebar {
+            height: 24px;
+            background: linear-gradient(180deg, #e8e8e8 0%, #d0d0d0 100%);
+            display: flex;
+            align-items: center;
+            padding: 0 8px;
+            gap: 5px;
+        }
+
+        .demo-win-titlebar span {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .demo-win-titlebar span:nth-child(1) { background: #ff5f57; }
+        .demo-win-titlebar span:nth-child(2) { background: #febc2e; }
+        .demo-win-titlebar span:nth-child(3) { background: #28c840; }
+
+        .demo-win-content {
+            background: #ffffff;
+            padding: 10px;
+            height: calc(100% - 24px);
+        }
+
+        .demo-win-line {
+            height: 6px;
+            background: #e0e0e0;
+            border-radius: 3px;
+            margin-bottom: 6px;
+        }
+
+        .demo-win-line.short { width: 50%; }
+        .demo-win-line.medium { width: 75%; }
+
+        /* Back window - most dimmed */
+        .demo-win.back {
+            width: 140px;
+            height: 100px;
+            top: 0;
+            left: 10px;
+            z-index: 1;
+        }
+
+        .demo-win.back::after {
             content: '';
             position: absolute;
             inset: 0;
-            background: rgba(0, 0, 0, 0);
-            animation: decayDim 8s ease-in-out infinite;
+            background: rgba(0, 0, 0, 0.5);
+            pointer-events: none;
         }
 
-        @keyframes decayDim {
-            0%, 10% { background: rgba(0, 0, 0, 0); }
-            30% { background: rgba(0, 0, 0, 0.15); }
-            50% { background: rgba(0, 0, 0, 0.3); }
-            70% { background: rgba(0, 0, 0, 0.5); }
-            90%, 100% { background: rgba(0, 0, 0, 0); }
+        /* Middle window - partially dimmed */
+        .demo-win.middle {
+            width: 150px;
+            height: 110px;
+            top: 20px;
+            left: 60px;
+            z-index: 2;
         }
 
-        .decay-timeline {
-            width: 100%;
-            height: 6px;
-            background: var(--bg-card);
-            border-radius: 3px;
-            overflow: hidden;
-            position: relative;
+        .demo-win.middle::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.25);
+            pointer-events: none;
         }
 
-        .decay-progress {
-            height: 100%;
-            background: var(--gradient-warm);
-            border-radius: 3px;
-            animation: decayProgress 8s ease-in-out infinite;
+        /* Front window - active, no dimming */
+        .demo-win.front {
+            width: 160px;
+            height: 120px;
+            top: 40px;
+            left: 110px;
+            z-index: 3;
+            box-shadow: 0 8px 30px rgba(232, 168, 56, 0.3), 0 4px 20px rgba(0,0,0,0.4);
         }
 
-        @keyframes decayProgress {
-            0%, 10% { width: 0%; }
-            90% { width: 100%; }
-            100% { width: 0%; }
+        .demo-win.front .demo-win-titlebar {
+            background: linear-gradient(180deg, #f5f5f5 0%, #e0e0e0 100%);
         }
 
-        .decay-label {
-            font-size: 0.8rem;
+        /* Active indicator */
+        .demo-win.front::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border: 2px solid var(--accent-warm);
+            border-radius: 10px;
+            z-index: -1;
+            animation: activePulse 2s ease-in-out infinite;
+        }
+
+        @keyframes activePulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(232, 168, 56, 0.4); }
+            50% { box-shadow: 0 0 0 6px rgba(232, 168, 56, 0); }
+        }
+
+        .windows-labels {
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.7rem;
             color: var(--text-muted);
-            animation: decayLabel 8s ease-in-out infinite;
+        }
+
+        .windows-labels span {
+            background: var(--bg-card);
+            padding: 2px 8px;
+            border-radius: 4px;
         }
 
         /* =========================================================
@@ -1334,20 +1403,53 @@
                     </div>
                 </div>
 
-                <!-- Capability 4: Inactivity Decay -->
+                <!-- Capability 4: Active vs Inactive Windows -->
                 <div class="capability-card reveal">
                     <div class="capability-demo">
-                        <div class="decay-demo">
-                            <div class="decay-window"></div>
-                            <div class="decay-timeline">
-                                <div class="decay-progress"></div>
+                        <div class="windows-demo">
+                            <!-- Back window - most dimmed -->
+                            <div class="demo-win back">
+                                <div class="demo-win-titlebar">
+                                    <span></span><span></span><span></span>
+                                </div>
+                                <div class="demo-win-content">
+                                    <div class="demo-win-line"></div>
+                                    <div class="demo-win-line short"></div>
+                                </div>
                             </div>
-                            <span class="decay-label">Dimming increases over time...</span>
+                            <!-- Middle window - partially dimmed -->
+                            <div class="demo-win middle">
+                                <div class="demo-win-titlebar">
+                                    <span></span><span></span><span></span>
+                                </div>
+                                <div class="demo-win-content">
+                                    <div class="demo-win-line"></div>
+                                    <div class="demo-win-line medium"></div>
+                                    <div class="demo-win-line short"></div>
+                                </div>
+                            </div>
+                            <!-- Front window - active, bright -->
+                            <div class="demo-win front">
+                                <div class="demo-win-titlebar">
+                                    <span></span><span></span><span></span>
+                                </div>
+                                <div class="demo-win-content">
+                                    <div class="demo-win-line"></div>
+                                    <div class="demo-win-line medium"></div>
+                                    <div class="demo-win-line"></div>
+                                    <div class="demo-win-line short"></div>
+                                </div>
+                            </div>
+                            <div class="windows-labels">
+                                <span>50% dim</span>
+                                <span>25% dim</span>
+                                <span>Active ✨</span>
+                            </div>
                         </div>
                     </div>
                     <div class="capability-info">
-                        <h3>⏱️ Inactivity Decay Dimming</h3>
-                        <p>Windows you're not using gradually get dimmer over time. Start at 0% and decay up to your max level. When you click back—instant restore. Keeps focus on what matters.</p>
+                        <h3>🪟 Active vs Inactive Windows</h3>
+                        <p>Front window stays bright and clear. Background windows automatically dim based on how long they've been inactive. Click any window to instantly restore it. Focus naturally follows your attention.</p>
                     </div>
                 </div>
             </div>
