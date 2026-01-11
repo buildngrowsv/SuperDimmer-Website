@@ -306,8 +306,8 @@ update_appcast() {
     fi
     
     local pub_date=$(date -u "+%a, %d %b %Y %H:%M:%S %z")
-    local download_url="https://superdimmer.app/releases/$dmg_filename"
-    local release_notes_url="https://superdimmer.app/release-notes/v${version}.html"
+    local download_url="https://superdimmer.com/releases/$dmg_filename"
+    local release_notes_url="https://superdimmer.com/release-notes/v${version}.html"
     
     # Create the new item XML
     local new_item="        <item>
@@ -429,7 +429,7 @@ create_release_notes_template() {
     </ul>
     
     <div class="footer">
-        <p>Questions? Visit <a href="https://superdimmer.app">superdimmer.app</a></p>
+        <p>Questions? Visit <a href="https://superdimmer.com">superdimmer.com</a></p>
     </div>
 </body>
 </html>

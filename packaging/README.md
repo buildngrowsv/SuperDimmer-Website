@@ -106,7 +106,7 @@ SuperDimmer-Website/
 
 ## How Users Get Updates
 
-1. User's app checks `https://superdimmer.app/sparkle/appcast.xml`
+1. User's app checks `https://superdimmer.com/sparkle/appcast.xml`
 2. Sparkle compares `sparkle:version` with app's CFBundleVersion
 3. If newer version found → Shows update dialog with release notes
 4. User clicks "Install" → Downloads DMG from releases/

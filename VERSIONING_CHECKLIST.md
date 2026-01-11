@@ -212,13 +212,13 @@ Add new `<item>` after `<language>en</language>`:
     <title>Version X.X.X</title>
     <pubDate>Day, DD Mon YYYY HH:MM:SS -0800</pubDate>
     <sparkle:releaseNotesLink>
-        https://superdimmer.app/release-notes/vX.X.X.html
+        https://superdimmer.com/release-notes/vX.X.X.html
     </sparkle:releaseNotesLink>
     <sparkle:version>BUILD_NUMBER</sparkle:version>
     <sparkle:shortVersionString>X.X.X</sparkle:shortVersionString>
     <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
     <enclosure 
-        url="https://superdimmer.app/releases/SuperDimmer-vX.X.X.dmg" 
+        url="https://superdimmer.com/releases/SuperDimmer-vX.X.X.dmg" 
         length="FILE_SIZE_IN_BYTES"
         type="application/octet-stream"
         sparkle:edSignature="SIGNATURE_HERE=="/>
@@ -303,10 +303,10 @@ git push
 ### 2. Verify Deployment
 
 - [ ] Wait for Cloudflare Pages to deploy (~1-2 minutes)
-- [ ] Check https://superdimmer.app/changelog.html
-- [ ] Check https://superdimmer.app/release-notes/vX.X.X.html
-- [ ] Verify DMG downloads: https://superdimmer.app/releases/SuperDimmer-vX.X.X.dmg
-- [ ] Check appcast: https://superdimmer.app/sparkle/appcast.xml
+- [ ] Check https://superdimmer.com/changelog.html
+- [ ] Check https://superdimmer.com/release-notes/vX.X.X.html
+- [ ] Verify DMG downloads: https://superdimmer.com/releases/SuperDimmer-vX.X.X.dmg
+- [ ] Check appcast: https://superdimmer.com/sparkle/appcast.xml
 
 ---
 

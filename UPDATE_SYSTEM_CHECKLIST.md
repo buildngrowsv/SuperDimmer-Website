@@ -46,7 +46,7 @@ Edit `SuperDimmer-Mac-App/SuperDimmer/Supporting Files/Info.plist`:
 ```
 
 - [ ] Added `SUPublicEDKey` to Info.plist
-- [ ] Verified `SUFeedURL` is `https://superdimmer.app/sparkle/appcast.xml`
+- [ ] Verified `SUFeedURL` is `https://superdimmer.com/sparkle/appcast.xml`
 
 ### 1.4 Create UpdateManager.swift
 
@@ -212,8 +212,8 @@ git push
 
 Wait ~1-2 minutes, then:
 
-- [ ] Visit https://superdimmer.app/sparkle/appcast.xml - new version appears
-- [ ] Visit https://superdimmer.app/releases/ - DMG is downloadable
+- [ ] Visit https://superdimmer.com/sparkle/appcast.xml - new version appears
+- [ ] Visit https://superdimmer.com/releases/ - DMG is downloadable
 - [ ] Test download link works
 
 ### Test Update Flow

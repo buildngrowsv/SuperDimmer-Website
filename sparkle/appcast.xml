@@ -36,7 +36,7 @@
 <rss xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" version="2.0">
     <channel>
         <title>SuperDimmer Updates</title>
-        <link>https://superdimmer.app/</link>
+        <link>https://superdimmer.com/</link>
         <description>Latest updates for SuperDimmer - Intelligent Screen Dimming for macOS</description>
         <language>en</language>
         
@@ -55,7 +55,7 @@
             <pubDate>Fri, 10 Jan 2026 17:09:00 -0800</pubDate>
             
             <sparkle:releaseNotesLink>
-                https://superdimmer.app/release-notes/v1.0.1.html
+                https://superdimmer.com/release-notes/v1.0.1.html
             </sparkle:releaseNotesLink>
             
             <sparkle:version>7</sparkle:version>
@@ -64,7 +64,7 @@
             <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
             
             <enclosure 
-                url="https://superdimmer.app/releases/SuperDimmer-v1.0.1.dmg" 
+                url="https://superdimmer.com/releases/SuperDimmer-v1.0.1.dmg" 
                 length="2898886"
                 type="application/octet-stream"
                 sparkle:edSignature="REPLACE_WITH_ACTUAL_SIGNATURE_FROM_SIGN_UPDATE_TOOL=="/>
@@ -89,7 +89,7 @@
             
             <!-- Release notes page (create this HTML file) -->
             <sparkle:releaseNotesLink>
-                https://superdimmer.app/release-notes/v1.0.0.html
+                https://superdimmer.com/release-notes/v1.0.0.html
             </sparkle:releaseNotesLink>
             
             <!-- 
@@ -112,7 +112,7 @@
             PLACEHOLDER VALUES BELOW - Replace before shipping!
             -->
             <enclosure 
-                url="https://superdimmer.app/releases/SuperDimmer-v1.0.0.dmg" 
+                url="https://superdimmer.com/releases/SuperDimmer-v1.0.0.dmg" 
                 length="15000000"
                 type="application/octet-stream"
                 sparkle:edSignature="REPLACE_WITH_ACTUAL_SIGNATURE_FROM_SIGN_UPDATE_TOOL=="/>
@@ -128,13 +128,13 @@
             <title>Version X.X.X</title>
             <pubDate>Day, DD Mon YYYY HH:MM:SS +0000</pubDate>
             <sparkle:releaseNotesLink>
-                https://superdimmer.app/release-notes/vX.X.X.html
+                https://superdimmer.com/release-notes/vX.X.X.html
             </sparkle:releaseNotesLink>
             <sparkle:version>BUILD_NUMBER</sparkle:version>
             <sparkle:shortVersionString>X.X.X</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
             <enclosure 
-                url="https://superdimmer.app/releases/SuperDimmer-vX.X.X.dmg" 
+                url="https://superdimmer.com/releases/SuperDimmer-vX.X.X.dmg" 
                 length="FILE_SIZE_BYTES"
                 type="application/octet-stream"
                 sparkle:edSignature="SIGNATURE=="/>
