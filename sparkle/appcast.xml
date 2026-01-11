@@ -58,14 +58,14 @@
                 https://superdimmer.app/release-notes/v1.0.1.html
             </sparkle:releaseNotesLink>
             
-            <sparkle:version>6</sparkle:version>
+            <sparkle:version>7</sparkle:version>
             <sparkle:shortVersionString>1.0.1</sparkle:shortVersionString>
             
             <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
             
             <enclosure 
                 url="https://superdimmer.app/releases/SuperDimmer-v1.0.1.dmg" 
-                length="2871440"
+                length="2898886"
                 type="application/octet-stream"
                 sparkle:edSignature="REPLACE_WITH_ACTUAL_SIGNATURE_FROM_SIGN_UPDATE_TOOL=="/>
         </item>
