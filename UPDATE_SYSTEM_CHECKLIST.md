@@ -1,291 +1,229 @@
 # SuperDimmer Update System Checklists
+## Simple JSON-Based Updates (No Sparkle)
 
-## 📋 PART 1: One-Time Setup (Before First Release)
+---
 
-These tasks only need to be done **once** to enable the update system.
+## 📋 PART 1: One-Time Setup
 
-### 1.1 Add Sparkle Framework to Xcode Project
+### 1.1 Notarization Credentials
 
+Apple notarization is required so users can open the app without Gatekeeper warnings.
+
+**1.1.1 App-Specific Password**
+- [ ] Go to https://appleid.apple.com
+- [ ] Sign in → Security → App-Specific Passwords
+- [ ] Generate password named "SuperDimmer Notarization"
+- [ ] Copy the password (format: `xxxx-xxxx-xxxx-xxxx`)
+
+**1.1.2 Environment Variables**
+Add to `~/.zshrc`:
 ```bash
-# In Xcode:
-# File → Add Package Dependencies
-# Enter: https://github.com/sparkle-project/Sparkle
-# Select version 2.6.0 or later
-# Add to SuperDimmer target
+export APPLE_ID="your-apple-developer-email@example.com"
+export APPLE_APP_PASSWORD="xxxx-xxxx-xxxx-xxxx"
+export APPLE_TEAM_ID="HHHHZ6UV26"  # Your Team ID
 ```
+Then: `source ~/.zshrc`
 
-- [ ] Sparkle package added to Xcode project
-- [ ] Build succeeds with Sparkle imported
+- [ ] APPLE_ID set
+- [ ] APPLE_APP_PASSWORD set
+- [ ] APPLE_TEAM_ID set
+- [ ] Ran `source ~/.zshrc`
 
-### 1.2 Generate EdDSA Signing Keys
-
+**1.1.3 Verify Setup**
 ```bash
-# After adding Sparkle via SPM, find the tools:
-cd ~/Library/Developer/Xcode/DerivedData/SuperDimmer-*/SourcePackages/artifacts/sparkle/Sparkle/bin
-
-# Generate keys (saves to Keychain, prints public key)
-./generate_keys
-
-# BACKUP YOUR PRIVATE KEY (critical!)
-./generate_keys -x ~/Desktop/superdimmer-sparkle-private.key
-# Store this backup file somewhere SAFE (not in Git!)
+echo "ID: $APPLE_ID, Team: $APPLE_TEAM_ID, Pass: ${APPLE_APP_PASSWORD:+SET}"
 ```
+- [ ] All three show correctly
 
-- [ ] Ran `generate_keys` 
-- [ ] Copied the public key (starts with `SUPublicEDKey`)
-- [ ] **Backed up private key** to secure location
+### 1.2 Create UpdateChecker.swift (In App)
 
-### 1.3 Update Info.plist with Public Key
-
-Edit `SuperDimmer-Mac-App/SuperDimmer/Supporting Files/Info.plist`:
-
-```xml
-<!-- Add/update this key with YOUR generated public key -->
-<key>SUPublicEDKey</key>
-<string>YOUR_PUBLIC_KEY_FROM_GENERATE_KEYS_HERE</string>
-```
-
-- [ ] Added `SUPublicEDKey` to Info.plist
-- [ ] Verified `SUFeedURL` is `https://superdimmer.com/sparkle/appcast.xml`
-
-### 1.4 Create UpdateManager.swift
-
-Create the file `SuperDimmer-Mac-App/SuperDimmer/App/UpdateManager.swift`:
+Simple Swift class to check for updates:
 
 ```swift
 import Foundation
-import Sparkle
+import AppKit
 
-/// Manages automatic software updates via Sparkle framework
-final class UpdateManager {
-    static let shared = UpdateManager()
+/// Checks for app updates by fetching version.json from the website
+/// No third-party frameworks needed - just URLSession and JSON parsing
+final class UpdateChecker {
+    static let shared = UpdateChecker()
     
-    private var updaterController: SPUStandardUpdaterController!
+    private let versionURL = URL(string: "https://superdimmer.app/version.json")!
     
-    private init() {
-        updaterController = SPUStandardUpdaterController(
-            startingUpdater: true,
-            updaterDelegate: nil,
-            userDriverDelegate: nil
-        )
+    struct VersionInfo: Codable {
+        let version: String
+        let build: Int
+        let downloadURL: String
+        let releaseNotesURL: String
     }
     
-    /// Call from "Check for Updates" menu item
-    func checkForUpdates() {
-        updaterController.checkForUpdates(nil)
+    func checkForUpdates(showUpToDateAlert: Bool = false) {
+        URLSession.shared.dataTask(with: versionURL) { [weak self] data, _, error in
+            guard let data = data,
+                  let remoteVersion = try? JSONDecoder().decode(VersionInfo.self, from: data) else {
+                return
+            }
+            
+            let currentVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0"
+            
+            if self?.isNewer(remoteVersion.version, than: currentVersion) == true {
+                DispatchQueue.main.async {
+                    self?.showUpdateAlert(version: remoteVersion)
+                }
+            } else if showUpToDateAlert {
+                DispatchQueue.main.async {
+                    self?.showUpToDateAlert()
+                }
+            }
+        }.resume()
+    }
+    
+    private func isNewer(_ remote: String, than current: String) -> Bool {
+        return remote.compare(current, options: .numeric) == .orderedDescending
+    }
+    
+    private func showUpdateAlert(version: VersionInfo) {
+        let alert = NSAlert()
+        alert.messageText = "Update Available"
+        alert.informativeText = "SuperDimmer \(version.version) is available. You have \(Bundle.main.infoDictionary?["CFBundleShortVersionString"] ?? "unknown")."
+        alert.addButton(withTitle: "Download")
+        alert.addButton(withTitle: "Later")
+        
+        if alert.runModal() == .alertFirstButtonReturn {
+            if let url = URL(string: version.downloadURL) {
+                NSWorkspace.shared.open(url)
+            }
+        }
+    }
+    
+    private func showUpToDateAlert() {
+        let alert = NSAlert()
+        alert.messageText = "You're Up to Date"
+        alert.informativeText = "SuperDimmer \(Bundle.main.infoDictionary?["CFBundleShortVersionString"] ?? "") is the latest version."
+        alert.addButton(withTitle: "OK")
+        alert.runModal()
     }
 }
 ```
 
-- [ ] Created `UpdateManager.swift`
+- [ ] Created `UpdateChecker.swift`
 - [ ] Added to Xcode project
-
-### 1.5 Add "Check for Updates" Menu Item
-
-In `MenuBarController.swift` or menu setup:
-
-```swift
-// Add menu item
-let updateItem = NSMenuItem(
-    title: "Check for Updates...", 
-    action: #selector(checkForUpdates), 
-    keyEquivalent: ""
-)
-menu.addItem(updateItem)
-
-@objc func checkForUpdates() {
-    UpdateManager.shared.checkForUpdates()
-}
-```
-
-- [ ] Added menu item
-- [ ] Wired to UpdateManager
-
-### 1.6 Get Apple Developer Credentials
-
-For notarization (required for distribution):
-
-1. **Apple ID**: Your developer account email
-2. **App-Specific Password**: 
-   - Go to https://appleid.apple.com
-   - Sign In → Security → App-Specific Passwords → Generate
-3. **Team ID**: 
-   - Go to https://developer.apple.com/account
-   - Membership → Team ID (10 characters)
-
-- [ ] Have Apple ID ready
-- [ ] Generated app-specific password
-- [ ] Found Team ID
-
-### 1.7 Set Environment Variables
-
-Add to your `~/.zshrc` or `~/.bash_profile`:
-
-```bash
-export APPLE_ID="your@email.com"
-export APPLE_APP_PASSWORD="xxxx-xxxx-xxxx-xxxx"
-export APPLE_TEAM_ID="XXXXXXXXXX"
-```
-
-Then run: `source ~/.zshrc`
-
-- [ ] Added environment variables
-- [ ] Sourced shell config
-
-### 1.8 Verify Developer ID Certificate
-
-```bash
-# Check you have a Developer ID certificate
-security find-identity -v -p codesigning | grep "Developer ID"
-```
-
-Should show: `Developer ID Application: Your Name (TEAM_ID)`
-
-- [ ] Developer ID certificate is in Keychain
-
-### 1.9 Test Build
-
-```bash
-cd /Users/ak/UserRoot/Github/SuperDimmer/SuperDimmer-Website/packaging
-./release.sh 1.0.1 --dry-run
-```
-
-- [ ] Dry run completes without errors
+- [ ] Called on app launch: `UpdateChecker.shared.checkForUpdates()`
+- [ ] Added "Check for Updates..." menu item
 
 ---
 
 ## ✅ One-Time Setup Complete!
 
-Once all boxes above are checked, you're ready to push updates.
-
 ---
 
 ## 📋 PART 2: New Version Release Checklist
 
-Use this checklist **every time** you release a new version.
-
-### Before Running Release Script
-
-- [ ] All code changes committed to Mac-App repo
+### Before Release
+- [ ] All code changes committed
 - [ ] Tested the app manually
 - [ ] Decided on version number (e.g., 1.1.0)
 
-### Run the Release Script
+### Run Release Script
 
 ```bash
 cd /Users/ak/UserRoot/Github/SuperDimmer/SuperDimmer-Website/packaging
 ./release.sh X.Y.Z
 ```
 
-Replace `X.Y.Z` with your version number.
-
-- [ ] Script completed successfully
-- [ ] DMG created in `releases/` folder
-- [ ] appcast.xml updated automatically
+- [ ] Script completed
+- [ ] DMG created in `releases/`
+- [ ] version.json updated
 - [ ] Release notes template created
 
-### Edit Release Notes
+### Edit Release Notes (Optional)
 
 ```bash
 open /Users/ak/UserRoot/Github/SuperDimmer/SuperDimmer-Website/release-notes/vX.Y.Z.html
 ```
 
-- [ ] Updated "What's New" section
-- [ ] Updated "Bug Fixes" section  
-- [ ] Updated "Improvements" section
-- [ ] Saved file
+- [ ] Updated release notes content
 
 ### Commit and Push
 
 ```bash
 cd /Users/ak/UserRoot/Github/SuperDimmer/SuperDimmer-Website
 git add .
-git commit -m "Release vX.Y.Z - [brief description]"
+git commit -m "Release vX.Y.Z"
 git push
 ```
 
-- [ ] Changes committed
-- [ ] Pushed to GitHub
-- [ ] Cloudflare deployment triggered (check: https://dash.cloudflare.com)
+- [ ] Committed
+- [ ] Pushed
+- [ ] Cloudflare deployed (~1 min)
 
-### Verify Deployment
+### Verify
 
-Wait ~1-2 minutes, then:
-
-- [ ] Visit https://superdimmer.com/sparkle/appcast.xml - new version appears
-- [ ] Visit https://superdimmer.com/releases/ - DMG is downloadable
-- [ ] Test download link works
-
-### Test Update Flow
-
-On a Mac with the **previous** version installed:
-
-- [ ] Launch old version of SuperDimmer
-- [ ] Click "Check for Updates" (or wait for auto-check)
-- [ ] Update dialog appears with correct version
-- [ ] Click "Install Update"
-- [ ] App downloads, installs, and relaunches
-- [ ] New version running correctly
-
-### Post-Release
-
-- [ ] Announce release (social media, website, etc.)
-- [ ] Monitor for crash reports / support tickets
-- [ ] Commit Mac-App repo if Info.plist changed:
-  ```bash
-  cd /Users/ak/UserRoot/Github/SuperDimmer/SuperDimmer-Mac-App
-  git add .
-  git commit -m "Bump version to X.Y.Z"
-  git push
-  ```
+- [ ] https://superdimmer.app/version.json shows new version
+- [ ] DMG downloads correctly
+- [ ] App shows "Update Available" when checking
 
 ---
 
-## 🚀 Quick Reference: Minimal Release Steps
+## 🚀 Quick Release (Copy-Paste)
 
 ```bash
-# 1. Run release script
+# 1. Run release
 cd /Users/ak/UserRoot/Github/SuperDimmer/SuperDimmer-Website/packaging
-./release.sh 1.2.0
+./release.sh 1.1.0
 
-# 2. Edit release notes (optional but recommended)
-open ../release-notes/v1.2.0.html
+# 2. Push
+cd .. && git add . && git commit -m "Release v1.1.0" && git push
 
-# 3. Commit and push
-cd ..
-git add .
-git commit -m "Release v1.2.0"
-git push
-
-# 4. Done! Users get update automatically 🎉
+# Done! 🎉
 ```
 
 ---
 
-## ⚠️ Troubleshooting
+## How It Works
 
-### "Sparkle bin not found"
-The release script can't find Sparkle's `sign_update` tool.
-- Make sure Sparkle is added to Xcode via SPM
-- Build the project at least once
-- Or set `SPARKLE_BIN=/path/to/Sparkle/bin`
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    UPDATE FLOW                                   │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  YOUR WEBSITE (Cloudflare)           USER'S MAC                 │
+│  ─────────────────────────           ──────────                 │
+│                                                                  │
+│  version.json ◄──────────────────── App fetches on launch      │
+│  {                                          │                   │
+│    "version": "1.1.0",                      │                   │
+│    "downloadURL": "..."                     ▼                   │
+│  }                                   Compares versions          │
+│                                             │                   │
+│                                             ▼                   │
+│                                      If newer: Alert!           │
+│                                      "Update Available"         │
+│                                             │                   │
+│  releases/SuperDimmer-v1.1.0.dmg           │                   │
+│         ▲                                   │                   │
+│         │                                   ▼                   │
+│         └─────────────────────── User clicks "Download"         │
+│                                      Opens in browser           │
+│                                      User installs DMG          │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
+```
 
-### "No Developer ID certificate"
-- Open Keychain Access → login → My Certificates
-- Look for "Developer ID Application"
-- If missing, download from developer.apple.com
+---
 
-### "Notarization failed"
-- Check APPLE_ID, APPLE_APP_PASSWORD, APPLE_TEAM_ID are set
-- Verify app-specific password is valid
-- Run `xcrun notarytool log <id>` to see error details
+## Why This Approach?
 
-### "EdDSA signature missing"
-- Run `generate_keys` if you haven't
-- Check the key is in your Keychain
-- Or set `SPARKLE_KEY_PATH=/path/to/private/key`
+| Feature | Sparkle | Simple JSON |
+|---------|---------|-------------|
+| HTTPS Security | ✅ | ✅ |
+| Apple Notarization | ✅ | ✅ |
+| Auto-install updates | ✅ | ❌ (user downloads) |
+| Setup complexity | High (keys, signing) | Low (just JSON) |
+| Third-party framework | Yes | No |
+| Works if server hacked | Only with EdDSA | Relies on HTTPS |
 
-### Users don't see update
-- Check appcast.xml has the new version
-- Verify `sparkle:version` > user's `CFBundleVersion`
-- Check Cloudflare deployed (can take 1-2 min)
+**Our choice:** Simple JSON is enough because:
+- Website is HTTPS (Cloudflare) - downloads are secure
+- App is notarized - Apple trusts it
+- Lower complexity = fewer things to break

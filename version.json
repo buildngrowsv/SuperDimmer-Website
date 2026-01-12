@@ -1,0 +1,8 @@
+{
+  "version": "1.0.0",
+  "build": 1,
+  "downloadURL": "https://superdimmer.app/releases/SuperDimmer-v1.0.0.dmg",
+  "releaseNotesURL": "https://superdimmer.app/release-notes/v1.0.0.html",
+  "minSystemVersion": "13.0",
+  "releaseDate": "2026-01-08"
+}
