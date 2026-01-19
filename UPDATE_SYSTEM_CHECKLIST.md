@@ -48,7 +48,7 @@ import AppKit
 final class UpdateChecker {
     static let shared = UpdateChecker()
     
-    private let versionURL = URL(string: "https://superdimmer.app/version.json")!
+    private let versionURL = URL(string: "https://superdimmer.com/version.json")!
     
     struct VersionInfo: Codable {
         let version: String
@@ -159,7 +159,7 @@ git push
 
 ### Verify
 
-- [ ] https://superdimmer.app/version.json shows new version
+- [ ] https://superdimmer.com/version.json shows new version
 - [ ] DMG downloads correctly
 - [ ] App shows "Update Available" when checking
 

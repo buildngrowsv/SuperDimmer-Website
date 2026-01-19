@@ -108,7 +108,7 @@ xcodebuild \
 
 ```bash
 cd SuperDimmer-Website/packaging
-./create-dmg.sh ../SuperDimmer-Mac-App/build/Release/SuperDimmer.app
+./create-dmg.sh ../SuperDimmer-Mac-App/build/Release/superdimmer.com
 ```
 
 #### Step 4: Copy DMG to Releases
@@ -240,7 +240,7 @@ codesign --force --deep --verify --verbose \
     --sign "Developer ID Application: YOUR NAME (TEAM_ID)" \
     --options runtime \
     --entitlements SuperDimmer/Supporting\ Files/SuperDimmer.entitlements \
-    build/Release/SuperDimmer.app
+    build/Release/superdimmer.com
 
 # Sign the DMG
 codesign --force --sign "Developer ID Application: YOUR NAME (TEAM_ID)" \

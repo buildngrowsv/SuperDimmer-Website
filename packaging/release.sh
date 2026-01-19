@@ -88,7 +88,7 @@ APP_PROJECT_DIR="$(dirname "$WEBSITE_DIR")/SuperDimmer-Mac-App"
 
 APP_NAME="SuperDimmer"
 SCHEME="SuperDimmer"
-BUNDLE_ID="com.superdimmer.app"
+BUNDLE_ID="com.superdimmer.com"
 
 # Output locations
 BUILD_DIR="$APP_PROJECT_DIR/build"
@@ -216,8 +216,8 @@ update_version_json() {
 {
   "version": "$version",
   "build": $build,
-  "downloadURL": "https://superdimmer.app/releases/$dmg_filename",
-  "releaseNotesURL": "https://superdimmer.app/release-notes/v${version}.html",
+  "downloadURL": "https://superdimmer.com/releases/$dmg_filename",
+  "releaseNotesURL": "https://superdimmer.com/release-notes/v${version}.html",
   "minSystemVersion": "13.0",
   "releaseDate": "$release_date"
 }
@@ -303,7 +303,7 @@ create_release_notes_template() {
     </ul>
     
     <div class="footer">
-        <p>Questions? Visit <a href="https://superdimmer.app">superdimmer.app</a></p>
+        <p>Questions? Visit <a href="https://superdimmer.com">superdimmer.com</a></p>
     </div>
 </body>
 </html>

@@ -3,7 +3,7 @@
 # ============================================================================
 # SuperDimmer DMG Creator Script
 # ============================================================================
-# This script packages the SuperDimmer.app into a distributable DMG file.
+# This script packages the superdimmer.com into a distributable DMG file.
 # It creates a beautiful installer DMG with a custom background and icon layout.
 #
 # WHY: macOS users expect apps to be distributed as DMG files that show the app
@@ -12,7 +12,7 @@
 #
 # PREREQUISITES:
 # - Xcode command line tools installed
-# - SuperDimmer.app built (via Xcode or xcodebuild)
+# - superdimmer.com built (via Xcode or xcodebuild)
 # - Optional: create-dmg tool installed (brew install create-dmg)
 #   If not installed, falls back to hdiutil method
 #
@@ -39,7 +39,7 @@ PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 
 # App metadata - pulled from Info.plist if possible, with fallbacks
 APP_NAME="SuperDimmer"
-BUNDLE_ID="com.superdimmer.app"
+BUNDLE_ID="com.superdimmer.com"
 
 # DMG window dimensions and icon positions
 # These are carefully tuned to look good with the background image
