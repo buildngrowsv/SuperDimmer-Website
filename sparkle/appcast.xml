@@ -42,7 +42,38 @@
         
         <!-- 
         ================================================================
-        CURRENT RELEASE - v1.0.2
+        CURRENT RELEASE - v1.0.3
+        ================================================================
+        Major feature release with Super Spaces HUD, idle-aware timer pause,
+        and progressive dimming.
+        
+        NOTE: EdDSA signature placeholder - generate with sign_update tool
+        before shipping to production.
+        ================================================================
+        -->
+        <item>
+            <title>Version 1.0.3</title>
+            <pubDate>Tue, 21 Jan 2026 20:44:00 -0800</pubDate>
+            
+            <sparkle:releaseNotesLink>
+                https://superdimmer.com/release-notes/v1.0.3.html
+            </sparkle:releaseNotesLink>
+            
+            <sparkle:version>9</sparkle:version>
+            <sparkle:shortVersionString>1.0.3</sparkle:shortVersionString>
+            
+            <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
+            
+            <enclosure 
+                url="https://superdimmer.com/releases/SuperDimmer-v1.0.3.dmg" 
+                length="2885677"
+                type="application/octet-stream"
+                sparkle:edSignature="REPLACE_WITH_ACTUAL_SIGNATURE_FROM_SIGN_UPDATE_TOOL=="/>
+        </item>
+        
+        <!-- 
+        ================================================================
+        PREVIOUS RELEASE - v1.0.2
         ================================================================
         Automatic update system and build improvements.
         
