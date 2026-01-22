@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SuperDimmer - Intelligent Screen Dimming for macOS</title>
     <meta name="description" content="SuperDimmer intelligently detects and dims bright areas on your screen. Reduce eye strain, protect your eyes at night, and enjoy a more comfortable Mac experience.">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/logo-icon.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/logo-icon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -1240,9 +1243,7 @@
     <nav id="nav">
         <div class="container nav-content">
             <a href="#" class="logo">
-                <div class="logo-icon">
-                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
-                </div>
+                <img src="assets/logo-icon.png" alt="SuperDimmer Logo" style="width: 28px; height: 28px; margin-right: 10px;">
                 SuperDimmer
             </a>
             <div class="nav-links">
@@ -1340,7 +1341,14 @@
                 <div class="capability-card reveal">
                     <div class="capability-demo">
                         <div class="temp-demo">
-                            <span class="temp-label">☀️ → 🌙</span>
+                            <svg viewBox="0 0 24 24" style="width: 32px; height: 32px; stroke: var(--accent-warm); fill: none; stroke-width: 2;">
+                                <circle cx="12" cy="12" r="5"/>
+                                <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                            </svg>
+                            <span style="font-size: 2rem; margin: 0 8px; color: var(--accent-warm);">→</span>
+                            <svg viewBox="0 0 24 24" style="width: 32px; height: 32px; stroke: var(--accent-warm); fill: var(--accent-warm); stroke-width: 2;">
+                                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                            </svg>
                         </div>
                     </div>
                     <div class="capability-info">
@@ -1356,7 +1364,15 @@
                             <div class="timer-apps">
                                 <div class="timer-app safari">🧭</div>
                                 <div class="timer-app mail hiding" style="animation-delay: 0s">✉️</div>
-                                <div class="timer-app notes hiding" style="animation-delay: 2s">📝</div>
+                                <div class="timer-app notes hiding" style="animation-delay: 2s">
+                                    <svg viewBox="0 0 24 24" style="width: 24px; height: 24px; stroke: currentColor; fill: none; stroke-width: 2;">
+                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                        <polyline points="14 2 14 8 20 8"/>
+                                        <line x1="16" y1="13" x2="8" y2="13"/>
+                                        <line x1="16" y1="17" x2="8" y2="17"/>
+                                        <line x1="10" y1="9" x2="8" y2="9"/>
+                                    </svg>
+                                </div>
                             </div>
                             <div class="timer-countdown">
                                 <div class="timer-ring"></div>
@@ -1378,7 +1394,7 @@
                              style="width: 100%; height: 100%; object-fit: contain; border-radius: 12px;">
                     </div>
                     <div class="capability-info">
-                        <h3>🖥️ Super Spaces HUD</h3>
+                        <h3>Super Spaces HUD</h3>
                         <p>Revolutionary floating HUD for managing macOS Spaces. Switch between desktops with keyboard shortcuts (Cmd+1-9), add notes to each Space, and see all your workspaces in a beautiful overview grid. Visual indicators show visit order and recent activity.</p>
                     </div>
                 </div>
@@ -1391,7 +1407,7 @@
                              style="width: 100%; height: 100%; object-fit: contain; border-radius: 12px;">
                     </div>
                     <div class="capability-info">
-                        <h3>📊 Progressive Dimming</h3>
+                        <h3>Progressive Dimming</h3>
                         <p>Windows progressively dim based on when you last used them, creating a clear visual hierarchy. Current window bright, recently used slightly dimmed, inactive windows fade further. Your workspace naturally guides your attention.</p>
                     </div>
                 </div>
@@ -1400,11 +1416,14 @@
                 <div class="capability-card reveal">
                     <div class="capability-demo">
                         <div style="display: flex; justify-content: center; align-items: center; height: 100%;">
-                            <div style="font-size: 4rem;">⏸️</div>
+                            <svg viewBox="0 0 24 24" style="width: 64px; height: 64px; stroke: var(--accent-warm); fill: none; stroke-width: 2;">
+                                <circle cx="12" cy="12" r="10"/>
+                                <polygon points="10 8 16 12 10 16 10 8" fill="var(--accent-warm)"/>
+                            </svg>
                         </div>
                     </div>
                     <div class="capability-info">
-                        <h3>⏸️ Idle-Aware Timers</h3>
+                        <h3>Idle-Aware Timers</h3>
                         <p>Smart timer pause when you step away. Auto-hide, auto-minimize, and progressive dimming all pause during inactivity. Return to find everything exactly as you left it—no unwanted changes while you're away.</p>
                     </div>
                 </div>
