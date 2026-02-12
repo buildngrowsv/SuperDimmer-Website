@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How We Built Real-Time macOS Space Tracking with Private CGS APIs | SuperDimmer</title>
+    <meta name="description" content="A deep technical dive into how SuperDimmer tracks the active macOS Space in real-time using CGS private APIs and a hybrid plist approach. Learn how we solved one of macOS development's hardest problems.">
+    <meta name="keywords" content="macOS Spaces API, CGS private API, CGSMainConnectionID, CGSGetActiveSpace, macOS virtual desktops, Space detection macOS, macOS development">
+    <link rel="canonical" href="https://superdimmer.com/blog/how-we-built-real-time-macos-space-tracking-cgs-private-apis.html">
+    <link rel="icon" type="image/x-icon" href="../favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/logo-icon.png">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="How We Built Real-Time macOS Space Tracking with Private CGS APIs">
+    <meta property="og:description" content="A deep technical dive into tracking the active macOS Space in real-time using CGS private APIs.">
+    <meta property="og:image" content="https://superdimmer.com/assets/logo-icon.png">
+    <meta property="og:url" content="https://superdimmer.com/blog/how-we-built-real-time-macos-space-tracking-cgs-private-apis.html">
+    <meta property="article:published_time" content="2026-02-12">
+    <meta name="twitter:card" content="summary_large_image">
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "How We Built Real-Time macOS Space Tracking with Private CGS APIs",
+        "description": "A deep technical dive into tracking the active macOS Space in real-time using CGS private APIs.",
+        "image": "https://superdimmer.com/assets/logo-icon.png",
+        "datePublished": "2026-02-12",
+        "dateModified": "2026-02-12",
+        "author": { "@type": "Organization", "name": "SuperDimmer" },
+        "publisher": { "@type": "Organization", "name": "SuperDimmer", "logo": { "@type": "ImageObject", "url": "https://superdimmer.com/assets/logo-icon.png" } }
+    }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root{--bg-primary:#0a0908;--bg-secondary:#151311;--bg-card:#1a1816;--bg-card-hover:#211f1c;--text-primary:#f5f2eb;--text-secondary:#a39e94;--text-muted:#6b665c;--accent-warm:#e8a838;--accent-orange:#d4762c;--accent-coral:#c45c3a;--gradient-warm:linear-gradient(135deg,#e8a838 0%,#d4762c 50%,#c45c3a 100%);--gradient-bg:radial-gradient(ellipse at 30% 0%,rgba(232,168,56,0.08) 0%,transparent 50%),radial-gradient(ellipse at 80% 50%,rgba(212,118,44,0.05) 0%,transparent 40%);--font-display:'Playfair Display',Georgia,serif;--font-body:'DM Sans',-apple-system,BlinkMacSystemFont,sans-serif;--shadow-glow:0 0 60px rgba(232,168,56,0.15);--shadow-card:0 4px 30px rgba(0,0,0,0.4);--border-subtle:1px solid rgba(245,242,235,0.06);--transition-smooth:cubic-bezier(0.22,1,0.36,1)}*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth;font-size:16px}body{font-family:var(--font-body);background-color:var(--bg-primary);color:var(--text-primary);line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}body::before{content:'';position:fixed;inset:0;background:var(--gradient-bg);pointer-events:none;z-index:-1}nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:20px 0;background:rgba(10,9,8,0.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:var(--border-subtle);transition:all 0.4s var(--transition-smooth)}nav.scrolled{padding:12px 0;background:rgba(10,9,8,0.95)}.nav-content{max-width:1100px;margin:0 auto;padding:0 24px;display:flex;justify-content:space-between;align-items:center}.logo{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--text-primary);font-weight:600;font-size:1.25rem}.nav-links{display:flex;align-items:center;gap:40px}.nav-links a{color:var(--text-secondary);text-decoration:none;font-size:0.95rem;font-weight:500;transition:color 0.3s ease}.nav-links a:hover{color:var(--text-primary)}.nav-links a.active{color:var(--accent-warm)}.nav-cta{background:var(--gradient-warm);color:var(--bg-primary)!important;padding:10px 24px;border-radius:8px;font-weight:600!important}.article-container{max-width:760px;margin:0 auto;padding:0 24px}.article-header{padding:140px 0 40px}.article-breadcrumb{display:flex;align-items:center;gap:8px;font-size:0.9rem;color:var(--text-muted);margin-bottom:24px}.article-breadcrumb a{color:var(--text-muted);text-decoration:none}.article-breadcrumb a:hover{color:var(--accent-warm)}.article-category{display:inline-block;background:rgba(232,168,56,0.1);color:var(--accent-warm);padding:6px 16px;border-radius:100px;font-size:0.85rem;font-weight:600;margin-bottom:20px;border:1px solid rgba(232,168,56,0.2)}.article-header h1{font-family:var(--font-display);font-size:clamp(2rem,4.5vw,2.8rem);line-height:1.2;margin-bottom:20px;letter-spacing:-0.02em}.gradient-text{background:var(--gradient-warm);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}.article-meta{display:flex;align-items:center;gap:20px;color:var(--text-muted);font-size:0.9rem;margin-bottom:32px}.article-meta svg{width:16px;height:16px;stroke:var(--text-muted);fill:none;stroke-width:2}.article-meta span{display:flex;align-items:center;gap:6px}.article-content{padding-bottom:60px}.article-content h2{font-family:var(--font-display);font-size:1.7rem;margin:48px 0 20px;color:var(--text-primary);line-height:1.3}.article-content h3{font-family:var(--font-body);font-size:1.25rem;font-weight:600;margin:36px 0 16px;color:var(--text-primary)}.article-content p{font-size:1.08rem;line-height:1.8;color:var(--text-secondary);margin-bottom:24px}.article-content a{color:var(--accent-warm);text-decoration:underline;text-underline-offset:3px}.article-content a:hover{color:var(--accent-orange)}.article-content ul,.article-content ol{margin:20px 0 24px 24px;color:var(--text-secondary)}.article-content li{font-size:1.05rem;line-height:1.8;margin-bottom:10px}.article-content li strong{color:var(--text-primary)}.article-content blockquote{border-left:3px solid var(--accent-warm);padding:16px 24px;margin:32px 0;background:var(--bg-card);border-radius:0 12px 12px 0}.article-content blockquote p{font-style:italic;color:var(--text-primary);margin-bottom:0}.callout{background:var(--bg-card);border:var(--border-subtle);border-left:3px solid var(--accent-warm);border-radius:0 16px 16px 0;padding:24px 28px;margin:32px 0}.callout-title{font-weight:600;color:var(--accent-warm);margin-bottom:8px;font-size:0.95rem}.callout p{font-size:1rem;margin-bottom:0}.code-block{background:var(--bg-card);border:var(--border-subtle);border-radius:12px;padding:20px 24px;margin:24px 0;overflow-x:auto;font-family:'SF Mono',Monaco,monospace;font-size:0.9rem;line-height:1.6;color:var(--text-secondary)}.code-block .keyword{color:#c45c3a}.code-block .func{color:#e8a838}.code-block .string{color:#6b8e6b}.code-block .comment{color:var(--text-muted)}.article-cta{background:linear-gradient(135deg,rgba(232,168,56,0.1) 0%,rgba(212,118,44,0.06) 100%);border:1px solid rgba(232,168,56,0.2);border-radius:20px;padding:40px;text-align:center;margin:48px 0}.article-cta h3{font-family:var(--font-display);font-size:1.5rem;margin-bottom:12px}.article-cta p{margin-bottom:24px;font-size:1.05rem}.btn-primary{display:inline-flex;align-items:center;gap:10px;background:var(--gradient-warm);color:var(--bg-primary);padding:14px 28px;border-radius:12px;text-decoration:none;font-weight:600;font-size:1rem;transition:all 0.3s var(--transition-smooth);box-shadow:0 4px 20px rgba(232,168,56,0.3)}.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(232,168,56,0.4);color:var(--bg-primary)}.btn-primary svg{width:18px;height:18px;fill:currentColor}.related-articles{padding:60px 0 80px;border-top:var(--border-subtle)}.related-articles h2{font-family:var(--font-display);font-size:1.5rem;margin-bottom:32px}.related-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px}.related-card{background:var(--bg-card);border-radius:16px;padding:24px;border:var(--border-subtle);text-decoration:none;transition:all 0.3s var(--transition-smooth)}.related-card:hover{background:var(--bg-card-hover);transform:translateY(-4px)}.related-card h3{font-family:var(--font-body);font-size:1.05rem;font-weight:600;color:var(--text-primary);margin-bottom:8px;line-height:1.4}.related-card p{font-size:0.9rem;color:var(--text-muted)}footer{background:var(--bg-secondary);padding:40px 0;border-top:var(--border-subtle)}.footer-content{max-width:1100px;margin:0 auto;padding:0 24px;display:flex;justify-content:space-between;align-items:center}footer p{font-size:0.9rem;color:var(--text-muted)}.footer-links{display:flex;gap:24px}.footer-links a{color:var(--text-secondary);text-decoration:none;font-size:0.9rem}.footer-links a:hover{color:var(--accent-warm)}@media(max-width:768px){.nav-links{display:none}.article-header{padding:120px 0 30px}.article-header h1{font-size:1.8rem}.article-content h2{font-size:1.4rem}.article-cta{padding:30px 20px}.related-grid{grid-template-columns:1fr}.footer-content{flex-direction:column;gap:20px;text-align:center}}
+    </style>
+</head>
+<body>
+    <nav id="nav">
+        <div class="nav-content">
+            <a href="/" class="logo">
+                <img src="../assets/logo-icon.png" alt="SuperDimmer Logo" style="width:28px;height:28px;margin-right:10px">
+                SuperDimmer
+            </a>
+            <div class="nav-links">
+                <a href="/#capabilities">Capabilities</a>
+                <a href="/#features">Features</a>
+                <a href="/blog.html" class="active">Blog</a>
+                <a href="/#download" class="nav-cta">Download Free</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="article-header">
+        <div class="article-container">
+            <div class="article-breadcrumb">
+                <a href="/">Home</a> / <a href="/blog.html">Blog</a> / <span>Engineering</span>
+            </div>
+            <span class="article-category">Engineering Deep Dive</span>
+            <h1>How We Built Real-Time macOS Space Tracking with <span class="gradient-text">Private CGS APIs</span></h1>
+            <div class="article-meta">
+                <span>
+                    <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                    February 12, 2026
+                </span>
+                <span>
+                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    12 min read
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <article class="article-container article-content">
+
+        <p>One of the most technically challenging problems we solved while building SuperDimmer was tracking which macOS Space (virtual desktop) the user is currently on. Apple provides <em>no public API</em> for this. The <code>NSWorkspace.activeSpaceDidChangeNotification</code> tells you a Space changed, but not <em>which</em> Space you're on. This is the story of how we cracked it.</p>
+
+        <h2>The Problem: macOS Spaces Are a Black Box</h2>
+
+        <p>macOS Spaces (virtual desktops) are a core part of the operating system. Millions of users rely on them daily to organize their work. Yet Apple treats Space identity as an implementation detail — there's no public framework, no documented API, and no officially supported way for third-party apps to know which Space is active.</p>
+
+        <p>This creates a real problem for apps like SuperDimmer. Our Super Spaces HUD needs to show the user which Space they're on, enable keyboard shortcuts to jump to specific Spaces, and apply progressive dimming based on Space visit history. All of that requires knowing the current Space in real-time.</p>
+
+        <h3>What Apple Gives You (Not Much)</h3>
+
+        <ul>
+            <li><strong>NSWorkspace.activeSpaceDidChangeNotification:</strong> Fires when the active Space changes. Tells you nothing about <em>which</em> Space you moved to.</li>
+            <li><strong>CGWindowListCopyWindowInfo:</strong> Returns window info including Space IDs per window, but not the current active Space.</li>
+            <li><strong>com.apple.spaces.plist:</strong> A preferences file that contains Space metadata, but it's updated asynchronously with a 100-200ms lag after Space changes.</li>
+        </ul>
+
+        <p>None of these individually solve the problem. We needed something faster, more reliable, and capable of answering "which Space is the user on right now?" in under 5 milliseconds.</p>
+
+        <h2>The Solution: CGS Private APIs</h2>
+
+        <p>Deep inside macOS, the Core Graphics Services (CGS) framework manages the window server — the system component that handles all window drawing, compositing, and Space management. CGS exposes private C functions that apps like Hammerspoon, BetterTouchTool, and other power-user tools have used for years.</p>
+
+        <p>The two critical functions we use:</p>
+
+        <div class="code-block">
+            <span class="comment">// Get a connection to the window server</span><br>
+            <span class="keyword">extern</span> <span class="func">CGSMainConnectionID</span>() -> <span class="keyword">Int</span><br><br>
+            <span class="comment">// Get the active Space ID for this connection</span><br>
+            <span class="keyword">extern</span> <span class="func">CGSGetActiveSpace</span>(<span class="keyword">cid</span>: Int) -> <span class="keyword">Int</span>
+        </div>
+
+        <p><code>CGSMainConnectionID()</code> returns a connection identifier to the macOS window server. Think of it as a "session handle" for talking to the graphics subsystem. <code>CGSGetActiveSpace()</code> then uses that connection to return the <code>ManagedSpaceID</code> — a unique integer identifying the current Space.</p>
+
+        <p>These calls are extremely fast — under 1 millisecond — because they're direct queries to the window server with no disk I/O or file parsing involved.</p>
+
+        <h3>Bridging CGS into Swift</h3>
+
+        <p>Since these are private C functions with no Swift headers, we use <code>@_silgen_name</code> to bridge them directly:</p>
+
+        <div class="code-block">
+            <span class="comment">// In our CGSPrivate.h bridging header</span><br>
+            <span class="keyword">typedef int</span> CGSConnection;<br>
+            <span class="keyword">extern</span> CGSConnection <span class="func">CGSMainConnectionID</span>(<span class="keyword">void</span>);<br>
+            <span class="keyword">extern int</span> <span class="func">CGSGetActiveSpace</span>(CGSConnection cid);<br><br>
+            <span class="comment">// In Swift, we can call these directly:</span><br>
+            <span class="keyword">let</span> cid = <span class="func">CGSMainConnectionID</span>()<br>
+            <span class="keyword">let</span> activeSpaceID = <span class="func">CGSGetActiveSpace</span>(cid)
+        </div>
+
+        <p>We considered using <code>dlsym()</code> for dynamic resolution (which would avoid linking against private symbols), but direct C bridging proved more reliable and maintainable. The trade-off is that we depend on these symbols existing in the CGS framework, which they have consistently across macOS 13, 14, and 15.</p>
+
+        <h2>The Hybrid Architecture: CGS + Plist</h2>
+
+        <p>The raw <code>ManagedSpaceID</code> from CGS is just an integer — something like <code>42</code> or <code>187</code>. It doesn't tell you "this is Space 3" or give you any human-readable metadata. For that, we need the plist.</p>
+
+        <h3>Reading the Spaces Plist</h3>
+
+        <p>macOS stores Space configuration in <code>~/Library/Preferences/com.apple.spaces.plist</code>. This file contains:</p>
+
+        <ul>
+            <li><strong>Space UUIDs:</strong> Stable identifiers like <code>5A4B3C2D-1E0F-...</code> that persist across reboots</li>
+            <li><strong>Space names:</strong> User-assigned names (if any) or default "Desktop N" labels</li>
+            <li><strong>Space order:</strong> The array order matches what Mission Control shows</li>
+            <li><strong>Display assignment:</strong> Which display each Space belongs to</li>
+        </ul>
+
+        <p>The critical insight: <strong>the position of a Space in the plist array is its visual number in Mission Control.</strong> If a Space's UUID is at index 2 in the array, it's "Desktop 3" (zero-indexed). This is how we map the raw <code>ManagedSpaceID</code> to a human-readable Space number.</p>
+
+        <h3>The Detection Pipeline</h3>
+
+        <p>Our <code>SpaceDetector</code> class runs this pipeline:</p>
+
+        <ol>
+            <li><strong>CGS query (~1ms):</strong> Call <code>CGSGetActiveSpace()</code> to get the current <code>ManagedSpaceID</code></li>
+            <li><strong>Plist read (~2-4ms):</strong> Parse the Spaces plist to get the full Space list with UUIDs and order</li>
+            <li><strong>Mapping:</strong> Match the <code>ManagedSpaceID</code> to the plist entry, derive the Space number and UUID</li>
+            <li><strong>Output:</strong> Return a <code>SpaceInfo</code> struct with ID, UUID, number, name, and display</li>
+        </ol>
+
+        <p>Total time: <strong>3-5 milliseconds</strong>. Fast enough to call on every Space change notification without any perceptible delay.</p>
+
+        <div class="callout">
+            <div class="callout-title">Why Both CGS and Plist?</div>
+            <p>CGS gives us <strong>speed</strong> — sub-millisecond identification of the active Space. The plist gives us <strong>metadata</strong> — the Space number, UUID, and human-readable name. Neither is sufficient alone. CGS without plist gives you a meaningless integer. Plist without CGS has a 100-200ms lag and can't tell you the current Space directly.</p>
+        </div>
+
+        <h2>Challenges We Overcame</h2>
+
+        <h3>The Plist Lag Problem</h3>
+
+        <p>When a Space change occurs, <code>NSWorkspace.activeSpaceDidChangeNotification</code> fires immediately. But the Spaces plist isn't updated for another 100-200 milliseconds. If we read the plist immediately on notification, we might get stale data from the previous Space layout.</p>
+
+        <p>Our solution: use CGS as the source of truth for the <em>current</em> Space ID (which updates instantly), and only use the plist for mapping that ID to metadata. We cache the plist data and refresh it periodically rather than on every Space change.</p>
+
+        <h3>Multi-Monitor Complexity</h3>
+
+        <p>Each display in macOS has its own independent set of Spaces. A user with two monitors might have 4 Spaces on the primary display and 3 on the secondary. CGS returns the active Space for the currently focused display, which is correct for our use case. But the plist organizes Spaces by display, so our mapping logic has to filter by display first.</p>
+
+        <h3>App Store Compatibility</h3>
+
+        <p>Private APIs are technically prohibited in App Store apps. However, many well-known utilities (Hammerspoon, BetterTouchTool, Contexts, etc.) use these same CGS functions and are distributed outside the App Store. Since SuperDimmer is distributed directly via our website (not the App Store), this isn't a constraint. We do maintain a fallback path that uses plist-only detection for scenarios where CGS might not be available.</p>
+
+        <h2>Results</h2>
+
+        <p>This hybrid CGS + plist approach powers everything in Super Spaces HUD:</p>
+
+        <ul>
+            <li><strong>Instant Space identification</strong> in under 5ms on every Space change</li>
+            <li><strong>Keyboard shortcut switching</strong> — press Cmd+3 and we know exactly which Space to navigate to</li>
+            <li><strong>Progressive dimming</strong> — we track Space visit history by UUID, so dimming persists correctly even when Spaces are reordered</li>
+            <li><strong>Visual overview</strong> — the HUD shows the correct Space number and active indicator with zero lag</li>
+        </ul>
+
+        <p>It took weeks of research, testing, and iteration to get this right. The macOS Spaces subsystem is one of the least documented parts of the OS, and every other app that does Space tracking has had to solve similar problems. We're proud of the result — it's fast, reliable, and has been stable across multiple macOS versions.</p>
+
+        <div class="article-cta">
+            <h3>Experience Super Spaces HUD</h3>
+            <p>Real-time Space tracking, keyboard shortcuts, progressive dimming, and visual overview — all powered by the technology described here. Free during early access.</p>
+            <a href="/#download" class="btn-primary">
+                <svg viewBox="0 0 24 24"><path d="M18.71 8.21a1 1 0 0 0-1.42 0l-4.29 4.3V3a1 1 0 0 0-2 0v9.51l-4.29-4.3a1 1 0 0 0-1.42 1.42l6 6a1 1 0 0 0 1.42 0l6-6a1 1 0 0 0 0-1.42z"/><path d="M19 13a1 1 0 0 0-1 1v5a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1v-5a1 1 0 0 0-2 0v5a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-5a1 1 0 0 0-1-1z"/></svg>
+                Download Free for macOS
+            </a>
+        </div>
+    </article>
+
+    <section class="article-container related-articles">
+        <h2>Related Articles</h2>
+        <div class="related-grid">
+            <a href="/blog/solving-macos-space-reorder-detection-uuid-tracking.html" class="related-card">
+                <h3>Solving macOS Space Reorder Detection with UUID-Based Tracking</h3>
+                <p>10 min read</p>
+            </a>
+            <a href="/blog/manage-macos-spaces-keyboard-shortcuts-guide.html" class="related-card">
+                <h3>How to Manage macOS Spaces Like a Pro with Keyboard Shortcuts</h3>
+                <p>9 min read</p>
+            </a>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2026 SuperDimmer. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="/">Home</a>
+                <a href="/blog.html">Blog</a>
+                <a href="/privacy.html">Privacy</a>
+                <a href="/terms.html">Terms</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const nav = document.getElementById('nav');
+        window.addEventListener('scroll', () => { nav.classList.toggle('scrolled', window.scrollY > 50); });
+    </script>
+</body>
+</html>

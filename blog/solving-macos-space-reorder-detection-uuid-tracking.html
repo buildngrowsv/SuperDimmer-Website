@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solving macOS Space Reorder Detection with UUID-Based Tracking | SuperDimmer</title>
+    <meta name="description" content="How SuperDimmer detects when users reorder macOS Spaces in Mission Control. A technical deep dive into UUID-based tracking that survives Space reordering without losing state.">
+    <meta name="keywords" content="macOS Spaces reorder, Space reorder detection, UUID tracking macOS, Mission Control reorder, virtual desktop reorder, macOS development">
+    <link rel="canonical" href="https://superdimmer.com/blog/solving-macos-space-reorder-detection-uuid-tracking.html">
+    <link rel="icon" type="image/x-icon" href="../favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/logo-icon.png">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Solving macOS Space Reorder Detection with UUID-Based Tracking">
+    <meta property="og:description" content="How we detect Space reordering in Mission Control and preserve app state using UUID-based tracking.">
+    <meta property="og:image" content="https://superdimmer.com/assets/logo-icon.png">
+    <meta property="og:url" content="https://superdimmer.com/blog/solving-macos-space-reorder-detection-uuid-tracking.html">
+    <meta property="article:published_time" content="2026-02-12">
+    <meta name="twitter:card" content="summary_large_image">
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "Solving macOS Space Reorder Detection with UUID-Based Tracking",
+        "description": "How we detect Space reordering in Mission Control and preserve app state using UUID-based tracking.",
+        "image": "https://superdimmer.com/assets/logo-icon.png",
+        "datePublished": "2026-02-12",
+        "dateModified": "2026-02-12",
+        "author": { "@type": "Organization", "name": "SuperDimmer" },
+        "publisher": { "@type": "Organization", "name": "SuperDimmer", "logo": { "@type": "ImageObject", "url": "https://superdimmer.com/assets/logo-icon.png" } }
+    }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root{--bg-primary:#0a0908;--bg-secondary:#151311;--bg-card:#1a1816;--bg-card-hover:#211f1c;--text-primary:#f5f2eb;--text-secondary:#a39e94;--text-muted:#6b665c;--accent-warm:#e8a838;--accent-orange:#d4762c;--accent-coral:#c45c3a;--gradient-warm:linear-gradient(135deg,#e8a838 0%,#d4762c 50%,#c45c3a 100%);--gradient-bg:radial-gradient(ellipse at 30% 0%,rgba(232,168,56,0.08) 0%,transparent 50%),radial-gradient(ellipse at 80% 50%,rgba(212,118,44,0.05) 0%,transparent 40%);--font-display:'Playfair Display',Georgia,serif;--font-body:'DM Sans',-apple-system,BlinkMacSystemFont,sans-serif;--shadow-glow:0 0 60px rgba(232,168,56,0.15);--shadow-card:0 4px 30px rgba(0,0,0,0.4);--border-subtle:1px solid rgba(245,242,235,0.06);--transition-smooth:cubic-bezier(0.22,1,0.36,1)}*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth;font-size:16px}body{font-family:var(--font-body);background-color:var(--bg-primary);color:var(--text-primary);line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}body::before{content:'';position:fixed;inset:0;background:var(--gradient-bg);pointer-events:none;z-index:-1}nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:20px 0;background:rgba(10,9,8,0.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:var(--border-subtle);transition:all 0.4s var(--transition-smooth)}nav.scrolled{padding:12px 0;background:rgba(10,9,8,0.95)}.nav-content{max-width:1100px;margin:0 auto;padding:0 24px;display:flex;justify-content:space-between;align-items:center}.logo{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--text-primary);font-weight:600;font-size:1.25rem}.nav-links{display:flex;align-items:center;gap:40px}.nav-links a{color:var(--text-secondary);text-decoration:none;font-size:0.95rem;font-weight:500;transition:color 0.3s ease}.nav-links a:hover{color:var(--text-primary)}.nav-links a.active{color:var(--accent-warm)}.nav-cta{background:var(--gradient-warm);color:var(--bg-primary)!important;padding:10px 24px;border-radius:8px;font-weight:600!important}.article-container{max-width:760px;margin:0 auto;padding:0 24px}.article-header{padding:140px 0 40px}.article-breadcrumb{display:flex;align-items:center;gap:8px;font-size:0.9rem;color:var(--text-muted);margin-bottom:24px}.article-breadcrumb a{color:var(--text-muted);text-decoration:none}.article-breadcrumb a:hover{color:var(--accent-warm)}.article-category{display:inline-block;background:rgba(232,168,56,0.1);color:var(--accent-warm);padding:6px 16px;border-radius:100px;font-size:0.85rem;font-weight:600;margin-bottom:20px;border:1px solid rgba(232,168,56,0.2)}.article-header h1{font-family:var(--font-display);font-size:clamp(2rem,4.5vw,2.8rem);line-height:1.2;margin-bottom:20px;letter-spacing:-0.02em}.gradient-text{background:var(--gradient-warm);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}.article-meta{display:flex;align-items:center;gap:20px;color:var(--text-muted);font-size:0.9rem;margin-bottom:32px}.article-meta svg{width:16px;height:16px;stroke:var(--text-muted);fill:none;stroke-width:2}.article-meta span{display:flex;align-items:center;gap:6px}.article-content{padding-bottom:60px}.article-content h2{font-family:var(--font-display);font-size:1.7rem;margin:48px 0 20px;color:var(--text-primary);line-height:1.3}.article-content h3{font-family:var(--font-body);font-size:1.25rem;font-weight:600;margin:36px 0 16px;color:var(--text-primary)}.article-content p{font-size:1.08rem;line-height:1.8;color:var(--text-secondary);margin-bottom:24px}.article-content a{color:var(--accent-warm);text-decoration:underline;text-underline-offset:3px}.article-content a:hover{color:var(--accent-orange)}.article-content ul,.article-content ol{margin:20px 0 24px 24px;color:var(--text-secondary)}.article-content li{font-size:1.05rem;line-height:1.8;margin-bottom:10px}.article-content li strong{color:var(--text-primary)}.article-content blockquote{border-left:3px solid var(--accent-warm);padding:16px 24px;margin:32px 0;background:var(--bg-card);border-radius:0 12px 12px 0}.article-content blockquote p{font-style:italic;color:var(--text-primary);margin-bottom:0}.callout{background:var(--bg-card);border:var(--border-subtle);border-left:3px solid var(--accent-warm);border-radius:0 16px 16px 0;padding:24px 28px;margin:32px 0}.callout-title{font-weight:600;color:var(--accent-warm);margin-bottom:8px;font-size:0.95rem}.callout p{font-size:1rem;margin-bottom:0}.code-block{background:var(--bg-card);border:var(--border-subtle);border-radius:12px;padding:20px 24px;margin:24px 0;overflow-x:auto;font-family:'SF Mono',Monaco,monospace;font-size:0.9rem;line-height:1.6;color:var(--text-secondary)}.code-block .keyword{color:#c45c3a}.code-block .func{color:#e8a838}.code-block .string{color:#6b8e6b}.code-block .comment{color:var(--text-muted)}.article-cta{background:linear-gradient(135deg,rgba(232,168,56,0.1) 0%,rgba(212,118,44,0.06) 100%);border:1px solid rgba(232,168,56,0.2);border-radius:20px;padding:40px;text-align:center;margin:48px 0}.article-cta h3{font-family:var(--font-display);font-size:1.5rem;margin-bottom:12px}.article-cta p{margin-bottom:24px;font-size:1.05rem}.btn-primary{display:inline-flex;align-items:center;gap:10px;background:var(--gradient-warm);color:var(--bg-primary);padding:14px 28px;border-radius:12px;text-decoration:none;font-weight:600;font-size:1rem;transition:all 0.3s var(--transition-smooth);box-shadow:0 4px 20px rgba(232,168,56,0.3)}.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(232,168,56,0.4);color:var(--bg-primary)}.btn-primary svg{width:18px;height:18px;fill:currentColor}.related-articles{padding:60px 0 80px;border-top:var(--border-subtle)}.related-articles h2{font-family:var(--font-display);font-size:1.5rem;margin-bottom:32px}.related-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px}.related-card{background:var(--bg-card);border-radius:16px;padding:24px;border:var(--border-subtle);text-decoration:none;transition:all 0.3s var(--transition-smooth)}.related-card:hover{background:var(--bg-card-hover);transform:translateY(-4px)}.related-card h3{font-family:var(--font-body);font-size:1.05rem;font-weight:600;color:var(--text-primary);margin-bottom:8px;line-height:1.4}.related-card p{font-size:0.9rem;color:var(--text-muted)}footer{background:var(--bg-secondary);padding:40px 0;border-top:var(--border-subtle)}.footer-content{max-width:1100px;margin:0 auto;padding:0 24px;display:flex;justify-content:space-between;align-items:center}footer p{font-size:0.9rem;color:var(--text-muted)}.footer-links{display:flex;gap:24px}.footer-links a{color:var(--text-secondary);text-decoration:none;font-size:0.9rem}.footer-links a:hover{color:var(--accent-warm)}@media(max-width:768px){.nav-links{display:none}.article-header{padding:120px 0 30px}.article-header h1{font-size:1.8rem}.article-content h2{font-size:1.4rem}.article-cta{padding:30px 20px}.related-grid{grid-template-columns:1fr}.footer-content{flex-direction:column;gap:20px;text-align:center}}
+    </style>
+</head>
+<body>
+    <nav id="nav">
+        <div class="nav-content">
+            <a href="/" class="logo">
+                <img src="../assets/logo-icon.png" alt="SuperDimmer Logo" style="width:28px;height:28px;margin-right:10px">
+                SuperDimmer
+            </a>
+            <div class="nav-links">
+                <a href="/#capabilities">Capabilities</a>
+                <a href="/#features">Features</a>
+                <a href="/blog.html" class="active">Blog</a>
+                <a href="/#download" class="nav-cta">Download Free</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="article-header">
+        <div class="article-container">
+            <div class="article-breadcrumb">
+                <a href="/">Home</a> / <a href="/blog.html">Blog</a> / <span>Engineering</span>
+            </div>
+            <span class="article-category">Engineering Deep Dive</span>
+            <h1>Solving macOS Space Reorder Detection with <span class="gradient-text">UUID-Based Tracking</span></h1>
+            <div class="article-meta">
+                <span>
+                    <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                    February 12, 2026
+                </span>
+                <span>
+                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    10 min read
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <article class="article-container article-content">
+
+        <p>When a macOS user drags Spaces around in Mission Control to reorder them, something subtle but critical happens: every app that tracks Spaces by number gets confused. "Space 3" is now "Space 1", but the app doesn't know that. Notes attached to "Space 3" now show up on the wrong desktop. Progressive dimming history is scrambled. This is the story of how we solved Space reorder detection in SuperDimmer.</p>
+
+        <h2>The Reorder Problem</h2>
+
+        <p>macOS lets users drag Spaces in Mission Control to reorder them. There is <strong>no notification, no API call, and no system event</strong> when this happens. The Space simply moves from one position to another, and every third-party app is left in the dark.</p>
+
+        <p>Most apps that work with Spaces track them by number — "Space 1", "Space 2", "Space 3". This works until the user reorders. After a reorder, the Space numbers change but the underlying Space identity doesn't. The Space that was at position 3 (with your coding windows) might now be at position 1, but it's still the same Space with the same windows.</p>
+
+        <h3>Why This Matters for SuperDimmer</h3>
+
+        <p>SuperDimmer's Super Spaces HUD stores per-Space notes and visit history. If you wrote "Client project" as the note for Space 3, and then moved that Space to position 1, the note should follow the Space — not stay attached to "position 3". Similarly, progressive dimming tracks which Spaces you visited recently. That history needs to survive reordering.</p>
+
+        <h2>The Key Insight: Stable Identifiers</h2>
+
+        <p>Each macOS Space has three identifiers:</p>
+
+        <ol>
+            <li><strong>ManagedSpaceID:</strong> An integer assigned by the window server (e.g., <code>42</code>). This is stable — it doesn't change when the Space moves.</li>
+            <li><strong>UUID:</strong> A universally unique identifier (e.g., <code>5A4B3C2D-1E0F-...</code>). Also stable across reorders and even reboots.</li>
+            <li><strong>Position (Space number):</strong> The index in the Spaces array. This <em>changes</em> when the user reorders.</li>
+        </ol>
+
+        <p>The crucial insight: <strong>if the set of UUIDs hasn't changed, but their order has, a reorder occurred.</strong> No Spaces were created or destroyed — they just moved.</p>
+
+        <h2>Our Detection Algorithm</h2>
+
+        <p>The <code>SpaceChangeMonitor</code> polls the Spaces plist every 500 milliseconds and compares the UUID sequence against the previously known order:</p>
+
+        <div class="code-block">
+            <span class="comment">// Pseudocode for reorder detection</span><br>
+            <span class="keyword">let</span> currentUUIDs = readSpacesFromPlist()  <span class="comment">// ["A", "B", "C"]</span><br>
+            <span class="keyword">let</span> previousUUIDs = lastKnownOrder         <span class="comment">// ["B", "A", "C"]</span><br><br>
+            <span class="keyword">if</span> Set(currentUUIDs) == Set(previousUUIDs) <span class="comment">// Same Spaces exist</span><br>
+            &nbsp;&nbsp;&nbsp;&amp;&amp; currentUUIDs != previousUUIDs {       <span class="comment">// But different order</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// REORDER DETECTED!</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="func">notifyReorderCallbacks</span>()<br>
+            }
+        </div>
+
+        <h3>Why Polling?</h3>
+
+        <p>We'd prefer an event-driven approach, but macOS provides no notification for Space reordering. The <code>activeSpaceDidChangeNotification</code> fires when you <em>switch</em> Spaces, but not when you <em>reorder</em> them in Mission Control. File system watchers on the plist are unreliable because macOS uses a preferences caching system that doesn't always trigger file change events.</p>
+
+        <p>Polling at 500ms is a pragmatic choice. It's fast enough that the user never notices a delay — by the time they close Mission Control after reordering, our app has already detected the change. And at 500ms intervals, the overhead is negligible (reading a small plist file is ~2-4ms).</p>
+
+        <h2>UUID-Based State Migration</h2>
+
+        <p>Before we solved this problem, SuperDimmer's <code>SpaceVisitTracker</code> stored visit history using Space numbers (integers). This meant reordering broke everything. The migration to UUID-based tracking was a significant architectural change:</p>
+
+        <h3>Before (Broken by Reorders)</h3>
+
+        <div class="code-block">
+            <span class="comment">// Old approach: visit history by position</span><br>
+            visitHistory = [3, 1, 2, 4]  <span class="comment">// Space 3 most recent</span><br><br>
+            <span class="comment">// After user drags Space 3 to position 1:</span><br>
+            <span class="comment">// visitHistory still says [3, 1, 2, 4]</span><br>
+            <span class="comment">// But Space 3 is now at position 1!</span><br>
+            <span class="comment">// Everything is wrong.</span>
+        </div>
+
+        <h3>After (Survives Reorders)</h3>
+
+        <div class="code-block">
+            <span class="comment">// New approach: visit history by UUID</span><br>
+            visitHistory = [<span class="string">"5A4B..."</span>, <span class="string">"2C3D..."</span>, <span class="string">"9F1E..."</span>]<br><br>
+            <span class="comment">// After user drags Spaces around:</span><br>
+            <span class="comment">// UUIDs don't change!</span><br>
+            <span class="comment">// "5A4B..." is still the most recently visited Space,</span><br>
+            <span class="comment">// regardless of its position number.</span>
+        </div>
+
+        <p>We also built automatic migration: when the app launches and detects old integer-based visit history in UserDefaults, it converts each integer to the corresponding UUID using the current plist mapping. This means users who update from an older version don't lose their visit history.</p>
+
+        <h2>The Reorder Callback System</h2>
+
+        <p>When a reorder is detected, multiple components need to react:</p>
+
+        <ul>
+            <li><strong>Super Spaces HUD:</strong> Refreshes the visual grid to show Spaces in their new order</li>
+            <li><strong>SpaceVisitTracker:</strong> Recalculates progressive dimming opacities based on new positions</li>
+            <li><strong>Space notes:</strong> Re-maps notes to the correct visual positions</li>
+            <li><strong>Keyboard shortcuts:</strong> Updates the Cmd+N mapping so Cmd+1 goes to whichever Space is now first</li>
+        </ul>
+
+        <p>All of these consumers register callbacks with <code>SpaceChangeMonitor</code>. When a reorder is detected, callbacks fire synchronously on the main thread, ensuring the UI updates atomically.</p>
+
+        <div class="callout">
+            <div class="callout-title">Edge Case: Space Creation and Deletion</div>
+            <p>Our algorithm distinguishes between reorders and creation/deletion. If the UUID set changes (a new UUID appears or one disappears), that's a Space being created or deleted — not a reorder. We handle these cases separately with different callbacks, because the appropriate UI response is different (e.g., adding a new Space button vs. rearranging existing ones).</p>
+        </div>
+
+        <h2>Progressive Dimming After Reorder</h2>
+
+        <p>One of the most satisfying outcomes of UUID-based tracking is that progressive dimming "just works" after a reorder. The opacity formula uses <em>visit recency</em>, not <em>position number</em>:</p>
+
+        <div class="code-block">
+            <span class="comment">// Opacity = how recently you visited this Space</span><br>
+            <span class="comment">// Position 0 (current) = 100% opacity</span><br>
+            <span class="comment">// Position 1 (last visited) = ~97.5% opacity</span><br>
+            <span class="comment">// Older positions = progressively dimmer</span><br>
+            <span class="comment">// Unvisited = 50% opacity</span><br><br>
+            opacity = 1.0 - (visitPosition * dimStep)<br>
+            <span class="keyword">where</span> dimStep = dimRange / totalSpaces
+        </div>
+
+        <p>Because visit history is UUID-based, reordering Spaces doesn't affect the visit order at all. The Space you visited 5 minutes ago is still the Space you visited 5 minutes ago, even if it's now at a different position in Mission Control.</p>
+
+        <h2>Lessons Learned</h2>
+
+        <ul>
+            <li><strong>Never use position as identity.</strong> This applies broadly in software engineering, but especially with macOS Spaces. Positions change; UUIDs don't.</li>
+            <li><strong>Polling is sometimes the right answer.</strong> When there's no event system, a carefully tuned poll at 500ms is fast enough and cheap enough to be invisible to the user.</li>
+            <li><strong>Build migration paths.</strong> When we switched from integer-based to UUID-based tracking, we wrote automatic migration for existing users. This prevented data loss and made the upgrade seamless.</li>
+            <li><strong>Test with extreme reordering.</strong> We tested moving the first Space to last, the last to first, reversing all Spaces, and rapid successive reorders. Each scenario exposed edge cases we needed to handle.</li>
+        </ul>
+
+        <div class="article-cta">
+            <h3>Try Super Spaces HUD</h3>
+            <p>Experience Space management that survives reordering, with persistent notes, visit-aware dimming, and instant keyboard switching. Free during early access.</p>
+            <a href="/#download" class="btn-primary">
+                <svg viewBox="0 0 24 24"><path d="M18.71 8.21a1 1 0 0 0-1.42 0l-4.29 4.3V3a1 1 0 0 0-2 0v9.51l-4.29-4.3a1 1 0 0 0-1.42 1.42l6 6a1 1 0 0 0 1.42 0l6-6a1 1 0 0 0 0-1.42z"/><path d="M19 13a1 1 0 0 0-1 1v5a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1v-5a1 1 0 0 0-2 0v5a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-5a1 1 0 0 0-1-1z"/></svg>
+                Download Free for macOS
+            </a>
+        </div>
+    </article>
+
+    <section class="article-container related-articles">
+        <h2>Related Articles</h2>
+        <div class="related-grid">
+            <a href="/blog/how-we-built-real-time-macos-space-tracking-cgs-private-apis.html" class="related-card">
+                <h3>How We Built Real-Time macOS Space Tracking with Private CGS APIs</h3>
+                <p>12 min read</p>
+            </a>
+            <a href="/blog/building-crash-proof-overlay-windows-macos-screen-dimming.html" class="related-card">
+                <h3>Building Crash-Proof Overlay Windows for macOS Screen Dimming</h3>
+                <p>11 min read</p>
+            </a>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2026 SuperDimmer. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="/">Home</a>
+                <a href="/blog.html">Blog</a>
+                <a href="/privacy.html">Privacy</a>
+                <a href="/terms.html">Terms</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const nav = document.getElementById('nav');
+        window.addEventListener('scroll', () => { nav.classList.toggle('scrolled', window.scrollY > 50); });
+    </script>
+</body>
+</html>

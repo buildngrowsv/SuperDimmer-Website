@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Building Crash-Proof Overlay Windows for macOS Screen Dimming | SuperDimmer</title>
+    <meta name="description" content="How SuperDimmer manages transparent overlay windows for screen dimming without crashes, visual glitches, or interfering with user interactions. A deep dive into Z-ordering, Core Animation safety, and window lifecycle management.">
+    <meta name="keywords" content="macOS overlay windows, transparent windows macOS, NSWindow overlay, Core Animation crash, Z-ordering macOS, screen dimming overlay, window management macOS">
+    <link rel="canonical" href="https://superdimmer.com/blog/building-crash-proof-overlay-windows-macos-screen-dimming.html">
+    <link rel="icon" type="image/x-icon" href="../favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/logo-icon.png">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Building Crash-Proof Overlay Windows for macOS Screen Dimming">
+    <meta property="og:description" content="How we manage transparent overlay windows for dimming without crashes or user interference.">
+    <meta property="og:image" content="https://superdimmer.com/assets/logo-icon.png">
+    <meta property="og:url" content="https://superdimmer.com/blog/building-crash-proof-overlay-windows-macos-screen-dimming.html">
+    <meta property="article:published_time" content="2026-02-12">
+    <meta name="twitter:card" content="summary_large_image">
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "Building Crash-Proof Overlay Windows for macOS Screen Dimming",
+        "description": "How we manage transparent overlay windows for dimming without crashes or user interference.",
+        "image": "https://superdimmer.com/assets/logo-icon.png",
+        "datePublished": "2026-02-12",
+        "dateModified": "2026-02-12",
+        "author": { "@type": "Organization", "name": "SuperDimmer" },
+        "publisher": { "@type": "Organization", "name": "SuperDimmer", "logo": { "@type": "ImageObject", "url": "https://superdimmer.com/assets/logo-icon.png" } }
+    }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root{--bg-primary:#0a0908;--bg-secondary:#151311;--bg-card:#1a1816;--bg-card-hover:#211f1c;--text-primary:#f5f2eb;--text-secondary:#a39e94;--text-muted:#6b665c;--accent-warm:#e8a838;--accent-orange:#d4762c;--accent-coral:#c45c3a;--gradient-warm:linear-gradient(135deg,#e8a838 0%,#d4762c 50%,#c45c3a 100%);--gradient-bg:radial-gradient(ellipse at 30% 0%,rgba(232,168,56,0.08) 0%,transparent 50%),radial-gradient(ellipse at 80% 50%,rgba(212,118,44,0.05) 0%,transparent 40%);--font-display:'Playfair Display',Georgia,serif;--font-body:'DM Sans',-apple-system,BlinkMacSystemFont,sans-serif;--shadow-glow:0 0 60px rgba(232,168,56,0.15);--shadow-card:0 4px 30px rgba(0,0,0,0.4);--border-subtle:1px solid rgba(245,242,235,0.06);--transition-smooth:cubic-bezier(0.22,1,0.36,1)}*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth;font-size:16px}body{font-family:var(--font-body);background-color:var(--bg-primary);color:var(--text-primary);line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}body::before{content:'';position:fixed;inset:0;background:var(--gradient-bg);pointer-events:none;z-index:-1}nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:20px 0;background:rgba(10,9,8,0.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:var(--border-subtle);transition:all 0.4s var(--transition-smooth)}nav.scrolled{padding:12px 0;background:rgba(10,9,8,0.95)}.nav-content{max-width:1100px;margin:0 auto;padding:0 24px;display:flex;justify-content:space-between;align-items:center}.logo{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--text-primary);font-weight:600;font-size:1.25rem}.nav-links{display:flex;align-items:center;gap:40px}.nav-links a{color:var(--text-secondary);text-decoration:none;font-size:0.95rem;font-weight:500;transition:color 0.3s ease}.nav-links a:hover{color:var(--text-primary)}.nav-links a.active{color:var(--accent-warm)}.nav-cta{background:var(--gradient-warm);color:var(--bg-primary)!important;padding:10px 24px;border-radius:8px;font-weight:600!important}.article-container{max-width:760px;margin:0 auto;padding:0 24px}.article-header{padding:140px 0 40px}.article-breadcrumb{display:flex;align-items:center;gap:8px;font-size:0.9rem;color:var(--text-muted);margin-bottom:24px}.article-breadcrumb a{color:var(--text-muted);text-decoration:none}.article-breadcrumb a:hover{color:var(--accent-warm)}.article-category{display:inline-block;background:rgba(232,168,56,0.1);color:var(--accent-warm);padding:6px 16px;border-radius:100px;font-size:0.85rem;font-weight:600;margin-bottom:20px;border:1px solid rgba(232,168,56,0.2)}.article-header h1{font-family:var(--font-display);font-size:clamp(2rem,4.5vw,2.8rem);line-height:1.2;margin-bottom:20px;letter-spacing:-0.02em}.gradient-text{background:var(--gradient-warm);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}.article-meta{display:flex;align-items:center;gap:20px;color:var(--text-muted);font-size:0.9rem;margin-bottom:32px}.article-meta svg{width:16px;height:16px;stroke:var(--text-muted);fill:none;stroke-width:2}.article-meta span{display:flex;align-items:center;gap:6px}.article-content{padding-bottom:60px}.article-content h2{font-family:var(--font-display);font-size:1.7rem;margin:48px 0 20px;color:var(--text-primary);line-height:1.3}.article-content h3{font-family:var(--font-body);font-size:1.25rem;font-weight:600;margin:36px 0 16px;color:var(--text-primary)}.article-content p{font-size:1.08rem;line-height:1.8;color:var(--text-secondary);margin-bottom:24px}.article-content a{color:var(--accent-warm);text-decoration:underline;text-underline-offset:3px}.article-content a:hover{color:var(--accent-orange)}.article-content ul,.article-content ol{margin:20px 0 24px 24px;color:var(--text-secondary)}.article-content li{font-size:1.05rem;line-height:1.8;margin-bottom:10px}.article-content li strong{color:var(--text-primary)}.article-content blockquote{border-left:3px solid var(--accent-warm);padding:16px 24px;margin:32px 0;background:var(--bg-card);border-radius:0 12px 12px 0}.article-content blockquote p{font-style:italic;color:var(--text-primary);margin-bottom:0}.callout{background:var(--bg-card);border:var(--border-subtle);border-left:3px solid var(--accent-warm);border-radius:0 16px 16px 0;padding:24px 28px;margin:32px 0}.callout-title{font-weight:600;color:var(--accent-warm);margin-bottom:8px;font-size:0.95rem}.callout p{font-size:1rem;margin-bottom:0}.code-block{background:var(--bg-card);border:var(--border-subtle);border-radius:12px;padding:20px 24px;margin:24px 0;overflow-x:auto;font-family:'SF Mono',Monaco,monospace;font-size:0.9rem;line-height:1.6;color:var(--text-secondary)}.article-cta{background:linear-gradient(135deg,rgba(232,168,56,0.1) 0%,rgba(212,118,44,0.06) 100%);border:1px solid rgba(232,168,56,0.2);border-radius:20px;padding:40px;text-align:center;margin:48px 0}.article-cta h3{font-family:var(--font-display);font-size:1.5rem;margin-bottom:12px}.article-cta p{margin-bottom:24px;font-size:1.05rem}.btn-primary{display:inline-flex;align-items:center;gap:10px;background:var(--gradient-warm);color:var(--bg-primary);padding:14px 28px;border-radius:12px;text-decoration:none;font-weight:600;font-size:1rem;transition:all 0.3s var(--transition-smooth);box-shadow:0 4px 20px rgba(232,168,56,0.3)}.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(232,168,56,0.4);color:var(--bg-primary)}.btn-primary svg{width:18px;height:18px;fill:currentColor}.related-articles{padding:60px 0 80px;border-top:var(--border-subtle)}.related-articles h2{font-family:var(--font-display);font-size:1.5rem;margin-bottom:32px}.related-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px}.related-card{background:var(--bg-card);border-radius:16px;padding:24px;border:var(--border-subtle);text-decoration:none;transition:all 0.3s var(--transition-smooth)}.related-card:hover{background:var(--bg-card-hover);transform:translateY(-4px)}.related-card h3{font-family:var(--font-body);font-size:1.05rem;font-weight:600;color:var(--text-primary);margin-bottom:8px;line-height:1.4}.related-card p{font-size:0.9rem;color:var(--text-muted)}footer{background:var(--bg-secondary);padding:40px 0;border-top:var(--border-subtle)}.footer-content{max-width:1100px;margin:0 auto;padding:0 24px;display:flex;justify-content:space-between;align-items:center}footer p{font-size:0.9rem;color:var(--text-muted)}.footer-links{display:flex;gap:24px}.footer-links a{color:var(--text-secondary);text-decoration:none;font-size:0.9rem}.footer-links a:hover{color:var(--accent-warm)}@media(max-width:768px){.nav-links{display:none}.article-header{padding:120px 0 30px}.article-header h1{font-size:1.8rem}.article-content h2{font-size:1.4rem}.article-cta{padding:30px 20px}.related-grid{grid-template-columns:1fr}.footer-content{flex-direction:column;gap:20px;text-align:center}}
+    </style>
+</head>
+<body>
+    <nav id="nav">
+        <div class="nav-content">
+            <a href="/" class="logo">
+                <img src="../assets/logo-icon.png" alt="SuperDimmer Logo" style="width:28px;height:28px;margin-right:10px">
+                SuperDimmer
+            </a>
+            <div class="nav-links">
+                <a href="/#capabilities">Capabilities</a>
+                <a href="/#features">Features</a>
+                <a href="/blog.html" class="active">Blog</a>
+                <a href="/#download" class="nav-cta">Download Free</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="article-header">
+        <div class="article-container">
+            <div class="article-breadcrumb">
+                <a href="/">Home</a> / <a href="/blog.html">Blog</a> / <span>Engineering</span>
+            </div>
+            <span class="article-category">Engineering Deep Dive</span>
+            <h1>Building Crash-Proof <span class="gradient-text">Overlay Windows</span> for macOS Screen Dimming</h1>
+            <div class="article-meta">
+                <span>
+                    <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                    February 12, 2026
+                </span>
+                <span>
+                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    11 min read
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <article class="article-container article-content">
+
+        <p>Screen dimming software needs to place transparent windows <em>on top of</em> other windows without intercepting mouse clicks, without appearing in screenshots, without blocking Mission Control, and without crashing when windows close, spaces change, or Core Animation layers get deallocated at the wrong time. It's harder than it sounds. This is how we built SuperDimmer's overlay system — and the crashes we had to survive to get there.</p>
+
+        <h2>The Overlay Window Challenge</h2>
+
+        <p>A dimming overlay is conceptually simple: a transparent window with a semi-opaque dark fill, positioned exactly over the target window. In practice, it's a minefield of edge cases:</p>
+
+        <ul>
+            <li><strong>Click-through:</strong> The overlay must not intercept mouse clicks — users need to interact with the window beneath</li>
+            <li><strong>Z-ordering:</strong> The overlay must stay above its target window but below other windows</li>
+            <li><strong>Space behavior:</strong> Overlays must appear on the correct macOS Space and handle Space transitions</li>
+            <li><strong>Performance:</strong> Potentially dozens of overlays updating every frame during window movement</li>
+            <li><strong>Lifecycle:</strong> Overlays must be cleaned up when target windows close, without crashing</li>
+        </ul>
+
+        <h2>DimOverlayWindow: Our Custom NSWindow</h2>
+
+        <p>Each dimming overlay is a custom <code>DimOverlayWindow</code> subclass of <code>NSWindow</code> with very specific properties:</p>
+
+        <div class="code-block">
+            <span class="comment">// Key properties of our overlay windows</span><br>
+            styleMask: .borderless<br>
+            backgroundColor: .clear<br>
+            isOpaque: false<br>
+            ignoresMouseEvents: true  <span class="comment">// Click-through!</span><br>
+            hasShadow: false<br>
+            collectionBehavior: [<br>
+            &nbsp;&nbsp;.canJoinAllSpaces,     <span class="comment">// Appears on every Space</span><br>
+            &nbsp;&nbsp;.fullScreenAuxiliary,  <span class="comment">// Works with fullscreen</span><br>
+            &nbsp;&nbsp;.stationary,           <span class="comment">// Doesn't move with Spaces</span><br>
+            &nbsp;&nbsp;.ignoresCycle          <span class="comment">// Skip in Cmd+Tab</span><br>
+            ]
+        </div>
+
+        <p>The <code>ignoresMouseEvents = true</code> property is the most critical — it makes the window completely transparent to user interaction. Clicks, drags, scrolls, and hovers all pass through to whatever is underneath. The user never knows the overlay exists.</p>
+
+        <h2>Hybrid Z-Ordering: The Trickiest Problem</h2>
+
+        <p>Getting overlays to sit at the right Z-level was one of the hardest problems we solved. The naive approach of "just put overlays on top" doesn't work because:</p>
+
+        <ul>
+            <li>If all overlays are at <code>.floating</code> level, they cover <em>everything</em> — including windows that should be undimmed</li>
+            <li>If overlays are at <code>.normal</code> level, they might end up behind their target windows</li>
+            <li>When the user switches focus, the Z-order of overlays needs to change instantly</li>
+        </ul>
+
+        <h3>Our Hybrid Approach</h3>
+
+        <p>We use different window levels depending on the target window's state:</p>
+
+        <ul>
+            <li><strong>Frontmost window overlays:</strong> Set to <code>.floating</code> level with <code>orderFront(nil)</code>. This ensures they stay visible on top of the active window.</li>
+            <li><strong>Background window overlays:</strong> Set to <code>.normal</code> level with <code>orderAboveWindow(windowID)</code>. This places each overlay directly above its specific target window, so it dims that window but not others.</li>
+        </ul>
+
+        <p>When focus changes, we quickly reclassify: the previously-front overlay drops to <code>.normal</code>, and the newly-front overlay jumps to <code>.floating</code>. This transition happens within a single run loop cycle, so there's no visible flicker.</p>
+
+        <h2>The Core Animation Crash</h2>
+
+        <p>The most insidious bug we encountered was a crash in <code>deinit</code> when overlay windows were deallocated. The crash manifested as <code>EXC_BAD_ACCESS</code> deep inside Core Animation's layer tree:</p>
+
+        <div class="code-block">
+            <span class="comment">// The crash stack trace looked like:</span><br>
+            EXC_BAD_ACCESS at CALayer.removeAllAnimations()<br>
+            &nbsp;&nbsp;called from NSWindow.deinit<br>
+            &nbsp;&nbsp;called from DimOverlayWindow.deinit
+        </div>
+
+        <p>The root cause: when an <code>NSWindow</code> is deallocated, AppKit tries to clean up its Core Animation layers. But if the layer's backing store has already been released (perhaps by a previous cleanup cycle), the <code>removeAllAnimations()</code> call touches freed memory.</p>
+
+        <h3>Our Three-Part Fix</h3>
+
+        <ol>
+            <li><strong>Safe close flag:</strong> An <code>isClosing</code> boolean prevents any layer access during the deallocation phase. Once set, all animation and opacity updates are no-ops.</li>
+            <li><strong>Safe hide instead of close:</strong> Instead of calling <code>close()</code> on overlay windows (which triggers deallocation), we call <code>safeHideOverlay()</code> which hides the window's layer and removes animations without destroying the window object. Windows are only closed during controlled cleanup.</li>
+            <li><strong>Autoreleasepool wrapping:</strong> All Core Animation operations on overlay layers are wrapped in <code>autoreleasepool</code> blocks to ensure intermediate objects are cleaned up before the layer hierarchy changes.</li>
+        </ol>
+
+        <div class="callout">
+            <div class="callout-title">Why This Crash Was Hard to Find</div>
+            <p>This crash only occurred under specific timing conditions — when a Space change happened while overlays were being recycled, causing the autorelease pool to drain while a CALayer animation was still in flight. It took weeks of crash log analysis and targeted stress testing to reproduce reliably.</p>
+        </div>
+
+        <h2>Space Transition Handling</h2>
+
+        <p>When the user switches macOS Spaces, all visible windows slide out and new ones slide in. Our overlays need to handle this gracefully:</p>
+
+        <ol>
+            <li><strong>Listen</strong> for <code>NSWorkspace.activeSpaceDidChangeNotification</code></li>
+            <li><strong>Immediately hide</strong> all overlays (prevents visual artifacts during the Space transition animation)</li>
+            <li><strong>Wait ~500ms</strong> for the transition animation to complete</li>
+            <li><strong>Re-analyze</strong> the new Space's windows and recreate appropriate overlays</li>
+        </ol>
+
+        <p>The 500ms delay is empirically tuned to macOS's Space transition animation duration. Restoring overlays too early causes them to appear mid-animation, creating a jarring visual glitch.</p>
+
+        <h2>Thread Safety with NSRecursiveLock</h2>
+
+        <p>The <code>OverlayManager</code> maintains multiple collections of overlays (window overlays, display overlays, region overlays, decay overlays) that are accessed from multiple threads — the main thread for UI updates, background threads for brightness analysis, and timer callbacks for position tracking.</p>
+
+        <p>We use an <code>NSRecursiveLock</code> to protect all overlay access. Why recursive? Because overlay operations frequently call other overlay operations internally (e.g., <code>updateOverlayPositions()</code> might call <code>safeHideOverlay()</code>), and a non-recursive lock would deadlock in these cases.</p>
+
+        <h2>Decay Overlay Lifecycle</h2>
+
+        <p>One specific type of overlay — decay overlays for progressive dimming — has its own lifecycle challenge. Decay overlays appear and disappear based on window inactivity timers. If we created and destroyed them on every timer tick, the constant window creation would cause visible flicker.</p>
+
+        <p>Our solution: decay overlays have a <strong>5-second minimum age</strong> before they can be cleaned up as orphans. This prevents the create-destroy-create churn that causes flicker. If a window becomes active briefly and then inactive again, the existing decay overlay just gets opacity-updated rather than being destroyed and recreated.</p>
+
+        <h2>Lessons for macOS Developers</h2>
+
+        <ul>
+            <li><strong>Never close overlay windows immediately.</strong> Hide them first, let the current run loop complete, then close in a controlled batch.</li>
+            <li><strong>Core Animation on NSWindow is fragile during deallocation.</strong> Guard all layer access with a closing flag and wrap in autoreleasepool.</li>
+            <li><strong>Test overlay behavior across Space transitions.</strong> The Space animation timing creates windows of vulnerability where overlay operations can crash.</li>
+            <li><strong>Use recursive locks when overlay operations can be nested.</strong> Standard locks will deadlock when one overlay operation triggers another.</li>
+            <li><strong>Profile overlay creation/destruction.</strong> Frequent window creation is visible to users as flicker and adds measurable CPU overhead.</li>
+        </ul>
+
+        <div class="article-cta">
+            <h3>See the Overlays in Action</h3>
+            <p>SuperDimmer's overlay system handles window dimming, zone dimming, and progressive dimming — all transparently. Free during early access.</p>
+            <a href="/#download" class="btn-primary">
+                <svg viewBox="0 0 24 24"><path d="M18.71 8.21a1 1 0 0 0-1.42 0l-4.29 4.3V3a1 1 0 0 0-2 0v9.51l-4.29-4.3a1 1 0 0 0-1.42 1.42l6 6a1 1 0 0 0 1.42 0l6-6a1 1 0 0 0 0-1.42z"/><path d="M19 13a1 1 0 0 0-1 1v5a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1v-5a1 1 0 0 0-2 0v5a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-5a1 1 0 0 0-1-1z"/></svg>
+                Download Free for macOS
+            </a>
+        </div>
+    </article>
+
+    <section class="article-container related-articles">
+        <h2>Related Articles</h2>
+        <div class="related-grid">
+            <a href="/blog/per-region-zone-dimming-pixel-level-brightness-analysis-macos.html" class="related-card">
+                <h3>Per-Region Zone Dimming: Pixel-Level Brightness Analysis on macOS</h3>
+                <p>11 min read</p>
+            </a>
+            <a href="/blog/how-we-built-real-time-macos-space-tracking-cgs-private-apis.html" class="related-card">
+                <h3>How We Built Real-Time macOS Space Tracking with Private CGS APIs</h3>
+                <p>12 min read</p>
+            </a>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2026 SuperDimmer. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="/">Home</a>
+                <a href="/blog.html">Blog</a>
+                <a href="/privacy.html">Privacy</a>
+                <a href="/terms.html">Terms</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const nav = document.getElementById('nav');
+        window.addEventListener('scroll', () => { nav.classList.toggle('scrolled', window.scrollY > 50); });
+    </script>
+</body>
+</html>

@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Per-Region Zone Dimming: Pixel-Level Brightness Analysis on macOS | SuperDimmer</title>
+    <meta name="description" content="How SuperDimmer analyzes screen brightness at the pixel level to dim only the bright regions within windows. A technical deep dive into connected component analysis, luminance thresholds, and real-time overlay management.">
+    <meta name="keywords" content="zone dimming, per-region dimming, brightness analysis, screen dimming macOS, pixel-level analysis, connected components, luminance detection">
+    <link rel="canonical" href="https://superdimmer.com/blog/per-region-zone-dimming-pixel-level-brightness-analysis-macos.html">
+    <link rel="icon" type="image/x-icon" href="../favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/logo-icon.png">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Per-Region Zone Dimming: Pixel-Level Brightness Analysis on macOS">
+    <meta property="og:description" content="How we analyze screen brightness at the pixel level to dim only bright regions within windows.">
+    <meta property="og:image" content="https://superdimmer.com/assets/logo-icon.png">
+    <meta property="og:url" content="https://superdimmer.com/blog/per-region-zone-dimming-pixel-level-brightness-analysis-macos.html">
+    <meta property="article:published_time" content="2026-02-12">
+    <meta name="twitter:card" content="summary_large_image">
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "Per-Region Zone Dimming: Pixel-Level Brightness Analysis on macOS",
+        "description": "How we analyze screen brightness at the pixel level to dim only bright regions within windows.",
+        "image": "https://superdimmer.com/assets/logo-icon.png",
+        "datePublished": "2026-02-12",
+        "dateModified": "2026-02-12",
+        "author": { "@type": "Organization", "name": "SuperDimmer" },
+        "publisher": { "@type": "Organization", "name": "SuperDimmer", "logo": { "@type": "ImageObject", "url": "https://superdimmer.com/assets/logo-icon.png" } }
+    }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root{--bg-primary:#0a0908;--bg-secondary:#151311;--bg-card:#1a1816;--bg-card-hover:#211f1c;--text-primary:#f5f2eb;--text-secondary:#a39e94;--text-muted:#6b665c;--accent-warm:#e8a838;--accent-orange:#d4762c;--accent-coral:#c45c3a;--gradient-warm:linear-gradient(135deg,#e8a838 0%,#d4762c 50%,#c45c3a 100%);--gradient-bg:radial-gradient(ellipse at 30% 0%,rgba(232,168,56,0.08) 0%,transparent 50%),radial-gradient(ellipse at 80% 50%,rgba(212,118,44,0.05) 0%,transparent 40%);--font-display:'Playfair Display',Georgia,serif;--font-body:'DM Sans',-apple-system,BlinkMacSystemFont,sans-serif;--shadow-glow:0 0 60px rgba(232,168,56,0.15);--shadow-card:0 4px 30px rgba(0,0,0,0.4);--border-subtle:1px solid rgba(245,242,235,0.06);--transition-smooth:cubic-bezier(0.22,1,0.36,1)}*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth;font-size:16px}body{font-family:var(--font-body);background-color:var(--bg-primary);color:var(--text-primary);line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}body::before{content:'';position:fixed;inset:0;background:var(--gradient-bg);pointer-events:none;z-index:-1}nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:20px 0;background:rgba(10,9,8,0.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:var(--border-subtle);transition:all 0.4s var(--transition-smooth)}nav.scrolled{padding:12px 0;background:rgba(10,9,8,0.95)}.nav-content{max-width:1100px;margin:0 auto;padding:0 24px;display:flex;justify-content:space-between;align-items:center}.logo{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--text-primary);font-weight:600;font-size:1.25rem}.nav-links{display:flex;align-items:center;gap:40px}.nav-links a{color:var(--text-secondary);text-decoration:none;font-size:0.95rem;font-weight:500;transition:color 0.3s ease}.nav-links a:hover{color:var(--text-primary)}.nav-links a.active{color:var(--accent-warm)}.nav-cta{background:var(--gradient-warm);color:var(--bg-primary)!important;padding:10px 24px;border-radius:8px;font-weight:600!important}.article-container{max-width:760px;margin:0 auto;padding:0 24px}.article-header{padding:140px 0 40px}.article-breadcrumb{display:flex;align-items:center;gap:8px;font-size:0.9rem;color:var(--text-muted);margin-bottom:24px}.article-breadcrumb a{color:var(--text-muted);text-decoration:none}.article-breadcrumb a:hover{color:var(--accent-warm)}.article-category{display:inline-block;background:rgba(232,168,56,0.1);color:var(--accent-warm);padding:6px 16px;border-radius:100px;font-size:0.85rem;font-weight:600;margin-bottom:20px;border:1px solid rgba(232,168,56,0.2)}.article-header h1{font-family:var(--font-display);font-size:clamp(2rem,4.5vw,2.8rem);line-height:1.2;margin-bottom:20px;letter-spacing:-0.02em}.gradient-text{background:var(--gradient-warm);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}.article-meta{display:flex;align-items:center;gap:20px;color:var(--text-muted);font-size:0.9rem;margin-bottom:32px}.article-meta svg{width:16px;height:16px;stroke:var(--text-muted);fill:none;stroke-width:2}.article-meta span{display:flex;align-items:center;gap:6px}.article-content{padding-bottom:60px}.article-content h2{font-family:var(--font-display);font-size:1.7rem;margin:48px 0 20px;color:var(--text-primary);line-height:1.3}.article-content h3{font-family:var(--font-body);font-size:1.25rem;font-weight:600;margin:36px 0 16px;color:var(--text-primary)}.article-content p{font-size:1.08rem;line-height:1.8;color:var(--text-secondary);margin-bottom:24px}.article-content a{color:var(--accent-warm);text-decoration:underline;text-underline-offset:3px}.article-content a:hover{color:var(--accent-orange)}.article-content ul,.article-content ol{margin:20px 0 24px 24px;color:var(--text-secondary)}.article-content li{font-size:1.05rem;line-height:1.8;margin-bottom:10px}.article-content li strong{color:var(--text-primary)}.article-content blockquote{border-left:3px solid var(--accent-warm);padding:16px 24px;margin:32px 0;background:var(--bg-card);border-radius:0 12px 12px 0}.article-content blockquote p{font-style:italic;color:var(--text-primary);margin-bottom:0}.callout{background:var(--bg-card);border:var(--border-subtle);border-left:3px solid var(--accent-warm);border-radius:0 16px 16px 0;padding:24px 28px;margin:32px 0}.callout-title{font-weight:600;color:var(--accent-warm);margin-bottom:8px;font-size:0.95rem}.callout p{font-size:1rem;margin-bottom:0}.code-block{background:var(--bg-card);border:var(--border-subtle);border-radius:12px;padding:20px 24px;margin:24px 0;overflow-x:auto;font-family:'SF Mono',Monaco,monospace;font-size:0.9rem;line-height:1.6;color:var(--text-secondary)}.code-block .keyword{color:#c45c3a}.code-block .func{color:#e8a838}.code-block .string{color:#6b8e6b}.code-block .comment{color:var(--text-muted)}.article-cta{background:linear-gradient(135deg,rgba(232,168,56,0.1) 0%,rgba(212,118,44,0.06) 100%);border:1px solid rgba(232,168,56,0.2);border-radius:20px;padding:40px;text-align:center;margin:48px 0}.article-cta h3{font-family:var(--font-display);font-size:1.5rem;margin-bottom:12px}.article-cta p{margin-bottom:24px;font-size:1.05rem}.btn-primary{display:inline-flex;align-items:center;gap:10px;background:var(--gradient-warm);color:var(--bg-primary);padding:14px 28px;border-radius:12px;text-decoration:none;font-weight:600;font-size:1rem;transition:all 0.3s var(--transition-smooth);box-shadow:0 4px 20px rgba(232,168,56,0.3)}.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(232,168,56,0.4);color:var(--bg-primary)}.btn-primary svg{width:18px;height:18px;fill:currentColor}.related-articles{padding:60px 0 80px;border-top:var(--border-subtle)}.related-articles h2{font-family:var(--font-display);font-size:1.5rem;margin-bottom:32px}.related-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px}.related-card{background:var(--bg-card);border-radius:16px;padding:24px;border:var(--border-subtle);text-decoration:none;transition:all 0.3s var(--transition-smooth)}.related-card:hover{background:var(--bg-card-hover);transform:translateY(-4px)}.related-card h3{font-family:var(--font-body);font-size:1.05rem;font-weight:600;color:var(--text-primary);margin-bottom:8px;line-height:1.4}.related-card p{font-size:0.9rem;color:var(--text-muted)}footer{background:var(--bg-secondary);padding:40px 0;border-top:var(--border-subtle)}.footer-content{max-width:1100px;margin:0 auto;padding:0 24px;display:flex;justify-content:space-between;align-items:center}footer p{font-size:0.9rem;color:var(--text-muted)}.footer-links{display:flex;gap:24px}.footer-links a{color:var(--text-secondary);text-decoration:none;font-size:0.9rem}.footer-links a:hover{color:var(--accent-warm)}@media(max-width:768px){.nav-links{display:none}.article-header{padding:120px 0 30px}.article-header h1{font-size:1.8rem}.article-content h2{font-size:1.4rem}.article-cta{padding:30px 20px}.related-grid{grid-template-columns:1fr}.footer-content{flex-direction:column;gap:20px;text-align:center}}
+    </style>
+</head>
+<body>
+    <nav id="nav">
+        <div class="nav-content">
+            <a href="/" class="logo">
+                <img src="../assets/logo-icon.png" alt="SuperDimmer Logo" style="width:28px;height:28px;margin-right:10px">
+                SuperDimmer
+            </a>
+            <div class="nav-links">
+                <a href="/#capabilities">Capabilities</a>
+                <a href="/#features">Features</a>
+                <a href="/blog.html" class="active">Blog</a>
+                <a href="/#download" class="nav-cta">Download Free</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="article-header">
+        <div class="article-container">
+            <div class="article-breadcrumb">
+                <a href="/">Home</a> / <a href="/blog.html">Blog</a> / <span>Engineering</span>
+            </div>
+            <span class="article-category">Engineering Deep Dive</span>
+            <h1>Per-Region Zone Dimming: <span class="gradient-text">Pixel-Level Brightness Analysis</span> on macOS</h1>
+            <div class="article-meta">
+                <span>
+                    <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                    February 12, 2026
+                </span>
+                <span>
+                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    11 min read
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <article class="article-container article-content">
+
+        <p>Most screen dimming software operates at the window level — it either dims an entire window or it doesn't. But what about a dark-themed email app displaying a white HTML email? Or a code editor with a bright preview pane? The window is dark, but parts of it are blindingly bright. This is the problem that zone dimming solves, and here's how we built it.</p>
+
+        <h2>The Problem: Dark Windows with Bright Content</h2>
+
+        <p>Modern apps increasingly support dark mode, which means their chrome (toolbars, sidebars, status bars) is dark. But the <em>content</em> they display often isn't. Consider these common scenarios:</p>
+
+        <ul>
+            <li><strong>Mail.app in dark mode</strong> showing a white HTML newsletter — the email body is essentially a 600px-wide white rectangle</li>
+            <li><strong>VS Code with a dark theme</strong> but a Markdown preview pane showing rendered white-background HTML</li>
+            <li><strong>Safari in dark mode</strong> displaying any website with a white background</li>
+            <li><strong>Slack</strong> where individual messages might contain bright image previews or embedded content</li>
+        </ul>
+
+        <p>Whole-window dimming doesn't work here. If you dim the entire Mail window to tame the bright email, you also dim the already-dark sidebar and toolbar, making them unreadable. You need <em>selective</em> dimming — dim just the bright region, leave the dark parts alone.</p>
+
+        <h2>Our Approach: Connected Component Analysis</h2>
+
+        <p>SuperDimmer's zone dimming uses a computer vision technique called <strong>connected component analysis</strong> to find bright regions within windows. Here's the pipeline:</p>
+
+        <h3>Step 1: Screen Capture</h3>
+
+        <p>We use <code>ScreenCaptureService</code> to grab a CGImage of each visible window's contents. macOS's <code>CGWindowListCreateImage</code> API lets us capture individual window contents without capturing overlapping windows. This gives us a clean per-window image to analyze.</p>
+
+        <h3>Step 2: Downsampling</h3>
+
+        <p>Analyzing a full-resolution window image (say, 2560x1440 pixels on a Retina display) would be prohibitively expensive for real-time analysis. We downsample each window image to <strong>80x80 pixels</strong>. This 1000x reduction in pixel count makes the analysis nearly instant while still preserving the spatial layout of bright and dark regions.</p>
+
+        <p>Why 80x80? Through testing, we found this resolution is enough to distinguish between regions as small as ~3% of the window area (about the size of a notification popup or a small embedded image) while keeping analysis under 1ms.</p>
+
+        <h3>Step 3: Luminance Masking</h3>
+
+        <p>Each pixel in the downsampled image is converted to a brightness value using the standard luminance formula:</p>
+
+        <div class="code-block">
+            <span class="comment">// ITU-R BT.601 luminance coefficients</span><br>
+            <span class="comment">// Human eyes are most sensitive to green,</span><br>
+            <span class="comment">// then red, then blue</span><br>
+            luminance = 0.299 * R + 0.587 * G + 0.114 * B
+        </div>
+
+        <p>Pixels above the user's configured brightness threshold are marked as "bright" (1), and those below are "dark" (0). This creates a binary mask — an 80x80 grid of ones and zeros where ones represent bright pixels.</p>
+
+        <h3>Step 4: Flood Fill (Connected Components)</h3>
+
+        <p>The binary mask often has many isolated bright pixels scattered around. We need to group adjacent bright pixels into coherent <em>regions</em>. We use a classic <strong>flood fill algorithm</strong> — starting from each unvisited bright pixel, we recursively mark all connected bright neighbors as part of the same component.</p>
+
+        <p>This is the same algorithm used in the "paint bucket" tool in image editors, and it's remarkably effective at finding contiguous bright areas.</p>
+
+        <h3>Step 5: Bounding Box Computation</h3>
+
+        <p>For each connected component, we compute the bounding rectangle — the smallest axis-aligned rectangle that contains all pixels in the component. These bounding boxes become our dimming regions.</p>
+
+        <h3>Step 6: Merge and Filter</h3>
+
+        <p>The raw bounding boxes often include many small regions (individual bright UI elements, icons, etc.) that would create visual noise if each got its own overlay. We apply two post-processing steps:</p>
+
+        <ul>
+            <li><strong>Merging:</strong> Regions within ~15% of the window size of each other are merged into a single larger region. This combines, for example, a bright email body with a nearby bright attachment preview into one dimming overlay.</li>
+            <li><strong>Filtering:</strong> Regions smaller than 100px or larger than 2000px in any dimension are discarded. Too-small regions would be invisible or distracting. Too-large regions effectively cover the whole window (at which point whole-window dimming is more appropriate).</li>
+        </ul>
+
+        <h3>Step 7: Coordinate Mapping</h3>
+
+        <p>The bounding boxes are in downsampled image coordinates (0-80). We normalize them to 0.0-1.0 ratios, then map to screen coordinates by multiplying by the actual window dimensions. There's also a Y-axis flip because CGImage coordinates have origin at top-left while Cocoa (AppKit) coordinates have origin at bottom-left.</p>
+
+        <div class="callout">
+            <div class="callout-title">Performance Profile</div>
+            <p>The entire pipeline — capture, downsample, luminance mask, flood fill, bounding boxes, merge, filter, and coordinate mapping — completes in <strong>under 15ms per window</strong>. We run this every 2 seconds (configurable as <code>scanInterval</code>), and results are cached per window with invalidation on bounds change or focus change.</p>
+        </div>
+
+        <h2>Overlay Management: The Hard Part</h2>
+
+        <p>Detecting bright regions is only half the challenge. The other half is managing the transparent overlay windows that actually perform the dimming. This turned out to be far more complex than the detection algorithm.</p>
+
+        <h3>Window-Keyed Overlay Mapping</h3>
+
+        <p>An early version of zone dimming used a global list of overlay windows — "overlay 1", "overlay 2", etc. This caused a maddening bug: overlays would "jump" between windows. When a bright region in Window A disappeared and a new one appeared in Window B, the same overlay would slide from A to B instead of fading out and in.</p>
+
+        <p>The fix was to key overlays by <strong>target window ID</strong>. Each window gets its own set of region overlays. When the bright regions within a window change, only that window's overlays are updated. Other windows' overlays are untouched.</p>
+
+        <h3>Position Tracking During Window Movement</h3>
+
+        <p>When the user drags a window, its region overlays need to move with it. We track <code>previousWindowBounds</code> and compute a delta each update cycle:</p>
+
+        <div class="code-block">
+            <span class="comment">// How we move overlays when their parent window moves</span><br>
+            <span class="keyword">let</span> deltaX = currentBounds.x - previousBounds.x<br>
+            <span class="keyword">let</span> deltaY = currentBounds.y - previousBounds.y<br><br>
+            <span class="keyword">for</span> overlay <span class="keyword">in</span> windowOverlays {<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;overlay.frame.origin.x += deltaX<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;overlay.frame.origin.y += deltaY<br>
+            }
+        </div>
+
+        <p>When we detect movement in 2 or more consecutive cycles, we switch to <strong>high-frequency tracking</strong> (~30 fps) to keep overlays smooth during active window dragging.</p>
+
+        <h3>Caching for Performance</h3>
+
+        <p>Running pixel analysis on every window every 2 seconds is manageable, but unnecessary when windows haven't changed. We cache analysis results per window and invalidate the cache when:</p>
+
+        <ul>
+            <li>The window's bounds change (it was moved or resized)</li>
+            <li>The window's frontmost status changes (focus changed)</li>
+            <li>The cache expires (after ~10 seconds, to catch content changes like scrolling)</li>
+        </ul>
+
+        <h2>Real-World Results</h2>
+
+        <p>Zone dimming transforms the experience of using dark-themed apps with bright content:</p>
+
+        <ul>
+            <li><strong>Mail.app:</strong> The bright HTML email gets dimmed while the dark sidebar remains crisp and readable</li>
+            <li><strong>Safari:</strong> White-background websites get a comfortable dimming while the dark browser chrome stays untouched</li>
+            <li><strong>Code editors:</strong> Bright preview panes are dimmed independently from the dark code editor</li>
+            <li><strong>Any app:</strong> Bright pop-ups, embedded content, or white-background regions get targeted dimming</li>
+        </ul>
+
+        <p>The effect is subtle but powerful — your screen feels uniformly comfortable rather than having jarring bright spots punching through an otherwise dark setup.</p>
+
+        <div class="article-cta">
+            <h3>Try Zone Dimming</h3>
+            <p>SuperDimmer's zone dimming works automatically — detect and dim only the bright regions within any window. Free during early access.</p>
+            <a href="/#download" class="btn-primary">
+                <svg viewBox="0 0 24 24"><path d="M18.71 8.21a1 1 0 0 0-1.42 0l-4.29 4.3V3a1 1 0 0 0-2 0v9.51l-4.29-4.3a1 1 0 0 0-1.42 1.42l6 6a1 1 0 0 0 1.42 0l6-6a1 1 0 0 0 0-1.42z"/><path d="M19 13a1 1 0 0 0-1 1v5a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1v-5a1 1 0 0 0-2 0v5a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-5a1 1 0 0 0-1-1z"/></svg>
+                Download Free for macOS
+            </a>
+        </div>
+    </article>
+
+    <section class="article-container related-articles">
+        <h2>Related Articles</h2>
+        <div class="related-grid">
+            <a href="/blog/building-crash-proof-overlay-windows-macos-screen-dimming.html" class="related-card">
+                <h3>Building Crash-Proof Overlay Windows for macOS Screen Dimming</h3>
+                <p>11 min read</p>
+            </a>
+            <a href="/blog/dark-mode-not-enough-intelligent-screen-dimming.html" class="related-card">
+                <h3>Why Dark Mode Isn't Enough: The Case for Intelligent Screen Dimming</h3>
+                <p>8 min read</p>
+            </a>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2026 SuperDimmer. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="/">Home</a>
+                <a href="/blog.html">Blog</a>
+                <a href="/privacy.html">Privacy</a>
+                <a href="/terms.html">Terms</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const nav = document.getElementById('nav');
+        window.addEventListener('scroll', () => { nav.classList.toggle('scrolled', window.scrollY > 50); });
+    </script>
+</body>
+</html>
