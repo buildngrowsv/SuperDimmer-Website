@@ -536,12 +536,62 @@
         ================================================================
         -->
 
-        <!-- v1.0.4 - Latest -->
+        <!-- v1.0.5 - Latest -->
+        <div class="release-entry">
+            <div class="release-header">
+                <span class="version-badge">v1.0.5</span>
+                <span class="release-date">February 18, 2026</span>
+                <span class="release-tag latest">Latest</span>
+            </div>
+            <p class="release-summary">
+                Major stability and feature release with multi-instance HUD support, UUID-based space tracking, redesigned settings UI, and critical crash fixes including infinite loop resolution and Zone Level dimming stability.
+            </p>
+            <div class="release-sections">
+                <div class="release-section">
+                    <h3><span class="emoji">New Features</span></h3>
+                    <ul>
+                        <li><strong>Multi-Instance HUD</strong> — Create multiple Super Spaces HUDs with independent settings, positions, and display modes</li>
+                        <li><strong>Per-HUD Display Modes</strong> — Each HUD instance gets its own display mode with full persistence</li>
+                        <li><strong>Per-HUD Float on Top</strong> — Independent float-on-top settings per HUD</li>
+                        <li><strong>Space-Aware Auto-Hide</strong> — Auto-hide timers only count time on current Space</li>
+                        <li><strong>UUID-Based Space Tracking</strong> — Spaces tracked by UUID, surviving reorders</li>
+                        <li><strong>Settings UI Redesign</strong> — Renamed tabs and new 3-mode dimming selector</li>
+                    </ul>
+                </div>
+                <div class="release-section">
+                    <h3><span class="emoji">Bug Fixes</span></h3>
+                    <ul>
+                        <li><strong>Infinite Loop Crash</strong> — Fixed critical rainbow spinning cursor crash</li>
+                        <li><strong>Zone Level Dimming</strong> — Fixed freeze on startup and EXC_BAD_ACCESS crash</li>
+                        <li><strong>Overlay Flickering</strong> — Resolved flickering in AutoHideManager</li>
+                        <li><strong>Pause Dimming Logic</strong> — Fixed cancelDisable and timer drift issues</li>
+                        <li><strong>Extended Idle Reset</strong> — Auto-hide timers properly reset after idle</li>
+                        <li><strong>HUD Duplication</strong> — Duplicated HUDs appear at correct offset positions</li>
+                        <li><strong>Per-HUD Persistence</strong> — Fixed position/size persistence per HUD on restart</li>
+                    </ul>
+                </div>
+                <div class="release-section">
+                    <h3><span class="emoji">Improvements</span></h3>
+                    <ul>
+                        <li><strong>Light Mode Defaults</strong> — Default dimming levels set to zero for better out-of-box experience</li>
+                        <li><strong>Memory Optimization</strong> — Autoreleasepool for screen capture operations</li>
+                        <li><strong>Space Reorder Detection</strong> — Automatic detection when Spaces are reordered</li>
+                        <li>Removed height limit from Preferences for better scrolling</li>
+                        <li>Comprehensive crash-proofing for Zone Level dimming</li>
+                    </ul>
+                </div>
+            </div>
+            <a href="/release-notes/v1.0.5.html" class="release-link">
+                View full release notes
+                <svg viewBox="0 0 24 24" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+        </div>
+
+        <!-- v1.0.4 -->
         <div class="release-entry">
             <div class="release-header">
                 <span class="version-badge">v1.0.4</span>
                 <span class="release-date">January 22, 2026</span>
-                <span class="release-tag latest">Latest</span>
             </div>
             <p class="release-summary">
                 Visual polish release with professional logo design and enhanced website presentation. This release focuses on branding improvements and cleaner visual appearance.

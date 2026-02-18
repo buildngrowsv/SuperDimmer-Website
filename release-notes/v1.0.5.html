@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SuperDimmer v1.0.5 Release Notes</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #1a1816;
+            color: #f5f2eb;
+            padding: 20px;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+        h1 { font-size: 1.5rem; font-weight: 600; margin-bottom: 8px; }
+        .version-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #e8a838 0%, #d4762c 100%);
+            color: #1a1816;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .date { color: #6b665c; font-size: 13px; margin-bottom: 20px; }
+        h2 { font-size: 1.1rem; color: #e8a838; margin-top: 20px; margin-bottom: 10px; font-weight: 500; }
+        ul { list-style: none; padding-left: 0; }
+        li { position: relative; padding-left: 20px; margin-bottom: 8px; color: #a39e94; }
+        li::before { content: "•"; position: absolute; left: 0; color: #e8a838; font-weight: bold; }
+        .highlight { color: #f5f2eb; font-weight: 500; }
+        .footer { margin-top: 24px; padding-top: 16px; border-top: 1px solid rgba(245, 242, 235, 0.1); font-size: 12px; color: #6b665c; }
+        a { color: #e8a838; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <h1>SuperDimmer</h1>
+    <span class="version-badge">v1.0.5</span>
+    <p class="date">February 18, 2026</p>
+    
+    <h2>New Features</h2>
+    <ul>
+        <li><span class="highlight">Multi-Instance HUD Support</span> — Create multiple Super Spaces HUDs with independent settings, positions, and display modes</li>
+        <li><span class="highlight">Per-HUD Display Modes</span> — Each HUD can have its own display mode with full persistence across restarts</li>
+        <li><span class="highlight">Per-HUD Float on Top</span> — Independent float-on-top settings for each HUD instance</li>
+        <li><span class="highlight">Space-Aware Auto-Hide</span> — Auto-hide timers now only count time spent on the current Space, not across all Spaces</li>
+        <li><span class="highlight">UUID-Based Space Tracking</span> — Spaces are now tracked by UUID instead of index, surviving reorder operations</li>
+        <li><span class="highlight">Settings UI Redesign</span> — Renamed tabs and new 3-mode dimming selector for clearer configuration</li>
+    </ul>
+    
+    <h2>Bug Fixes</h2>
+    <ul>
+        <li><span class="highlight">Critical: Infinite Loop Crash</span> — Fixed rainbow spinning cursor crash caused by recursive loop</li>
+        <li><span class="highlight">Zone Level Dimming</span> — Fixed freeze on startup and EXC_BAD_ACCESS crash when switching to Zone Level mode</li>
+        <li><span class="highlight">Overlay Flickering</span> — Resolved flickering in AutoHideManager with improved hang detector</li>
+        <li><span class="highlight">Pause Dimming Logic</span> — Fixed cancelDisable integration gaps and timer drift issues</li>
+        <li><span class="highlight">Extended Idle Reset</span> — Auto-hide timers now properly reset after extended idle periods</li>
+        <li><span class="highlight">HUD Duplication</span> — Duplicated HUDs now correctly appear at offset positions</li>
+        <li><span class="highlight">Per-HUD Persistence</span> — Fixed position and size persistence for each HUD on app restart</li>
+    </ul>
+    
+    <h2>Improvements</h2>
+    <ul>
+        <li><span class="highlight">Light Mode Defaults</span> — Light Mode default dimming levels set to zero for better out-of-box experience</li>
+        <li><span class="highlight">Memory Optimization</span> — Added autoreleasepool to screen capture operations for reduced memory usage</li>
+        <li><span class="highlight">Space Reorder Detection</span> — Automatic detection when macOS Spaces are reordered, maintaining correct mappings</li>
+        <li>Removed height limit from PreferencesView for better scrolling experience</li>
+        <li>Comprehensive crash-proofing for Zone Level dimming mode</li>
+    </ul>
+    
+    <div class="footer">
+        <p>Questions? Visit <a href="https://superdimmer.com">superdimmer.com</a></p>
+    </div>
+</body>
+</html>
