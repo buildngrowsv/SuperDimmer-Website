@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SuperDimmer v1.0.7 Release Notes</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #1a1816;
+            color: #f5f2eb;
+            padding: 20px;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+        h1 { font-size: 1.5rem; font-weight: 600; margin-bottom: 8px; }
+        .version-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #e8a838 0%, #d4762c 100%);
+            color: #1a1816;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .date { color: #6b665c; font-size: 13px; margin-bottom: 20px; }
+        h2 { font-size: 1.1rem; color: #e8a838; margin-top: 20px; margin-bottom: 10px; font-weight: 500; }
+        ul { list-style: none; padding-left: 0; }
+        li { position: relative; padding-left: 20px; margin-bottom: 8px; color: #a39e94; }
+        li::before { content: "•"; position: absolute; left: 0; color: #e8a838; font-weight: bold; }
+        .highlight { color: #f5f2eb; font-weight: 500; }
+        .footer { margin-top: 24px; padding-top: 16px; border-top: 1px solid rgba(245, 242, 235, 0.1); font-size: 12px; color: #6b665c; }
+        a { color: #e8a838; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <h1>SuperDimmer</h1>
+    <span class="version-badge">v1.0.7</span>
+    <p class="date">March 02, 2026</p>
+    
+    <h2>Critical Fix</h2>
+    <ul>
+        <li><span class="highlight">Zone Dimming Restored</span> — Fixed a regression where Zone Level dimming stopped detecting and tracking bright regions entirely. The overlay activation flag was not being set when entering intelligent mode, causing all zone dimming overlays to be silently discarded.</li>
+    </ul>
+    
+    <h2>Details</h2>
+    <ul>
+        <li><span class="highlight">Root Cause</span> — The v1.0.6 pause/decay fix added a safety guard to prevent overlays from appearing after dimming was paused. However, this guard also blocked overlays from being created during normal Zone Level operation because the activation state was never set for intelligent mode.</li>
+        <li><span class="highlight">What Was Affected</span> — Zone Level (per-region) dimming mode was completely non-functional. Full Screen and Window Level modes were unaffected.</li>
+    </ul>
+    
+    <div class="footer">
+        <p>Questions? Visit <a href="https://superdimmer.com">superdimmer.com</a></p>
+    </div>
+</body>
+</html>

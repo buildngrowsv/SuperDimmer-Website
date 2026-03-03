@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SuperDimmer v1.0.6 Release Notes</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #1a1816;
+            color: #f5f2eb;
+            padding: 20px;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+        h1 { font-size: 1.5rem; font-weight: 600; margin-bottom: 8px; }
+        .version-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #e8a838 0%, #d4762c 100%);
+            color: #1a1816;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .date { color: #6b665c; font-size: 13px; margin-bottom: 20px; }
+        h2 { font-size: 1.1rem; color: #e8a838; margin-top: 20px; margin-bottom: 10px; font-weight: 500; }
+        ul { list-style: none; padding-left: 0; }
+        li { position: relative; padding-left: 20px; margin-bottom: 8px; color: #a39e94; }
+        li::before { content: "•"; position: absolute; left: 0; color: #e8a838; font-weight: bold; }
+        .highlight { color: #f5f2eb; font-weight: 500; }
+        .footer { margin-top: 24px; padding-top: 16px; border-top: 1px solid rgba(245, 242, 235, 0.1); font-size: 12px; color: #6b665c; }
+        a { color: #e8a838; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <h1>SuperDimmer</h1>
+    <span class="version-badge">v1.0.6</span>
+    <p class="date">March 02, 2026</p>
+    
+    <h2>🐛 Bug Fixes</h2>
+    <ul>
+        <li><span class="highlight">Umbra Hang Fix</span> — Fixed hang when switching dark/light mode via Umbra. SuperDimmer was flooding System Events with AppleScript calls. Now uses targeted Accessibility API instead.</li>
+        <li><span class="highlight">Auto-Minimize Rewrite</span> — Replaced brute-force AppleScript (which never worked reliably) with Accessibility API. Windows are now properly minimized via kAXMinimizedAttribute.</li>
+        <li><span class="highlight">Profile Loading Guards</span> — Prevented cascading notification storms when switching Light/Dark profiles. isDimmingEnabled and dimmingType didSet now skip heavy side effects during bulk profile load.</li>
+    </ul>
+    
+    <h2>🔧 Improvements</h2>
+    <ul>
+        <li><span class="highlight">Retry Limit</span> — Auto-minimize now stops retrying after 3 failed attempts per window instead of hammering indefinitely.</li>
+        <li><span class="highlight">Thread Safety</span> — Overlay removal during auto-minimize now correctly dispatches to main thread.</li>
+        <li><span class="highlight">Logging</span> — Auto-minimize logs now show "Attempting" vs "Successfully minimized" so you can see what actually worked.</li>
+    </ul>
+    
+    <div class="footer">
+        <p>Questions? Visit <a href="https://superdimmer.com">superdimmer.com</a></p>
+    </div>
+</body>
+</html>

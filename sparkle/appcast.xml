@@ -42,7 +42,68 @@
         
         <!-- 
         ================================================================
-        CURRENT RELEASE - v1.0.5
+        CURRENT RELEASE - v1.0.7
+        ================================================================
+        Critical fix: Zone Level dimming was completely non-functional in
+        v1.0.6 due to overlay activation regression. This restores it.
+        
+        NOTE: EdDSA signature placeholder - generate with sign_update tool
+        before shipping to production.
+        ================================================================
+        -->
+        <item>
+            <title>Version 1.0.7</title>
+            <pubDate>Sun, 02 Mar 2026 20:52:00 -0800</pubDate>
+            
+            <sparkle:releaseNotesLink>
+                https://superdimmer.com/release-notes/v1.0.7.html
+            </sparkle:releaseNotesLink>
+            
+            <sparkle:version>14</sparkle:version>
+            <sparkle:shortVersionString>1.0.7</sparkle:shortVersionString>
+            
+            <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
+            
+            <enclosure 
+                url="https://superdimmer.com/releases/SuperDimmer-v1.0.7.dmg" 
+                length="6549457"
+                type="application/octet-stream"
+                sparkle:edSignature="REPLACE_WITH_ACTUAL_SIGNATURE_FROM_SIGN_UPDATE_TOOL=="/>
+        </item>
+        
+        <!-- 
+        ================================================================
+        PREVIOUS RELEASE - v1.0.6
+        ================================================================
+        Stability fix: Umbra hang, Auto-Minimize rewrite, profile loading guards.
+        
+        NOTE: EdDSA signature placeholder - generate with sign_update tool
+        before shipping to production.
+        ================================================================
+        -->
+        <item>
+            <title>Version 1.0.6</title>
+            <pubDate>Sun, 02 Mar 2026 12:00:00 -0800</pubDate>
+            
+            <sparkle:releaseNotesLink>
+                https://superdimmer.com/release-notes/v1.0.6.html
+            </sparkle:releaseNotesLink>
+            
+            <sparkle:version>13</sparkle:version>
+            <sparkle:shortVersionString>1.0.6</sparkle:shortVersionString>
+            
+            <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
+            
+            <enclosure 
+                url="https://superdimmer.com/releases/SuperDimmer-v1.0.6.dmg" 
+                length="6549142"
+                type="application/octet-stream"
+                sparkle:edSignature="REPLACE_WITH_ACTUAL_SIGNATURE_FROM_SIGN_UPDATE_TOOL=="/>
+        </item>
+        
+        <!-- 
+        ================================================================
+        PREVIOUS RELEASE - v1.0.5
         ================================================================
         Major stability and feature release: multi-instance HUD, UUID-based
         space tracking, settings redesign, and critical crash fixes.

@@ -536,12 +536,75 @@
         ================================================================
         -->
 
-        <!-- v1.0.5 - Latest -->
+        <!-- v1.0.7 - Latest -->
+        <div class="release-entry">
+            <div class="release-header">
+                <span class="version-badge">v1.0.7</span>
+                <span class="release-date">March 2, 2026</span>
+                <span class="release-tag latest">Latest</span>
+            </div>
+            <p class="release-summary">
+                Critical fix restoring Zone Level dimming, which was completely non-functional in v1.0.6 due to a regression in the overlay activation system.
+            </p>
+            <div class="release-sections">
+                <div class="release-section">
+                    <h3><span class="emoji">🐛</span> Critical Fix</h3>
+                    <ul>
+                        <li><strong>Zone Dimming Restored</strong> — Fixed a regression where Zone Level dimming stopped detecting and tracking bright regions. The overlay activation flag was not being set when entering intelligent mode, causing all zone overlays to be silently discarded</li>
+                    </ul>
+                </div>
+                <div class="release-section">
+                    <h3><span class="emoji">📋</span> Details</h3>
+                    <ul>
+                        <li><strong>Root Cause</strong> — The v1.0.6 pause/decay fix added a safety guard that also blocked normal Zone Level overlay creation</li>
+                        <li>Full Screen and Window Level modes were unaffected</li>
+                    </ul>
+                </div>
+            </div>
+            <a href="/release-notes/v1.0.7.html" class="release-link">
+                View full release notes
+                <svg viewBox="0 0 24 24" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+        </div>
+
+        <!-- v1.0.6 -->
+        <div class="release-entry">
+            <div class="release-header">
+                <span class="version-badge">v1.0.6</span>
+                <span class="release-date">March 2, 2026</span>
+            </div>
+            <p class="release-summary">
+                Stability fix release resolving the Umbra hang when switching dark/light mode, plus a complete Auto-Minimize rewrite from AppleScript to Accessibility API.
+            </p>
+            <div class="release-sections">
+                <div class="release-section">
+                    <h3><span class="emoji">🐛</span> Bug Fixes</h3>
+                    <ul>
+                        <li><strong>Umbra Hang</strong> — Fixed hang when switching dark/light mode via Umbra. Auto-Minimize was flooding System Events with AppleScript; now uses targeted Accessibility API</li>
+                        <li><strong>Auto-Minimize Rewrite</strong> — Replaced non-working AppleScript with Accessibility API (kAXMinimizedAttribute). Windows now minimize correctly</li>
+                        <li><strong>Profile Loading Guards</strong> — Prevented notification storms when switching Light/Dark profiles; didSet handlers now skip during bulk load</li>
+                    </ul>
+                </div>
+                <div class="release-section">
+                    <h3><span class="emoji">🔧</span> Improvements</h3>
+                    <ul>
+                        <li><strong>Retry Limit</strong> — Auto-minimize stops after 3 failed attempts per window instead of infinite retries</li>
+                        <li><strong>Thread Safety</strong> — Overlay removal during auto-minimize correctly dispatches to main thread</li>
+                        <li>Clearer auto-minimize logging (Attempting vs Successfully minimized)</li>
+                    </ul>
+                </div>
+            </div>
+            <a href="/release-notes/v1.0.6.html" class="release-link">
+                View full release notes
+                <svg viewBox="0 0 24 24" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+        </div>
+
+        <!-- v1.0.5 -->
         <div class="release-entry">
             <div class="release-header">
                 <span class="version-badge">v1.0.5</span>
                 <span class="release-date">February 18, 2026</span>
-                <span class="release-tag latest">Latest</span>
             </div>
             <p class="release-summary">
                 Major stability and feature release with multi-instance HUD support, UUID-based space tracking, redesigned settings UI, and critical crash fixes including infinite loop resolution and Zone Level dimming stability.
