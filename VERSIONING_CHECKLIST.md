@@ -1,7 +1,7 @@
 # SuperDimmer Versioning Checklist
 
-> **Last Updated:** January 10, 2026  
-> **Current Version:** 1.0.1 (build 6)
+> **Last Updated:** March 3, 2026  
+> **Current Version:** 1.0.7 (build 14)
 
 This checklist covers everything needed to release a new version of SuperDimmer. Follow these steps in order.
 
@@ -12,7 +12,7 @@ This checklist covers everything needed to release a new version of SuperDimmer.
 | File | Purpose | Location |
 |------|---------|----------|
 | `Info.plist` | App version numbers | `SuperDimmer-Mac-App/SuperDimmer/Supporting Files/` |
-| `appcast.xml` | Sparkle update feed | `SuperDimmer-Website/sparkle/` |
+| `version.json` | Update checker feed (JSON-based, no Sparkle) | `SuperDimmer-Website/` |
 | `changelog.html` | Public version history | `SuperDimmer-Website/` |
 | `vX.X.X.html` | Individual release notes | `SuperDimmer-Website/release-notes/` |
 | DMG files | Installers | `SuperDimmer-Website/releases/` |
@@ -28,7 +28,7 @@ We use **Semantic Versioning** (SemVer): `MAJOR.MINOR.PATCH`
 - **MINOR** (0.X.0): New features, significant improvements
 - **PATCH** (0.0.X): Bug fixes, minor improvements, stability
 
-**Build Number:** Internal counter that increments with every build (currently: 6)
+**Build Number:** Internal counter that increments with every build (currently: 14)
 
 ---
 
@@ -71,9 +71,8 @@ The script automatically:
 - [x] Creates release notes template (if not exists)
 
 **After script completes, you still need to:**
-- [ ] Edit release notes content
-- [ ] Update `changelog.html` manually
-- [ ] Update `appcast.xml` (if EdDSA signature missing)
+- [ ] Edit release notes content (`release-notes/vX.Y.Z.html`)
+- [ ] Update `changelog.html` manually (add new entry at top)
 - [ ] Commit and push
 
 ---
@@ -108,7 +107,7 @@ xcodebuild \
 
 ```bash
 cd SuperDimmer-Website/packaging
-./create-dmg.sh ../SuperDimmer-Mac-App/build/Release/superdimmer.com
+./create-dmg.sh ../SuperDimmer-Mac-App/build/Release/SuperDimmer.app
 ```
 
 #### Step 4: Copy DMG to Releases
@@ -322,6 +321,12 @@ git push
 
 | Version | Build | Date | Notes |
 |---------|-------|------|-------|
+| 1.0.7 | 14 | Mar 2, 2026 | Zone dimming regression fix |
+| 1.0.6 | 13 | Mar 2, 2026 | Umbra hang, Auto-Minimize rewrite |
+| 1.0.5 | 12 | Feb 18, 2026 | Multi-instance HUD, UUID space tracking |
+| 1.0.4 | 11 | Jan 22, 2026 | Logo/branding |
+| 1.0.3 | 10 | Jan 21, 2026 | Super Spaces HUD, progressive dimming |
+| 1.0.2 | 8 | Jan 19, 2026 | Auto-update system |
 | 1.0.1 | 6 | Jan 10, 2026 | Stability improvements |
 | 1.0.0 | 4 | Jan 8, 2026 | Initial release |
 
