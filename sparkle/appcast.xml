@@ -40,15 +40,48 @@
         <description>Latest updates for SuperDimmer - Intelligent Screen Dimming for macOS</description>
         <language>en</language>
         
-        <!-- 
+        <!--
         ================================================================
-        CURRENT RELEASE - v1.0.7
+        CURRENT RELEASE - v1.0.8
+        ================================================================
+        New Pro feature: "Spread Windows Evenly" — one-click desktop
+        organizer that distributes every visible window around concentric
+        rectangular orbits with equal spacing. Center always holds a
+        window, corners are always filled, and the algorithm is
+        idempotent (re-running is a no-op once spread).
+
+        NOTE: EdDSA signature placeholder — this build is unsigned (dev).
+        Before shipping, re-run release.sh with signing + notarization
+        credentials (APPLE_ID, APPLE_APP_PASSWORD, APPLE_TEAM_ID) and
+        regenerate the EdDSA signature with sign_update.
+        ================================================================
+        -->
+        <item>
+            <title>Version 1.0.8</title>
+            <pubDate>Wed, 22 Apr 2026 13:05:00 -0700</pubDate>
+
+            <sparkle:releaseNotesLink>
+                https://superdimmer.com/release-notes/v1.0.8.html
+            </sparkle:releaseNotesLink>
+
+            <sparkle:version>16</sparkle:version>
+            <sparkle:shortVersionString>1.0.8</sparkle:shortVersionString>
+
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+
+            <enclosure
+                url="https://superdimmer.com/releases/SuperDimmer-v1.0.8.dmg"
+                length="8612194"
+                type="application/octet-stream"
+                sparkle:edSignature="REPLACE_WITH_ACTUAL_SIGNATURE_FROM_SIGN_UPDATE_TOOL=="/>
+        </item>
+
+        <!--
+        ================================================================
+        PREVIOUS RELEASE - v1.0.7
         ================================================================
         Critical fix: Zone Level dimming was completely non-functional in
         v1.0.6 due to overlay activation regression. This restores it.
-        
-        NOTE: EdDSA signature placeholder - generate with sign_update tool
-        before shipping to production.
         ================================================================
         -->
         <item>

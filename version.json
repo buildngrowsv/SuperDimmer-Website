@@ -1,8 +1,8 @@
 {
-  "version": "1.0.7",
-  "build": 14,
-  "downloadURL": "https://superdimmer.com/releases/SuperDimmer-v1.0.7.dmg",
-  "releaseNotesURL": "https://superdimmer.com/release-notes/v1.0.7.html",
-  "minSystemVersion": "13.0",
-  "releaseDate": "2026-03-02"
+  "version": "1.0.8",
+  "build": 16,
+  "downloadURL": "https://superdimmer.com/releases/SuperDimmer-v1.0.8.dmg",
+  "releaseNotesURL": "https://superdimmer.com/release-notes/v1.0.8.html",
+  "minSystemVersion": "14.0",
+  "releaseDate": "2026-04-22"
 }

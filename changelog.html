@@ -536,12 +536,45 @@
         ================================================================
         -->
 
-        <!-- v1.0.7 - Latest -->
+        <!-- v1.0.8 - Latest -->
+        <div class="release-entry">
+            <div class="release-header">
+                <span class="version-badge">v1.0.8</span>
+                <span class="release-date">April 22, 2026</span>
+                <span class="release-tag latest">Latest</span>
+            </div>
+            <p class="release-summary">
+                <strong>New Pro feature: Spread Windows Evenly.</strong> One-click menu-bar action that distributes every visible window around concentric rectangular orbits with equal spacing &mdash; center always has a window, all four corners are filled, and running it twice is a no-op. Optional "Anchor Edges" mode preserves windows you've intentionally parked at screen edges.
+            </p>
+            <div class="release-sections">
+                <div class="release-section">
+                    <h3><span class="emoji">✨</span> New Feature</h3>
+                    <ul>
+                        <li><strong>Spread Windows Evenly (Pro)</strong> &mdash; new menu-bar action next to Preferences. Uses concentric rectangular orbits at 4% margin from screen edges; windows travel to their nearest orbit position so relative layout is preserved.</li>
+                        <li><strong>Anchor Edges toggle</strong> &mdash; opt-in via Preferences. When on, windows currently flush against a screen edge or corner stay put; the spread works around them.</li>
+                        <li><strong>Recording-safe exclusions</strong> &mdash; OBS Studio, Loom, QuickTime, Zoom, FaceTime, Teams, Meet are never moved by the spread.</li>
+                    </ul>
+                </div>
+                <div class="release-section">
+                    <h3><span class="emoji">🧠</span> Under the hood</h3>
+                    <ul>
+                        <li>Global greedy assignment + 2-opt local search across all orbit positions. Minimum total movement on each run; idempotent when windows are already spread.</li>
+                        <li>Uses the same stable private Accessibility API every major macOS window manager (Rectangle, Magnet, Hammerspoon, yabai) depends on &mdash; no frame-matching guesswork.</li>
+                        <li>No new permissions: Accessibility (already required for dimming overlays) is sufficient.</li>
+                    </ul>
+                </div>
+            </div>
+            <a href="/release-notes/v1.0.8.html" class="release-link">
+                View full release notes
+                <svg viewBox="0 0 24 24" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+        </div>
+
+        <!-- v1.0.7 -->
         <div class="release-entry">
             <div class="release-header">
                 <span class="version-badge">v1.0.7</span>
                 <span class="release-date">March 2, 2026</span>
-                <span class="release-tag latest">Latest</span>
             </div>
             <p class="release-summary">
                 Critical fix restoring Zone Level dimming, which was completely non-functional in v1.0.6 due to a regression in the overlay activation system.

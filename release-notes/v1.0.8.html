@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SuperDimmer v1.0.8 Release Notes</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #1a1816;
+            color: #f5f2eb;
+            padding: 20px;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+        h1 { font-size: 1.5rem; font-weight: 600; margin-bottom: 8px; }
+        .version-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #e8a838 0%, #d4762c 100%);
+            color: #1a1816;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .date { color: #6b665c; font-size: 13px; margin-bottom: 20px; }
+        h2 { font-size: 1.1rem; color: #e8a838; margin-top: 20px; margin-bottom: 10px; font-weight: 500; }
+        ul { list-style: none; padding-left: 0; }
+        li { position: relative; padding-left: 20px; margin-bottom: 8px; color: #a39e94; }
+        li::before { content: "•"; position: absolute; left: 0; color: #e8a838; font-weight: bold; }
+        .highlight { color: #f5f2eb; font-weight: 500; }
+        .footer { margin-top: 24px; padding-top: 16px; border-top: 1px solid rgba(245, 242, 235, 0.1); font-size: 12px; color: #6b665c; }
+        a { color: #e8a838; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <h1>SuperDimmer</h1>
+    <span class="version-badge">v1.0.8</span>
+    <p class="date">April 22, 2026</p>
+    
+    <h2>New: Spread Windows Evenly (Pro)</h2>
+    <ul>
+        <li><span class="highlight">One-click desktop organization</span> — a new menu-bar action that takes every visible window and distributes it around concentric rectangular orbits with equal spacing, so you can see everything at a glance without drowning in overlap.</li>
+        <li><span class="highlight">Stays in your area</span> — windows move to the nearest orbit position, minimizing total movement. A window already in the top-right of your screen stays in the top-right; it doesn't rotate across the desktop.</li>
+        <li><span class="highlight">Center always has a window</span> — the window closest to your screen's center takes the middle orbit, preserving your focal canvas.</li>
+        <li><span class="highlight">Corners always filled</span> — the four corners of the spread bounds get windows by design.</li>
+        <li><span class="highlight">Respects your edges</span> — toggle "Anchor Edges" in Preferences to keep windows you've deliberately parked at screen edges (iMessage flush to bottom, YouTube in a corner) in place while everything else redistributes around them.</li>
+        <li><span class="highlight">Recording-safe</span> — OBS Studio, Loom, QuickTime, Zoom, FaceTime, Teams, Meet are never moved. Your live calls and recordings stay where they are.</li>
+        <li>Built on the same Accessibility permission you already granted for dimming overlays — no new permissions required.</li>
+    </ul>
+
+    <h2>Under the hood</h2>
+    <ul>
+        <li>Algorithm: global greedy assignment + 2-opt local search across concentric rectangular orbits. Idempotent on re-run: once your windows are spread, running the command again is a no-op.</li>
+        <li>Uses the same stable private Accessibility API (<code>_AXUIElementGetWindow</code>) every mainstream window manager relies on — no frame-matching guesswork, no silent failures.</li>
+    </ul>
+
+    <h2>Pro feature note</h2>
+    <ul>
+        <li>Spread Windows Evenly is a Pro feature. Start a free trial from the menu bar or upgrade once to unlock.</li>
+    </ul>
+    
+    <div class="footer">
+        <p>Questions? Visit <a href="https://superdimmer.com">superdimmer.com</a></p>
+    </div>
+</body>
+</html>
