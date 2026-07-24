@@ -484,12 +484,13 @@
             padding: 14px 18px; position: relative;
         }
         .hero-compare .hc-pdf-page {
+            /*
+              No amber outline. User rejected zone/grid UI (2026-07-24); a
+              glowing page ring reads the same way. Isolation is the dim veil.
+            */
             width: 100%; max-width: 540px; background: #ffffff; color: #111;
             border-radius: 2px; padding: 22px 26px; position: relative;
             box-shadow: 0 8px 28px rgba(0,0,0,0.35); overflow: hidden;
-            /* Amber ring marks the ONLY surface SuperDimmer is allowed to touch */
-            outline: 2px solid rgba(232,168,56,0.55);
-            outline-offset: 0;
         }
         .hero-compare .hc-pdf-page h3 {
             font-size: 18px; font-weight: 700; margin-bottom: 4px;
@@ -506,7 +507,7 @@
         .hero-compare .hc-pdf-page .hi { background: #fff3bf; padding: 0 3px; }
 
         /*
-          Dim veil + detect grid live INSIDE the white page only.
+          Dim veil lives INSIDE the white page only.
           JS sets clip-path relative to this page so dragging never dims the IDE.
           Stronger veil than v1 so the white→calm change is obvious at a glance.
         */
