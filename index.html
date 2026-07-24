@@ -5,9 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SuperDimmer - Intelligent Screen Dimming for macOS</title>
     <meta name="description" content="SuperDimmer intelligently detects and dims bright areas on your screen. Reduce eye strain, protect your eyes at night, and enjoy a more comfortable Mac experience.">
+    <!--
+      Open Graph / Twitter / WhatsApp / iMessage share tags.
+      Why: the homepage previously had ZERO og:image tags, so chat apps fell
+      back to apple-touch-icon → assets/logo-icon.png, which had a Photoshop
+      transparency checkerboard baked into the pixels. That is what the user
+      saw in the link preview. These point at solid-background share cards
+      (no alpha, no grid). Cache-bust query helps after redeploy.
+    -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="SuperDimmer">
+    <meta property="og:url" content="https://superdimmer.com/">
+    <meta property="og:title" content="SuperDimmer - Intelligent Screen Dimming for macOS">
+    <meta property="og:description" content="SuperDimmer intelligently detects and dims bright areas on your screen. Reduce eye strain, protect your eyes at night, and enjoy a more comfortable Mac experience.">
+    <meta property="og:image" content="https://superdimmer.com/assets/promo/og-superdimmer-share-card.png?v=20260724">
+    <meta property="og:image:secure_url" content="https://superdimmer.com/assets/promo/og-superdimmer-share-card.png?v=20260724">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="SuperDimmer - Intelligent Screen Dimming for macOS">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="SuperDimmer - Intelligent Screen Dimming for macOS">
+    <meta name="twitter:description" content="Dims only the bright regions on your Mac. Dark UI stays untouched.">
+    <meta name="twitter:image" content="https://superdimmer.com/assets/promo/og-superdimmer-share-card.png?v=20260724">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <link rel="icon" type="image/png" sizes="32x32" href="assets/logo-icon.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="assets/logo-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/logo-icon.png?v=20260724">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/logo-icon.png?v=20260724">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
