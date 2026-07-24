@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SuperDimmer — Dim white PDFs without dimming your dark IDE</title>
-    <meta name="description" content="SuperDimmer intelligently detects and dims bright areas on your screen. Reduce eye strain, protect your eyes at night, and enjoy a more comfortable Mac experience.">
+    <title>SuperDimmer — Bright-region dimming for every Mac app</title>
+    <meta name="description" content="SuperDimmer finds overly bright regions inside any Mac window — PDFs, email, the web — and dims only those areas. Dark UI stays untouched. Works across every app.">
     <!--
       Open Graph / Twitter / WhatsApp / iMessage share tags.
       Why: the homepage previously had ZERO og:image tags, so chat apps fell
@@ -16,17 +16,17 @@
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="SuperDimmer">
     <meta property="og:url" content="https://superdimmer.com/">
-    <meta property="og:title" content="SuperDimmer — Dark mode cannot fix a white PDF. We can.">
-    <meta property="og:description" content="SuperDimmer intelligently detects and dims bright areas on your screen. Reduce eye strain, protect your eyes at night, and enjoy a more comfortable Mac experience.">
+    <meta property="og:title" content="SuperDimmer — Bright regions dimmed. In any app.">
+    <meta property="og:description" content="Works across every Mac app. SuperDimmer finds disruptive bright regions inside any window and dims only those areas — dark UI stays clear.">
     <meta property="og:image" content="https://superdimmer.com/assets/promo/og-superdimmer-share-card.png?v=20260724cc">
     <meta property="og:image:secure_url" content="https://superdimmer.com/assets/promo/og-superdimmer-share-card.png?v=20260724cc">
     <meta property="og:image:type" content="image/png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
-    <meta property="og:image:alt" content="SuperDimmer — Dark mode cannot fix a white PDF. We can.">
+    <meta property="og:image:alt" content="SuperDimmer — Bright regions dimmed in any Mac app.">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="SuperDimmer — Dark mode cannot fix a white PDF. We can.">
-    <meta name="twitter:description" content="Dims only the bright regions on your Mac. Dark UI stays untouched.">
+    <meta name="twitter:title" content="SuperDimmer — Bright regions dimmed. In any app.">
+    <meta name="twitter:description" content="Works across every Mac app. Dims only the bright regions that clash with your dark workspace.">
     <meta name="twitter:image" content="https://superdimmer.com/assets/promo/og-superdimmer-share-card.png?v=20260724cc">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="icon" type="image/png" sizes="32x32" href="assets/logo-icon.png?v=20260724cc">
@@ -397,6 +397,19 @@
             background: linear-gradient(135deg, #f5f2eb, #c8c2b6);
         }
         .hero-compare .hc-app-name { font-weight: 600; }
+
+        /*
+          Soft crossfade when the menubar app name / window title cycle.
+          User asked (2026-07-24) that the mock cycle through apps so the
+          landing page proves SuperDimmer is not Preview-only — it works
+          anywhere a bright region appears inside a window.
+        */
+        .hero-compare .hc-app-cycle {
+            transition: opacity 0.35s var(--transition-smooth);
+        }
+        .hero-compare .hc-app-cycle.is-fading {
+            opacity: 0;
+        }
         .hero-compare .hc-sd-icon {
             width: 14px; height: 14px; border-radius: 4px;
             background: linear-gradient(135deg, var(--hc-amber), var(--hc-coral));
@@ -1337,10 +1350,10 @@
                 <div class="hero-text">
                     <div class="hero-badge">
                         <span></span>
-                        Now Free During Early Access
+                        Works in every Mac app · Free during early access
                     </div>
-                    <h1>Dark Mode Can’t Fix a <span class="gradient-text">White PDF</span></h1>
-                    <p class="hero-description">White PDFs, docs, and emails break dark mode — you can’t restyle them. SuperDimmer isolates those bright regions and dims only them, while your dark IDE stays untouched. Plus Super Spaces, auto-hide, and color temperature when you want them.</p>
+                    <h1>Bright Spots, Dimmed. <span class="gradient-text">In Any App.</span></h1>
+                    <p class="hero-description">Preview, Mail, Safari, Pages — SuperDimmer works across your whole Mac. When a white document or page clashes with a dark workspace, it dims only that bright region. Your IDE, terminals, and dark UI stay exactly as they are.</p>
                     <div class="hero-buttons">
                         <a href="releases/SuperDimmer-v1.0.8.dmg" class="btn-primary">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 8.21a1 1 0 0 0-1.42 0l-4.29 4.3V3a1 1 0 0 0-2 0v9.51l-4.29-4.3a1 1 0 0 0-1.42 1.42l6 6a1 1 0 0 0 1.42 0l6-6a1 1 0 0 0 0-1.42z"/><path d="M19 13a1 1 0 0 0-1 1v5a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1v-5a1 1 0 0 0-2 0v5a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-5a1 1 0 0 0-1-1z"/></svg>
@@ -1374,16 +1387,21 @@
                     -->
                     <div class="hero-compare" id="heroCompare">
                         <div class="hc-eyebrow">
-                            <h2>Dark mode can’t fix a white PDF. <span>SuperDimmer can.</span></h2>
-                            <p>Drag across the PDF</p>
+                            <h2>Same comfort in <span>every app you use.</span></h2>
+                            <p>Drag the handle · watch only the bright page dim</p>
                         </div>
-                        <div class="hc-compare" id="heroCompareStage" aria-label="Isolation compare: only the white PDF page dims">
+                        <div class="hc-compare" id="heroCompareStage" aria-label="Isolation compare: only the bright content page dims across apps">
                             <div class="hc-scene">
                                 <div class="hc-wallpaper"></div>
                                 <div class="hc-menubar">
                                     <div class="hc-menubar-left">
                                         <span class="hc-apple"></span>
-                                        <span class="hc-app-name">Preview</span>
+                                        <!--
+                                          Menubar app name cycles through real Mac apps so visitors
+                                          immediately see SuperDimmer is system-wide, not tied to one
+                                          document viewer. Paired with the bright-window titlebar below.
+                                        -->
+                                        <span class="hc-app-name hc-app-cycle" id="heroMenubarAppName">Preview</span>
                                         <span>File</span><span>Edit</span><span>View</span>
                                     </div>
                                     <div class="hc-menubar-right">
@@ -1397,7 +1415,7 @@
                                 <div class="hc-window hc-ide">
                                     <div class="hc-titlebar">
                                         <div class="hc-traffic"><i class="r"></i><i class="y"></i><i class="g"></i></div>
-                                        <div class="hc-title">AppCoordinator.swift — dark IDE (never dimmed)</div>
+                                        <div class="hc-title">AppCoordinator.swift — dark IDE (stays clear)</div>
                                     </div>
                                     <div class="hc-ide-body">
                                         <div class="hc-ide-rail"><span class="on"></span><span></span><span></span></div>
@@ -1415,19 +1433,19 @@
                                 <div class="hc-window hc-pdf">
                                     <div class="hc-titlebar">
                                         <div class="hc-traffic"><i class="r"></i><i class="y"></i><i class="g"></i></div>
-                                        <div class="hc-title">Q3-Roadmap.pdf — Preview</div>
+                                        <div class="hc-title hc-app-cycle" id="heroBrightWindowTitle">Q3-Roadmap.pdf — Preview</div>
                                     </div>
                                     <div class="hc-pdf-toolbar">
                                         <span class="hc-chip">100%</span>
-                                        <span>Page 1 of 12</span>
-                                        <span>· White page = dim target</span>
+                                        <span class="hc-app-cycle" id="heroBrightToolbarMeta">Page 1 of 12</span>
+                                        <span class="hc-app-cycle" id="heroBrightToolbarHint">· Bright page in Preview</span>
                                     </div>
                                     <div class="hc-pdf-page-wrap">
                                         <div class="hc-pdf-page" id="heroPdfPage">
-                                            <h3>Q3 Product Roadmap</h3>
-                                            <div class="hc-pdf-meta">Internal brief · Cannot switch this document to dark mode</div>
-                                            <p>This is a <span class="hi">pure white PDF</span>. Dark mode on macOS does not restyle it. At 9pm next to a dark IDE, it blinds.</p>
-                                            <p>Tables, invoices, research papers — same problem. You cannot change their color.</p>
+                                            <h3 class="hc-app-cycle" id="heroBrightDocHeading">Q3 Product Roadmap</h3>
+                                            <div class="hc-pdf-meta hc-app-cycle" id="heroBrightDocMeta">White document · dark mode cannot restyle this</div>
+                                            <p class="hc-app-cycle" id="heroBrightDocLead">This is a <span class="hi">pure white page</span> sitting next to a dark IDE. SuperDimmer dims only this bright region — in Preview, Mail, Safari, and every other app.</p>
+                                            <p>Invoices, research papers, email threads, web articles — same problem, same fix.</p>
                                             <table class="hc-pdf-table">
                                                 <tr><th>Initiative</th><th>Owner</th><th>Status</th></tr>
                                                 <tr><td>Region dimming</td><td>Eng</td><td>Ship</td></tr>
@@ -1441,22 +1459,22 @@
 
                                 <div class="hc-status">
                                     <span class="dot"></span>
-                                    <span>Watch the <strong>white page only</strong> — IDE brightness never changes</span>
+                                    <span>Works in <strong id="heroStatusAppName">Preview</strong> — only the bright page dims</span>
                                 </div>
                                 <div class="hc-callout before-label">
                                     Left of handle
-                                    <span class="sub">Raw white PDF glare</span>
+                                    <span class="sub">Raw bright glare</span>
                                 </div>
                                 <div class="hc-callout after-label">
                                     Right of handle
-                                    <span class="sub">Only this page is dimmed</span>
+                                    <span class="sub">Only this region dims</span>
                                 </div>
                             </div>
                             <div class="hc-handle" id="heroCompareHandle"></div>
                         </div>
                         <div class="hc-caption">
-                            <div><strong>Same dark IDE</strong> on both sides of the line</div>
-                            <div><strong>Only the white PDF page</strong> gets darker</div>
+                            <div><strong>Any app</strong> — menu bar and window title cycle through real apps</div>
+                            <div><strong>Same dark IDE</strong> — only the bright content page gets darker</div>
                         </div>
                     </div>
                 </div>
@@ -1496,8 +1514,8 @@
                         </div>
                     </div>
                     <div class="capability-info">
-                        <h3>🎯 Per-Region Brightness Detection</h3>
-                        <p>Scans your screen as a grid (4×4 up to 16×16). Bright regions are detected and dimmed individually—dark areas stay untouched. Perfect for dark mode apps with bright content inside.</p>
+                        <h3>Per-Region Brightness Detection</h3>
+                        <p>Works inside any window, in any app. SuperDimmer finds regions that are starkly brighter than their surroundings and softens only those areas — so a white PDF, email, or webpage can sit next to a dark IDE without washing out the whole screen.</p>
                     </div>
                 </div>
 
@@ -1709,33 +1727,38 @@
         </div>
     </section>
 
-    <!-- How It Works -->
+    <!--
+      How It Works — mechanism first (user, 2026-07-24).
+      Hero proves “any app”; this section explains *how*: identify disruptive
+      bright regions inside windows and dim only those regions. Install steps
+      stay secondary in the section intro so the story isn’t just onboarding.
+    -->
     <section class="how-it-works" id="how-it-works">
         <div class="container">
             <div class="section-header reveal">
-                <h2>Simple to <span class="gradient-text">Get Started</span></h2>
-                <p>Up and running in under a minute. One permission, then set and forget.</p>
+                <h2>How SuperDimmer <span class="gradient-text">Actually Works</span></h2>
+                <p>Not a whole-screen dimmer. It watches every window, finds the bright regions that clash with your workspace, and softens only those areas.</p>
             </div>
             <div class="steps">
                 <div class="step reveal">
                     <div class="step-number">1</div>
-                    <h3>Download & Install</h3>
-                    <p>Download the DMG, drag to Applications, launch. That's it.</p>
+                    <h3>Looks inside every window</h3>
+                    <p>Preview, Mail, Safari, Pages, Slack, Chrome — wherever you work. SuperDimmer is not tied to one app or document type.</p>
                 </div>
                 <div class="step reveal">
                     <div class="step-number">2</div>
-                    <h3>Grant Permission</h3>
-                    <p>Allow Screen Recording for brightness detection. Location for sunrise/sunset (optional).</p>
+                    <h3>Finds disruptive brightness</h3>
+                    <p>It identifies regions whose brightness stands out sharply against neighboring content — the white PDF page, the email body, the article pane you can’t restyle.</p>
                 </div>
                 <div class="step reveal">
                     <div class="step-number">3</div>
-                    <h3>Adjust Settings</h3>
-                    <p>Set your brightness threshold, dim levels, and enable the features you want.</p>
+                    <h3>Dims only that region</h3>
+                    <p>A precise overlay covers the bright area. Chrome, toolbars, and already-dark UI stay clear so your layout and contrast remain readable.</p>
                 </div>
                 <div class="step reveal">
                     <div class="step-number">4</div>
-                    <h3>Enjoy Comfort</h3>
-                    <p>SuperDimmer works automatically in the background. Your eyes will thank you.</p>
+                    <h3>Runs quietly in the menu bar</h3>
+                    <p>Install once, grant Screen Recording for analysis, set your threshold, and leave it on. Comfort follows you from app to app.</p>
                 </div>
             </div>
         </div>
@@ -1882,7 +1905,7 @@
         /*
           Single-scene isolation drag.
           Handle position is in stage coords, but clip-path is computed relative
-          to the PDF PAGE box. Moving the handle across the IDE does not darken
+          to the bright PAGE box. Moving the handle across the IDE does not darken
           the IDE — it only reveals more/less of the veil inside the white page.
           That is the whole product demo.
         */
@@ -1908,7 +1931,7 @@
                 dim.style.clipPath = 'inset(0 0 0 ' + leftClipPct + '%)';
             }
 
-            // Default: bisect the PDF page so the split is obviously on the white area
+            // Default: bisect the bright page so the split is obviously on the white area
             function setDefault() {
                 const stageRect = stage.getBoundingClientRect();
                 const pageRect = page.getBoundingClientRect();
@@ -1929,8 +1952,137 @@
             stage.addEventListener('pointerup', stop);
             stage.addEventListener('pointercancel', stop);
             window.addEventListener('resize', setDefault);
-            // Wait a frame so layout is ready
             requestAnimationFrame(setDefault);
+        })();
+
+        /*
+          Cycle menubar app name + bright-window chrome through real Mac apps.
+          Why: the isolation demo used to read as “Preview-only.” The user asked
+          (2026-07-24) that the mock advertise system-wide coverage by cycling
+          the top-left menubar name and the window title. The white page stays
+          the dim target so the drag proof still holds; only labels change.
+          Pause when the tab is hidden to avoid wasted timers.
+        */
+        (function initHeroAnyAppNameCycle() {
+            const menubarApp = document.getElementById('heroMenubarAppName');
+            const windowTitle = document.getElementById('heroBrightWindowTitle');
+            const toolbarMeta = document.getElementById('heroBrightToolbarMeta');
+            const toolbarHint = document.getElementById('heroBrightToolbarHint');
+            const docHeading = document.getElementById('heroBrightDocHeading');
+            const docMeta = document.getElementById('heroBrightDocMeta');
+            const docLead = document.getElementById('heroBrightDocLead');
+            const statusApp = document.getElementById('heroStatusAppName');
+            if (!menubarApp || !windowTitle) return;
+
+            const scenes = [
+                {
+                    app: 'Preview',
+                    title: 'Q3-Roadmap.pdf — Preview',
+                    toolbarMeta: 'Page 1 of 12',
+                    toolbarHint: '· Bright page in Preview',
+                    heading: 'Q3 Product Roadmap',
+                    meta: 'White PDF · dark mode cannot restyle this',
+                    lead: 'This is a <span class="hi">pure white PDF</span> beside a dark IDE. SuperDimmer dims only this bright region — and it works the same way in every app.'
+                },
+                {
+                    app: 'Safari',
+                    title: 'Design Spec — Safari',
+                    toolbarMeta: 'superdimmer.com',
+                    toolbarHint: '· Bright page in Safari',
+                    heading: 'Product Design Spec',
+                    meta: 'White webpage · site chrome stays dark around it',
+                    lead: 'A <span class="hi">white article pane</span> in Safari next to your editor. SuperDimmer softens the glare without dimming the rest of your desktop.'
+                },
+                {
+                    app: 'Mail',
+                    title: 'Re: Q3 Brief — Mail',
+                    toolbarMeta: 'Inbox · 1 of 48',
+                    toolbarHint: '· Bright message in Mail',
+                    heading: 'Re: Q3 Product Brief',
+                    meta: 'White email body · client chrome stays dark',
+                    lead: 'A <span class="hi">white email thread</span> that refuses dark mode. SuperDimmer dims the message body and leaves your dark workspace alone.'
+                },
+                {
+                    app: 'Pages',
+                    title: 'Proposal.docx — Pages',
+                    toolbarMeta: 'Page 1',
+                    toolbarHint: '· Bright doc in Pages',
+                    heading: 'Client Proposal',
+                    meta: 'White document · cannot force dark theme',
+                    lead: 'A <span class="hi">white Pages document</span> open beside code. Only the bright page softens — the IDE stays crisp.'
+                },
+                {
+                    app: 'Google Chrome',
+                    title: 'Research Notes — Chrome',
+                    toolbarMeta: 'docs.google.com',
+                    toolbarHint: '· Bright tab in Chrome',
+                    heading: 'Shared Research Notes',
+                    meta: 'White web document · browser UI stays untouched',
+                    lead: 'A <span class="hi">bright Chrome tab</span> with a white page. SuperDimmer targets the glare, not the whole screen.'
+                },
+                {
+                    app: 'Notes',
+                    title: 'Meeting Notes — Notes',
+                    toolbarMeta: 'Today',
+                    toolbarHint: '· Bright note in Notes',
+                    heading: 'Monday Meeting Notes',
+                    meta: 'White note · light content in a dark evening',
+                    lead: 'A <span class="hi">white Notes page</span> that punches through dark mode. Dim the note; keep everything else readable.'
+                },
+                {
+                    app: 'Numbers',
+                    title: 'Budget-Q3.numbers — Numbers',
+                    toolbarMeta: 'Sheet 1',
+                    toolbarHint: '· Bright sheet in Numbers',
+                    heading: 'Q3 Budget Spreadsheet',
+                    meta: 'White spreadsheet · cells stay legible when softened',
+                    lead: 'A <span class="hi">bright Numbers sheet</span> next to a dark terminal. SuperDimmer eases the contrast without washing out your tools.'
+                },
+                {
+                    app: 'Microsoft Word',
+                    title: 'Contract-v4.docx — Word',
+                    toolbarMeta: 'Page 1 of 18',
+                    toolbarHint: '· Bright doc in Word',
+                    heading: 'Service Agreement v4',
+                    meta: 'White Word page · office docs rarely offer true dark mode',
+                    lead: 'A <span class="hi">white Word document</span> that will never match your IDE. SuperDimmer dims the page region only.'
+                }
+            ];
+
+            let index = 0;
+            const fadeTargets = [menubarApp, windowTitle, toolbarMeta, toolbarHint, docHeading, docMeta, docLead]
+                .filter(Boolean);
+
+            function applyScene(scene) {
+                menubarApp.textContent = scene.app;
+                windowTitle.textContent = scene.title;
+                if (toolbarMeta) toolbarMeta.textContent = scene.toolbarMeta;
+                if (toolbarHint) toolbarHint.textContent = scene.toolbarHint;
+                if (docHeading) docHeading.textContent = scene.heading;
+                if (docMeta) docMeta.textContent = scene.meta;
+                if (docLead) docLead.innerHTML = scene.lead;
+                if (statusApp) statusApp.textContent = scene.app;
+            }
+
+            function cycle() {
+                fadeTargets.forEach((el) => el.classList.add('is-fading'));
+                window.setTimeout(() => {
+                    index = (index + 1) % scenes.length;
+                    applyScene(scenes[index]);
+                    fadeTargets.forEach((el) => el.classList.remove('is-fading'));
+                }, 360);
+            }
+
+            applyScene(scenes[0]);
+            let timerId = window.setInterval(cycle, 3200);
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) {
+                    window.clearInterval(timerId);
+                    timerId = null;
+                } else if (!timerId) {
+                    timerId = window.setInterval(cycle, 3200);
+                }
+            });
         })();
     </script>
 </body>
