@@ -2,787 +2,423 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SuperDimmer Hero Before/After Mockup</title>
+    <title>SuperDimmer Isolation Hero — White PDF in Dark Mode</title>
     <!--
-      Design agency mock for the SuperDimmer landing hero before/after.
-      Why this exists: the previous AI-generated MacBook split with sun-glare and
-      heavy orange wash looked fake and sold the wrong story (whole-screen orange
-      filter). The product story is selective dimming: bright Mail stays readable
-      but calmed; dark IDE stays untouched. This HTML is the 1:1 design replica
-      we screenshot with Puppeteer, then ship into index.html as a live interactive
-      slider (not another static AI collage).
+      PRODUCT TRUTH (from the user, 2026-07-24):
+      SuperDimmer is NOT a general screen dimmer. The money shot is:
+      dark mode desktop + a white PDF/document you cannot restyle → that
+      white content alone gets dimmed. Left = PDF breaks the calm.
+      Right = PDF calmed, IDE/wallpaper/chrome identical.
+
+      Earlier hero versions failed this:
+      - AI MacBook: whole-screen orange wash (looks like f.lux)
+      - Mail+sepia+wallpaper dim: still reads as global filter
+      This mock keeps every non-PDF pixel identical across BEFORE/AFTER.
     -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg: #0a0908;
             --amber: #e8a838;
             --orange: #d4762c;
-            --coral: #c45c3a;
             --text: #f5f2eb;
             --muted: #a39e94;
-            --font: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font: 'DM Sans', -apple-system, sans-serif;
             --mono: 'JetBrains Mono', ui-monospace, monospace;
             --display: 'Playfair Display', Georgia, serif;
         }
-
         * { box-sizing: border-box; margin: 0; padding: 0; }
-
         body {
             min-height: 100vh;
             display: grid;
             place-items: center;
-            background:
-                radial-gradient(ellipse at 30% 0%, rgba(232, 168, 56, 0.10) 0%, transparent 50%),
-                radial-gradient(ellipse at 80% 60%, rgba(212, 118, 44, 0.06) 0%, transparent 40%),
-                #0a0908;
+            background: radial-gradient(ellipse at 30% 0%, rgba(232,168,56,.08), transparent 50%), #0a0908;
             font-family: var(--font);
             color: var(--text);
-            padding: 40px 24px;
+            padding: 32px 20px;
         }
-
-        .frame {
-            width: 1120px;
-            max-width: 100%;
-        }
-
+        .frame { width: 1120px; max-width: 100%; }
         .eyebrow {
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            margin-bottom: 14px;
-            padding: 0 4px;
+            display: flex; justify-content: space-between; align-items: baseline;
+            margin-bottom: 12px; padding: 0 4px; gap: 12px;
         }
-
         .eyebrow h2 {
-            font-family: var(--display);
-            font-size: 1.35rem;
-            font-weight: 500;
-            letter-spacing: -0.02em;
+            font-family: var(--display); font-size: 1.3rem; font-weight: 500;
         }
-
         .eyebrow h2 span {
             background: linear-gradient(135deg, #e8a838, #d4762c 55%, #c45c3a);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
+            -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
         }
+        .eyebrow p { color: var(--muted); font-size: .9rem; font-weight: 500; }
 
-        .eyebrow p {
-            color: var(--muted);
-            font-size: 0.92rem;
-            font-weight: 500;
-        }
-
-        /*
-          Interactive compare stage.
-          Same desktop scene rendered twice; a CSS clip-path reveals AFTER on the
-          right of the drag handle. This is the pattern SaaS landing pages use in
-          2026 for problem/solution proof without fake photography.
-        */
         .compare {
-            position: relative;
-            border-radius: 22px;
-            overflow: hidden;
-            border: 1px solid rgba(245, 242, 235, 0.08);
-            box-shadow:
-                0 4px 30px rgba(0, 0, 0, 0.45),
-                0 0 60px rgba(232, 168, 56, 0.12);
-            aspect-ratio: 16 / 10.2;
-            user-select: none;
-            touch-action: none;
-            cursor: col-resize;
-            background: #11100e;
+            position: relative; border-radius: 22px; overflow: hidden;
+            border: 1px solid rgba(245,242,235,.08);
+            box-shadow: 0 4px 30px rgba(0,0,0,.45), 0 0 60px rgba(232,168,56,.12);
+            aspect-ratio: 16 / 10.2; user-select: none; touch-action: none;
+            cursor: col-resize; background: #11100e;
         }
+        .scene { position: absolute; inset: 0; overflow: hidden; }
+        .scene.after { clip-path: inset(0 0 0 50%); }
 
-        .scene {
-            position: absolute;
-            inset: 0;
-            overflow: hidden;
-        }
-
-        .scene.after {
-            clip-path: inset(0 0 0 52%);
-        }
-
-        /* Desktop wallpaper: soft abstract, not neon stock waves */
+        /* IDENTICAL wallpaper both sides — no global dim story */
         .wallpaper {
-            position: absolute;
-            inset: 0;
+            position: absolute; inset: 0;
             background:
-                radial-gradient(ellipse 80% 60% at 20% 30%, #3a2a18 0%, transparent 55%),
-                radial-gradient(ellipse 70% 50% at 80% 70%, #1a2438 0%, transparent 50%),
-                linear-gradient(160deg, #1c1814 0%, #12151c 45%, #0e1014 100%);
+                radial-gradient(ellipse 70% 50% at 15% 80%, #1a2430 0%, transparent 50%),
+                radial-gradient(ellipse 50% 40% at 85% 20%, #2a1f14 0%, transparent 45%),
+                linear-gradient(160deg, #141820 0%, #0e1014 55%, #12100e 100%);
         }
 
-        .wallpaper.before-tint {
-            filter: brightness(1.22) saturate(1.2);
-        }
-
-        /*
-          Wallpaper after-state stays cooler/darker only — no global sepia.
-          Sepia on the whole scene made the IDE look tinted and contradicted
-          "dark UI stays untouched". Warmth lives only on the dimmed Mail overlay.
-        */
-        .wallpaper.after-tint {
-            filter: brightness(0.68) saturate(0.88);
-        }
-
-        /* Fake menu bar */
         .menubar {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 28px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 14px;
-            background: rgba(20, 18, 16, 0.72);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-            font-size: 11px;
-            color: rgba(245, 242, 235, 0.85);
-            z-index: 5;
+            position: absolute; top: 0; left: 0; right: 0; height: 28px;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 14px; background: rgba(18,18,20,.82);
+            backdrop-filter: blur(14px); border-bottom: 1px solid rgba(255,255,255,.06);
+            font-size: 11px; color: rgba(245,242,235,.85); z-index: 5;
         }
-
-        .menubar-left,
-        .menubar-right {
-            display: flex;
-            align-items: center;
-            gap: 12px;
+        .menubar-left, .menubar-right { display: flex; align-items: center; gap: 12px; }
+        .apple { width: 12px; height: 12px; border-radius: 3px; background: linear-gradient(135deg,#f5f2eb,#c8c2b6); }
+        .app-name { font-weight: 600; }
+        .sd-icon {
+            width: 14px; height: 14px; border-radius: 4px;
+            background: linear-gradient(135deg,#e8a838,#c45c3a);
+            box-shadow: 0 0 10px rgba(232,168,56,.55); display: grid; place-items: center;
         }
+        .sd-icon svg { width: 9px; height: 9px; fill: #0a0908; }
+        .scene.before .sd-icon { opacity: .2; filter: grayscale(1); box-shadow: none; }
 
-        .apple {
-            width: 12px;
-            height: 12px;
-            border-radius: 3px;
-            background: linear-gradient(135deg, #f5f2eb, #c8c2b6);
-        }
-
-        .menubar .app-name { font-weight: 600; }
-
-        .sd-menubar-icon {
-            width: 14px;
-            height: 14px;
-            border-radius: 4px;
-            background: linear-gradient(135deg, #e8a838, #c45c3a);
-            box-shadow: 0 0 10px rgba(232, 168, 56, 0.55);
-            display: grid;
-            place-items: center;
-        }
-
-        .sd-menubar-icon svg {
-            width: 9px;
-            height: 9px;
-            fill: #0a0908;
-        }
-
-        .scene.before .sd-menubar-icon { opacity: 0.25; filter: grayscale(1); box-shadow: none; }
-
-        /* Windows */
         .window {
-            position: absolute;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow:
-                0 18px 50px rgba(0, 0, 0, 0.45),
-                0 0 0 1px rgba(255, 255, 255, 0.08);
-            display: flex;
-            flex-direction: column;
+            position: absolute; border-radius: 12px; overflow: hidden;
+            box-shadow: 0 18px 50px rgba(0,0,0,.5), 0 0 0 1px rgba(255,255,255,.08);
+            display: flex; flex-direction: column;
         }
-
         .titlebar {
-            height: 34px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 0 12px;
-            background: rgba(255, 255, 255, 0.04);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-            font-size: 11px;
-            color: rgba(245, 242, 235, 0.7);
-            flex-shrink: 0;
+            height: 34px; display: flex; align-items: center; gap: 8px;
+            padding: 0 12px; background: #2a2a2c; border-bottom: 1px solid #3a3a3c;
+            font-size: 11px; color: #c8c8ca; flex-shrink: 0;
         }
-
-        .traffic {
-            display: flex;
-            gap: 6px;
-        }
-
-        .traffic i {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            display: block;
-        }
-
+        .traffic { display: flex; gap: 6px; }
+        .traffic i { width: 10px; height: 10px; border-radius: 50%; display: block; }
         .traffic .r { background: #ff5f57; }
         .traffic .y { background: #febc2e; }
         .traffic .g { background: #28c840; }
+        .title { flex: 1; text-align: center; font-weight: 500; }
 
-        .titlebar .title {
-            flex: 1;
-            text-align: center;
-            font-weight: 500;
-            letter-spacing: 0.01em;
+        /* Dark IDE — identical on both sides, never filtered */
+        .ide {
+            left: 3%; top: 10%; width: 42%; height: 78%;
+            background: #1e1e1e; z-index: 2;
         }
+        .ide-body { display: grid; grid-template-columns: 44px 1fr; flex: 1; min-height: 0; }
+        .ide-rail {
+            background: #252526; border-right: 1px solid #333; padding-top: 12px;
+            display: flex; flex-direction: column; align-items: center; gap: 12px;
+        }
+        .ide-rail span { width: 16px; height: 16px; border-radius: 4px; background: #3c3c3c; }
+        .ide-rail span.on { background: linear-gradient(135deg,#e8a838,#d4762c); }
+        .ide-code {
+            padding: 12px 14px; font-family: var(--mono); font-size: 11px;
+            line-height: 1.65; color: #d4d4d4; overflow: hidden;
+        }
+        .ln { color: #858585; display: inline-block; width: 20px; }
+        .kw { color: #c586c0; } .fn { color: #dcdcaa; } .str { color: #ce9178; }
+        .cm { color: #6a9955; } .ty { color: #4ec9b0; }
 
         /*
-          Window layout rewritten so the vertical compare handle bisects the
-          bright Mail reading pane. The first mock parked Mail entirely on the
-          right, so the BEFORE half only showed dark IDE — useless as a before
-          proof. Now Mail spans the center; IDE peeks on the left as the
-          "preserved dark UI" anchor.
+          Preview / PDF window — the thing dark mode cannot fix.
+          Spans the compare handle so left=glare, right=isolated dim.
         */
-        .ide {
-            left: 3%;
-            top: 12%;
-            width: 44%;
-            height: 72%;
-            background: #1e1e1e;
-            z-index: 2;
+        .pdf {
+            left: 28%; top: 12%; width: 66%; height: 76%;
+            background: #2c2c2e; z-index: 3;
         }
-
-        .ide-body {
-            display: grid;
-            grid-template-columns: 48px 1fr;
-            flex: 1;
-            min-height: 0;
+        .pdf .titlebar { background: #3a3a3c; border-bottom-color: #4a4a4c; color: #e5e5e7; }
+        .pdf-toolbar {
+            height: 28px; background: #323234; border-bottom: 1px solid #444;
+            display: flex; align-items: center; gap: 8px; padding: 0 12px;
+            font-size: 10px; color: #aaa;
         }
-
-        .ide-rail {
-            background: #252526;
-            border-right: 1px solid #333;
-            padding-top: 12px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 14px;
+        .pdf-toolbar .chip {
+            padding: 2px 8px; border-radius: 4px; background: #444; color: #ddd;
         }
-
-        .ide-rail span {
-            width: 18px;
-            height: 18px;
-            border-radius: 4px;
-            background: #3c3c3c;
+        .pdf-page-wrap {
+            flex: 1; min-height: 0; background: #1c1c1e;
+            display: flex; align-items: stretch; justify-content: center;
+            padding: 14px 18px; position: relative;
         }
-
-        .ide-rail span.active { background: linear-gradient(135deg, #e8a838, #d4762c); }
-
-        .ide-code {
-            padding: 14px 16px;
-            font-family: var(--mono);
-            font-size: 11.5px;
-            line-height: 1.65;
-            color: #d4d4d4;
+        /*
+          The white page itself — this is the only surface that changes
+          between BEFORE and AFTER. Everything around it stays put.
+        */
+        .pdf-page {
+            width: 100%; max-width: 520px; background: #ffffff; color: #111;
+            border-radius: 2px; padding: 22px 26px; position: relative;
+            box-shadow: 0 8px 28px rgba(0,0,0,.35);
             overflow: hidden;
         }
-
-        .ide-code .ln { color: #858585; display: inline-block; width: 22px; }
-        .ide-code .kw { color: #c586c0; }
-        .ide-code .fn { color: #dcdcaa; }
-        .ide-code .str { color: #ce9178; }
-        .ide-code .cm { color: #6a9955; }
-        .ide-code .ty { color: #4ec9b0; }
-
-        /* Bright Mail window: the pain point that SuperDimmer actually dims */
-        .mail {
-            left: 22%;
-            top: 14%;
-            width: 72%;
-            height: 74%;
-            background: #ffffff;
-            z-index: 3;
-            color: #1d1d1f;
+        .scene.before .pdf-page {
+            box-shadow: 0 8px 28px rgba(0,0,0,.35), 0 0 48px rgba(255,255,255,.35);
         }
-
-        /*
-          BEFORE intensifier — push Mail past "normal light UI" into the eye-strain
-          look users complain about at night. No fake sun-flare photography; just
-          a hotter white fill + soft bloom so the AFTER dim reads as relief.
-        */
-        .scene.before .mail {
-            filter: brightness(1.12) contrast(1.05);
-            box-shadow:
-                0 18px 50px rgba(0, 0, 0, 0.45),
-                0 0 0 1px rgba(255, 255, 255, 0.35),
-                0 0 40px rgba(255, 255, 255, 0.28);
+        .pdf-page h3 {
+            font-size: 18px; font-weight: 700; margin-bottom: 4px;
+            letter-spacing: -.02em; font-family: var(--font);
         }
-
-        .scene.before .mail-read {
-            background: #ffffff;
+        .pdf-meta { font-size: 10px; color: #888; margin-bottom: 14px; }
+        .pdf-page p {
+            font-size: 12px; line-height: 1.55; color: #222; margin-bottom: 10px;
         }
-
-        .scene.before .mail-read::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(ellipse at 30% 20%, rgba(255, 255, 255, 0.55), transparent 55%);
-            pointer-events: none;
+        .pdf-table {
+            width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 11px;
         }
-
-        .mail .titlebar {
-            background: #f4f4f5;
-            border-bottom: 1px solid #e5e5ea;
-            color: #3a3a3c;
+        .pdf-table th, .pdf-table td {
+            border: 1px solid #ddd; padding: 6px 8px; text-align: left;
         }
+        .pdf-table th { background: #f3f3f3; }
+        .hi { background: #fff3bf; padding: 0 3px; }
 
-        .mail-body {
-            display: block;
-            flex: 1;
-            min-height: 0;
-            position: relative;
+        /* AFTER: dim ONLY .pdf-page — isolation proof */
+        .pdf-dim {
+            position: absolute; inset: 0; pointer-events: none; opacity: 0;
+            background: linear-gradient(165deg, rgba(28,16,6,.52), rgba(8,6,4,.68));
         }
-
-        .mail-list { display: none; }
-
-        .mail-read {
-            padding: 18px 20px;
-            background: #ffffff;
-            position: relative;
-            height: 100%;
+        .scene.after .pdf-dim { opacity: 1; }
+        .detect {
+            position: absolute; inset: 8px; pointer-events: none; opacity: 0;
+            display: grid; grid-template-columns: repeat(5,1fr); grid-template-rows: repeat(6,1fr); gap: 3px;
         }
-
-        .mail-read h3 {
-            font-size: 15px;
-            font-weight: 650;
-            color: #111;
-            margin-bottom: 6px;
-            letter-spacing: -0.01em;
-        }
-
-        .mail-meta {
-            font-size: 10.5px;
-            color: #8e8e93;
-            margin-bottom: 14px;
-            padding-bottom: 12px;
-            border-bottom: 1px solid #eee;
-        }
-
-        .mail-read p {
-            font-size: 11.5px;
-            line-height: 1.55;
-            color: #222;
-            margin-bottom: 10px;
-        }
-
-        .mail-read .hi {
-            background: #fff3bf;
-            padding: 0 3px;
-            border-radius: 2px;
-        }
-
-        /*
-          AFTER dimming story — rewritten after the first Puppeteer pass showed
-          the Mail pane still reading as "full blast white", so the compare failed
-          the 1-second glance test. We now apply three stacked cues that only
-          exist on .scene.after:
-          1) whole-mail brightness/sepia filter (obvious calm, still readable)
-          2) denser multiply veil over the reading pane
-          3) amber detection grid on the hot tiles
-          The IDE is intentionally left out of every cue — that is the product
-          differentiator vs f.lux-style whole-screen orange washes (which is what
-          the old AI hero accidentally advertised).
-        */
-        .scene.after .mail {
-            filter: brightness(0.55) sepia(0.28) saturate(0.8);
-            box-shadow:
-                0 18px 50px rgba(0, 0, 0, 0.55),
-                0 0 0 1px rgba(232, 168, 56, 0.28);
-        }
-
-        /* Keep IDE visually identical on AFTER — no filter, no warm cast */
-        .scene.after .ide {
-            filter: none;
-        }
-
-        .dim-overlay {
-            position: absolute;
-            inset: 0;
-            pointer-events: none;
-            opacity: 0;
-            background:
-                linear-gradient(165deg, rgba(55, 28, 8, 0.45), rgba(12, 8, 6, 0.62));
-        }
-
-        .scene.after .dim-overlay { opacity: 1; }
-
-        /* Detection grid hint — only on bright regions in AFTER */
-        .detect-grid {
-            position: absolute;
-            inset: 6px;
-            pointer-events: none;
-            opacity: 0;
-            display: grid;
-            grid-template-columns: repeat(6, 1fr);
-            grid-template-rows: repeat(5, 1fr);
-            gap: 3px;
-        }
-
-        .scene.after .detect-grid { opacity: 1; }
-
-        .detect-grid b {
-            border: 1px solid rgba(232, 168, 56, 0.12);
-            border-radius: 3px;
-        }
-
-        .detect-grid b.hot {
-            background: rgba(232, 168, 56, 0.22);
-            border-color: rgba(232, 168, 56, 0.7);
-            box-shadow: inset 0 0 14px rgba(232, 168, 56, 0.28);
+        .scene.after .detect { opacity: 1; }
+        .detect b { border: 1px solid rgba(232,168,56,.15); border-radius: 2px; }
+        .detect b.hot {
+            background: rgba(232,168,56,.2);
+            border-color: rgba(232,168,56,.65);
+            box-shadow: inset 0 0 12px rgba(232,168,56,.25);
         }
 
         .callout {
-            position: absolute;
-            z-index: 6;
-            font-size: 11px;
-            font-weight: 600;
-            letter-spacing: 0.04em;
-            text-transform: uppercase;
-            padding: 7px 11px;
-            border-radius: 999px;
+            position: absolute; z-index: 6; font-size: 10px; font-weight: 600;
+            letter-spacing: .03em; text-transform: uppercase; padding: 7px 10px;
+            border-radius: 999px; max-width: min(46%, 230px);
             backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
         }
-
-        .callout.before-label {
-            left: 16px;
-            bottom: 16px;
-            color: #fff;
-            background: rgba(20, 18, 16, 0.72);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-        }
-
-        .callout.after-label {
-            right: 16px;
-            bottom: 16px;
-            color: #0a0908;
-            background: linear-gradient(135deg, #e8a838, #d4762c);
-            box-shadow: 0 8px 24px rgba(212, 118, 44, 0.35);
-        }
-
         .callout .sub {
-            display: block;
-            font-size: 10px;
-            font-weight: 500;
-            letter-spacing: 0;
-            text-transform: none;
-            opacity: 0.8;
-            margin-top: 2px;
+            display: block; font-size: 10px; font-weight: 500; letter-spacing: 0;
+            text-transform: none; opacity: .85; margin-top: 2px;
         }
-
+        .callout.before-label {
+            left: 12px; bottom: 12px; color: #fff;
+            background: rgba(20,18,16,.8); border: 1px solid rgba(255,255,255,.12);
+        }
+        .callout.after-label {
+            right: 12px; bottom: 12px; color: #0a0908;
+            background: linear-gradient(135deg,#e8a838,#d4762c);
+            box-shadow: 0 8px 24px rgba(212,118,44,.35);
+        }
         .scene.before .callout.after-label { display: none; }
         .scene.after .callout.before-label { display: none; }
 
         .chip {
-            position: absolute;
-            z-index: 6;
-            top: 42px;
-            right: 18px;
-            display: none;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 12px;
-            border-radius: 12px;
-            background: rgba(26, 24, 22, 0.82);
-            border: 1px solid rgba(232, 168, 56, 0.35);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
-            font-size: 11px;
-            color: var(--text);
+            position: absolute; z-index: 6; top: 40px; right: 14px;
+            display: none; align-items: center; gap: 8px; padding: 8px 12px;
+            border-radius: 12px; background: rgba(26,24,22,.88);
+            border: 1px solid rgba(232,168,56,.4); font-size: 11px;
+            box-shadow: 0 10px 30px rgba(0,0,0,.35);
         }
-
         .scene.after .chip { display: flex; }
-
         .chip .dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--amber);
-            box-shadow: 0 0 10px rgba(232, 168, 56, 0.8);
+            width: 8px; height: 8px; border-radius: 50%; background: var(--amber);
+            box-shadow: 0 0 10px rgba(232,168,56,.8);
         }
+        .chip strong { color: var(--amber); }
 
-        .chip strong { color: var(--amber); font-weight: 650; }
-
-        /* Drag handle */
         .handle {
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            left: 52%;
-            width: 2px;
+            position: absolute; top: 0; bottom: 0; left: 50%; width: 2px;
             background: linear-gradient(180deg, transparent, var(--amber), transparent);
-            transform: translateX(-50%);
-            z-index: 10;
+            transform: translateX(-50%); z-index: 10;
         }
-
         .handle::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 42px;
-            height: 42px;
-            transform: translate(-50%, -50%);
+            content: ''; position: absolute; top: 50%; left: 50%;
+            width: 42px; height: 42px; transform: translate(-50%,-50%);
             border-radius: 50%;
-            background: linear-gradient(135deg, #e8a838, #c45c3a);
-            box-shadow:
-                0 0 0 6px rgba(10, 9, 8, 0.55),
-                0 10px 28px rgba(212, 118, 44, 0.45);
+            background: linear-gradient(135deg,#e8a838,#c45c3a);
+            box-shadow: 0 0 0 6px rgba(10,9,8,.55), 0 10px 28px rgba(212,118,44,.45);
         }
-
         .handle::after {
-            content: '⟷';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 16px;
-            color: #0a0908;
-            font-weight: 700;
-            z-index: 1;
+            content: '⟷'; position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%,-50%); font-size: 16px; color: #0a0908; font-weight: 700;
         }
-
         .caption {
-            margin-top: 14px;
-            display: flex;
-            justify-content: space-between;
-            gap: 16px;
-            color: var(--muted);
-            font-size: 0.9rem;
-            padding: 0 4px;
+            margin-top: 12px; display: flex; justify-content: space-between; gap: 16px;
+            color: var(--muted); font-size: .85rem; padding: 0 4px;
         }
-
         .caption strong { color: var(--text); font-weight: 600; }
     </style>
 </head>
 <body>
-    <div class="frame" id="heroCompareMock">
+    <div class="frame">
         <div class="eyebrow">
-            <h2>Bright where it hurts. <span>Calm where it counts.</span></h2>
+            <h2>Dark mode can’t fix a white PDF. <span>SuperDimmer can.</span></h2>
             <p>Drag to compare</p>
         </div>
-
-        <div class="compare" id="compare" aria-label="Before and after SuperDimmer comparison">
-            <!-- BEFORE scene -->
+        <div class="compare" id="compare">
+            <!-- BEFORE -->
             <div class="scene before">
-                <div class="wallpaper before-tint"></div>
+                <div class="wallpaper"></div>
                 <div class="menubar">
                     <div class="menubar-left">
                         <span class="apple"></span>
-                        <span class="app-name">Mail</span>
-                        <span>File</span>
-                        <span>Edit</span>
-                        <span>View</span>
+                        <span class="app-name">Preview</span>
+                        <span>File</span><span>Edit</span><span>View</span>
                     </div>
                     <div class="menubar-right">
-                        <span class="sd-menubar-icon" aria-hidden="true">
-                            <svg viewBox="0 0 24 24"><path d="M12 3a1 1 0 0 1 1 1v1.06A7 7 0 0 1 18.94 11H20a1 1 0 1 1 0 2h-1.06A7 7 0 0 1 13 17.94V19a1 1 0 1 1-2 0v-1.06A7 7 0 0 1 5.06 13H4a1 1 0 1 1 0-2h1.06A7 7 0 0 1 11 5.06V4a1 1 0 0 1 1-1zm0 5a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"/></svg>
-                        </span>
+                        <span class="sd-icon"><svg viewBox="0 0 24 24"><path d="M12 3a1 1 0 0 1 1 1v1.06A7 7 0 0 1 18.94 11H20a1 1 0 1 1 0 2h-1.06A7 7 0 0 1 13 17.94V19a1 1 0 1 1-2 0v-1.06A7 7 0 0 1 5.06 13H4a1 1 0 1 1 0-2h1.06A7 7 0 0 1 11 5.06V4a1 1 0 0 1 1-1zm0 5a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"/></svg></span>
                         <span>Fri 9:41 PM</span>
                     </div>
                 </div>
-
                 <div class="window ide">
                     <div class="titlebar">
                         <div class="traffic"><i class="r"></i><i class="y"></i><i class="g"></i></div>
-                        <div class="title">AppCoordinator.swift — SuperDimmer</div>
+                        <div class="title">AppCoordinator.swift — dark IDE</div>
                     </div>
                     <div class="ide-body">
-                        <div class="ide-rail">
-                            <span class="active"></span><span></span><span></span><span></span>
-                        </div>
+                        <div class="ide-rail"><span class="on"></span><span></span><span></span></div>
                         <div class="ide-code">
-                            <div><span class="ln">12</span><span class="kw">func</span> <span class="fn">applyRegionDimming</span>(<span class="ty">regions</span>: [<span class="ty">BrightRegion</span>]) {</div>
-                            <div><span class="ln">13</span>&nbsp;&nbsp;<span class="cm">// Only bright tiles get an overlay</span></div>
-                            <div><span class="ln">14</span>&nbsp;&nbsp;<span class="kw">for</span> region <span class="kw">in</span> regions <span class="kw">where</span> region.luma &gt; threshold {</div>
-                            <div><span class="ln">15</span>&nbsp;&nbsp;&nbsp;&nbsp;overlay.<span class="fn">dim</span>(region, by: strength)</div>
+                            <div><span class="ln">12</span><span class="kw">func</span> <span class="fn">dimBrightRegions</span>() {</div>
+                            <div><span class="ln">13</span>&nbsp;&nbsp;<span class="cm">// Dark UI never gets an overlay</span></div>
+                            <div><span class="ln">14</span>&nbsp;&nbsp;<span class="kw">for</span> tile <span class="kw">in</span> grid <span class="kw">where</span> tile.luma &gt; threshold {</div>
+                            <div><span class="ln">15</span>&nbsp;&nbsp;&nbsp;&nbsp;overlay.<span class="fn">dim</span>(tile)</div>
                             <div><span class="ln">16</span>&nbsp;&nbsp;}</div>
                             <div><span class="ln">17</span>}</div>
-                            <div><span class="ln">18</span></div>
-                            <div><span class="ln">19</span><span class="kw">let</span> status = <span class="str">"Space 3 · Development"</span></div>
-                            <div><span class="ln">20</span><span class="cm">// Dark UI stays untouched</span></div>
                         </div>
                     </div>
                 </div>
-
-                <div class="window mail">
+                <div class="window pdf">
                     <div class="titlebar">
                         <div class="traffic"><i class="r"></i><i class="y"></i><i class="g"></i></div>
-                        <div class="title">Inbox — white background email</div>
+                        <div class="title">Q3-Roadmap.pdf — Preview</div>
                     </div>
-                    <div class="mail-body">
-                        <div class="mail-list">
-                            <div class="mail-item active">
-                                <div class="from">Product Update</div>
-                                <div class="subj">Q3 roadmap + launch notes</div>
-                                <div class="snip">Sharing the bright white PDF…</div>
-                            </div>
-                            <div class="mail-item">
-                                <div class="from">Design Review</div>
-                                <div class="subj">Hero mock feedback</div>
-                                <div class="snip">The glare version feels off…</div>
-                            </div>
-                            <div class="mail-item">
-                                <div class="from">Support</div>
-                                <div class="subj">Night coding tips</div>
-                                <div class="snip">Try selective dimming…</div>
-                            </div>
-                        </div>
-                        <div class="mail-read">
-                            <h3>Q3 roadmap + launch notes</h3>
-                            <div class="mail-meta">From product@example.com · Today 9:12 PM</div>
-                            <p>Hi team — attaching the full brief. The docs site is still a <span class="hi">pure white canvas</span> and the screenshots are blasting at full brightness.</p>
-                            <p>Late-night review of this thread is brutal on the eyes, especially next to a dark editor.</p>
-                            <p>Please skim the attached HTML tables before Monday sync.</p>
+                    <div class="pdf-toolbar">
+                        <span class="chip">100%</span>
+                        <span>Page 1 of 12</span>
+                        <span>· White PDF · no dark mode</span>
+                    </div>
+                    <div class="pdf-page-wrap">
+                        <div class="pdf-page">
+                            <h3>Q3 Product Roadmap</h3>
+                            <div class="pdf-meta">Internal brief · Cannot switch this document to dark mode</div>
+                            <p>This is a <span class="hi">pure white PDF</span>. Dark mode on macOS does not restyle it. At 9pm next to a dark IDE, it blinds.</p>
+                            <p>Tables, invoices, Slack exports, legal docs, research papers — same problem. You cannot change their color.</p>
+                            <table class="pdf-table">
+                                <tr><th>Initiative</th><th>Owner</th><th>Status</th></tr>
+                                <tr><td>Region dimming</td><td>Eng</td><td>Ship</td></tr>
+                                <tr><td>Color temperature</td><td>Eng</td><td>Live</td></tr>
+                                <tr><td>Super Spaces</td><td>Product</td><td>Live</td></tr>
+                            </table>
                         </div>
                     </div>
                 </div>
-
                 <div class="callout before-label">
                     Before
-                    <span class="sub">White email glare next to dark code</span>
+                    <span class="sub">White PDF punches through dark mode</span>
                 </div>
             </div>
 
-            <!-- AFTER scene -->
+            <!-- AFTER — same scene; only .pdf-page is veiled -->
             <div class="scene after" id="afterScene">
-                <div class="wallpaper after-tint"></div>
+                <div class="wallpaper"></div>
                 <div class="menubar">
                     <div class="menubar-left">
                         <span class="apple"></span>
-                        <span class="app-name">Mail</span>
-                        <span>File</span>
-                        <span>Edit</span>
-                        <span>View</span>
+                        <span class="app-name">Preview</span>
+                        <span>File</span><span>Edit</span><span>View</span>
                     </div>
                     <div class="menubar-right">
-                        <span class="sd-menubar-icon" aria-hidden="true">
-                            <svg viewBox="0 0 24 24"><path d="M12 3a1 1 0 0 1 1 1v1.06A7 7 0 0 1 18.94 11H20a1 1 0 1 1 0 2h-1.06A7 7 0 0 1 13 17.94V19a1 1 0 1 1-2 0v-1.06A7 7 0 0 1 5.06 13H4a1 1 0 1 1 0-2h1.06A7 7 0 0 1 11 5.06V4a1 1 0 0 1 1-1zm0 5a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"/></svg>
-                        </span>
+                        <span class="sd-icon"><svg viewBox="0 0 24 24"><path d="M12 3a1 1 0 0 1 1 1v1.06A7 7 0 0 1 18.94 11H20a1 1 0 1 1 0 2h-1.06A7 7 0 0 1 13 17.94V19a1 1 0 1 1-2 0v-1.06A7 7 0 0 1 5.06 13H4a1 1 0 1 1 0-2h1.06A7 7 0 0 1 11 5.06V4a1 1 0 0 1 1-1zm0 5a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"/></svg></span>
                         <span>Fri 9:41 PM</span>
                     </div>
                 </div>
-
                 <div class="window ide">
                     <div class="titlebar">
                         <div class="traffic"><i class="r"></i><i class="y"></i><i class="g"></i></div>
-                        <div class="title">AppCoordinator.swift — SuperDimmer</div>
+                        <div class="title">AppCoordinator.swift — dark IDE</div>
                     </div>
                     <div class="ide-body">
-                        <div class="ide-rail">
-                            <span class="active"></span><span></span><span></span><span></span>
-                        </div>
+                        <div class="ide-rail"><span class="on"></span><span></span><span></span></div>
                         <div class="ide-code">
-                            <div><span class="ln">12</span><span class="kw">func</span> <span class="fn">applyRegionDimming</span>(<span class="ty">regions</span>: [<span class="ty">BrightRegion</span>]) {</div>
-                            <div><span class="ln">13</span>&nbsp;&nbsp;<span class="cm">// Only bright tiles get an overlay</span></div>
-                            <div><span class="ln">14</span>&nbsp;&nbsp;<span class="kw">for</span> region <span class="kw">in</span> regions <span class="kw">where</span> region.luma &gt; threshold {</div>
-                            <div><span class="ln">15</span>&nbsp;&nbsp;&nbsp;&nbsp;overlay.<span class="fn">dim</span>(region, by: strength)</div>
+                            <div><span class="ln">12</span><span class="kw">func</span> <span class="fn">dimBrightRegions</span>() {</div>
+                            <div><span class="ln">13</span>&nbsp;&nbsp;<span class="cm">// Dark UI never gets an overlay</span></div>
+                            <div><span class="ln">14</span>&nbsp;&nbsp;<span class="kw">for</span> tile <span class="kw">in</span> grid <span class="kw">where</span> tile.luma &gt; threshold {</div>
+                            <div><span class="ln">15</span>&nbsp;&nbsp;&nbsp;&nbsp;overlay.<span class="fn">dim</span>(tile)</div>
                             <div><span class="ln">16</span>&nbsp;&nbsp;}</div>
                             <div><span class="ln">17</span>}</div>
-                            <div><span class="ln">18</span></div>
-                            <div><span class="ln">19</span><span class="kw">let</span> status = <span class="str">"Space 3 · Development"</span></div>
-                            <div><span class="ln">20</span><span class="cm">// Dark UI stays untouched</span></div>
                         </div>
                     </div>
                 </div>
-
-                <div class="window mail">
+                <div class="window pdf">
                     <div class="titlebar">
                         <div class="traffic"><i class="r"></i><i class="y"></i><i class="g"></i></div>
-                        <div class="title">Inbox — white background email</div>
+                        <div class="title">Q3-Roadmap.pdf — Preview</div>
                     </div>
-                    <div class="mail-body">
-                        <div class="mail-list">
-                            <div class="mail-item active">
-                                <div class="from">Product Update</div>
-                                <div class="subj">Q3 roadmap + launch notes</div>
-                                <div class="snip">Sharing the bright white PDF…</div>
-                            </div>
-                            <div class="mail-item">
-                                <div class="from">Design Review</div>
-                                <div class="subj">Hero mock feedback</div>
-                                <div class="snip">The glare version feels off…</div>
-                            </div>
-                            <div class="mail-item">
-                                <div class="from">Support</div>
-                                <div class="subj">Night coding tips</div>
-                                <div class="snip">Try selective dimming…</div>
-                            </div>
-                        </div>
-                        <div class="mail-read">
-                            <h3>Q3 roadmap + launch notes</h3>
-                            <div class="mail-meta">From product@example.com · Today 9:12 PM</div>
-                            <p>Hi team — attaching the full brief. The docs site is still a <span class="hi">pure white canvas</span> and the screenshots are blasting at full brightness.</p>
-                            <p>Late-night review of this thread is brutal on the eyes, especially next to a dark editor.</p>
-                            <p>Please skim the attached HTML tables before Monday sync.</p>
-                            <div class="dim-overlay"></div>
-                            <div class="detect-grid" aria-hidden="true">
-                                <b class="hot"></b><b class="hot"></b><b class="hot"></b><b></b><b></b><b></b>
-                                <b class="hot"></b><b class="hot"></b><b class="hot"></b><b class="hot"></b><b></b><b></b>
-                                <b class="hot"></b><b class="hot"></b><b class="hot"></b><b class="hot"></b><b></b><b></b>
-                                <b class="hot"></b><b class="hot"></b><b></b><b></b><b></b><b></b>
-                                <b></b><b></b><b></b><b></b><b></b><b></b>
+                    <div class="pdf-toolbar">
+                        <span class="chip">100%</span>
+                        <span>Page 1 of 12</span>
+                        <span>· White PDF · no dark mode</span>
+                    </div>
+                    <div class="pdf-page-wrap">
+                        <div class="pdf-page">
+                            <h3>Q3 Product Roadmap</h3>
+                            <div class="pdf-meta">Internal brief · Cannot switch this document to dark mode</div>
+                            <p>This is a <span class="hi">pure white PDF</span>. Dark mode on macOS does not restyle it. At 9pm next to a dark IDE, it blinds.</p>
+                            <p>Tables, invoices, Slack exports, legal docs, research papers — same problem. You cannot change their color.</p>
+                            <table class="pdf-table">
+                                <tr><th>Initiative</th><th>Owner</th><th>Status</th></tr>
+                                <tr><td>Region dimming</td><td>Eng</td><td>Ship</td></tr>
+                                <tr><td>Color temperature</td><td>Eng</td><td>Live</td></tr>
+                                <tr><td>Super Spaces</td><td>Product</td><td>Live</td></tr>
+                            </table>
+                            <div class="pdf-dim"></div>
+                            <div class="detect" aria-hidden="true">
+                                <b class="hot"></b><b class="hot"></b><b class="hot"></b><b class="hot"></b><b class="hot"></b>
+                                <b class="hot"></b><b class="hot"></b><b class="hot"></b><b class="hot"></b><b class="hot"></b>
+                                <b class="hot"></b><b class="hot"></b><b class="hot"></b><b class="hot"></b><b class="hot"></b>
+                                <b class="hot"></b><b class="hot"></b><b class="hot"></b><b class="hot"></b><b></b>
+                                <b class="hot"></b><b class="hot"></b><b></b><b></b><b></b>
+                                <b></b><b></b><b></b><b></b><b></b>
                             </div>
                         </div>
                     </div>
                 </div>
-
                 <div class="chip">
                     <span class="dot"></span>
-                    <span>Bright regions dimmed · <strong>dark IDE preserved</strong></span>
+                    <span>Only the PDF dimmed · <strong>dark IDE untouched</strong></span>
                 </div>
-
                 <div class="callout after-label">
                     After SuperDimmer
-                    <span class="sub">Only the bright region is calmed</span>
+                    <span class="sub">Isolated dim — not a whole-screen filter</span>
                 </div>
             </div>
-
             <div class="handle" id="handle"></div>
         </div>
-
         <div class="caption">
-            <div><strong>Before:</strong> white Mail glare punches through dark mode</div>
-            <div><strong>After:</strong> SuperDimmer dims bright tiles — code stays crisp</div>
+            <div><strong>Before:</strong> dark mode everywhere — except the white PDF you can’t restyle</div>
+            <div><strong>After:</strong> SuperDimmer dims that document only</div>
         </div>
     </div>
-
     <script>
-        /*
-          Drag-to-compare controller.
-          Updates clip-path on the AFTER scene and handle left % so the same
-          desktop proves selective dimming instead of a global orange filter.
-          Copied into index.html after visual sign-off via Puppeteer screenshots.
-        */
         (function () {
             const compare = document.getElementById('compare');
             const after = document.getElementById('afterScene');
             const handle = document.getElementById('handle');
             let dragging = false;
-
             function setPos(clientX) {
                 const rect = compare.getBoundingClientRect();
                 let pct = ((clientX - rect.left) / rect.width) * 100;
                 pct = Math.max(8, Math.min(92, pct));
                 after.style.clipPath = `inset(0 0 0 ${pct}%)`;
-                handle.style.left = `${pct}%`;
+                handle.style.left = pct + '%';
             }
-
-            compare.addEventListener('pointerdown', (e) => {
-                dragging = true;
-                compare.setPointerCapture(e.pointerId);
-                setPos(e.clientX);
-            });
-            compare.addEventListener('pointermove', (e) => {
-                if (!dragging) return;
-                setPos(e.clientX);
-            });
+            compare.addEventListener('pointerdown', e => { dragging = true; compare.setPointerCapture(e.pointerId); setPos(e.clientX); });
+            compare.addEventListener('pointermove', e => { if (dragging) setPos(e.clientX); });
             compare.addEventListener('pointerup', () => { dragging = false; });
             compare.addEventListener('pointercancel', () => { dragging = false; });
         })();
