@@ -378,6 +378,13 @@
             const startTop = icon.offsetTop;
             let moved = false;
             icon.classList.add('is-dragging');
+            /*
+              Promote the dragged icon onto the desktop root so it can travel
+              above windows (icons layer is z-index 5 / behind windows). On drop
+              it returns to the icons layer and goes behind windows again.
+            */
+            const dragHome = icon.parentElement;
+            desktop.appendChild(icon);
 
             function onMove(ev) {
                 moved = true;
@@ -400,6 +407,9 @@
                 window.removeEventListener('pointermove', onMove);
                 window.removeEventListener('pointerup', onUp);
                 icon.classList.remove('is-dragging');
+                if (dragHome && icon.parentElement !== dragHome) {
+                    dragHome.appendChild(icon);
+                }
                 if (folderEl) folderEl.classList.remove('is-drop-target');
 
                 if (folderEl) {

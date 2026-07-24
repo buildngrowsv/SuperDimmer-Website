@@ -409,20 +409,26 @@
 
         .hero-compare .hc-desktop-icons {
             /*
-              Above windows so the Projects folder (and parked file icons) stay
-              clickable/draggable even if a window is dragged over the rail.
-              Still below menubar (80) and dim handle (100).
+              Behind windows (user, 2026-07-24): icons live on the desktop
+              surface. A window covering them hides them — same as real macOS.
+              Icons only show when the window is closed or moved aside.
+              During an active icon drag we promote that one icon above windows
+              so the drop onto Projects still works.
             */
-            position: absolute; inset: 0; z-index: 55; pointer-events: none;
+            position: absolute; inset: 0; z-index: 5; pointer-events: none;
         }
         .hero-compare .hc-desk-icon {
             position: absolute; width: 72px; pointer-events: auto; cursor: grab;
             display: flex; flex-direction: column; align-items: center; gap: 4px;
-            padding: 4px 2px; border-radius: 8px;
+            padding: 4px 2px; border-radius: 8px; z-index: 1;
         }
         .hero-compare .hc-desk-icon:active { cursor: grabbing; }
         .hero-compare .hc-desk-icon.is-selected { background: rgba(232,168,56,0.18); }
-        .hero-compare .hc-desk-icon.is-dragging { opacity: 0.92; z-index: 90; }
+        .hero-compare .hc-desk-icon.is-dragging {
+            opacity: 0.92; z-index: 120;
+            /* Escape the icons layer stacking context while dragging */
+            position: absolute;
+        }
         .hero-compare .hc-desk-icon-art {
             width: 48px; height: 44px; border-radius: 8px;
             box-shadow: 0 6px 16px rgba(0,0,0,0.35);
