@@ -18,8 +18,8 @@
     <meta property="og:url" content="https://superdimmer.com/">
     <meta property="og:title" content="SuperDimmer — Dark mode cannot fix a white PDF. We can.">
     <meta property="og:description" content="SuperDimmer intelligently detects and dims bright areas on your screen. Reduce eye strain, protect your eyes at night, and enjoy a more comfortable Mac experience.">
-    <meta property="og:image" content="https://superdimmer.com/assets/promo/og-superdimmer-share-card.png?v=20260724b">
-    <meta property="og:image:secure_url" content="https://superdimmer.com/assets/promo/og-superdimmer-share-card.png?v=20260724b">
+    <meta property="og:image" content="https://superdimmer.com/assets/promo/og-superdimmer-share-card.png?v=20260724cc">
+    <meta property="og:image:secure_url" content="https://superdimmer.com/assets/promo/og-superdimmer-share-card.png?v=20260724cc">
     <meta property="og:image:type" content="image/png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -27,10 +27,10 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="SuperDimmer — Dark mode cannot fix a white PDF. We can.">
     <meta name="twitter:description" content="Dims only the bright regions on your Mac. Dark UI stays untouched.">
-    <meta name="twitter:image" content="https://superdimmer.com/assets/promo/og-superdimmer-share-card.png?v=20260724b">
+    <meta name="twitter:image" content="https://superdimmer.com/assets/promo/og-superdimmer-share-card.png?v=20260724cc">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <link rel="icon" type="image/png" sizes="32x32" href="assets/logo-icon.png?v=20260724b">
-    <link rel="apple-touch-icon" sizes="180x180" href="assets/logo-icon.png?v=20260724b">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/logo-icon.png?v=20260724cc">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/logo-icon.png?v=20260724cc">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -329,14 +329,15 @@
         .stat-label { font-size: 0.9rem; color: var(--text-muted); }
 
 
+
         /* =========================================================
-           Hero Visual - Isolation Before/After (White PDF in Dark Mode)
-           PRODUCT TRUTH (user, 2026-07-24): SuperDimmer is NOT a general
-           screen dimmer. The money shot is dark mode + a white PDF you
-           cannot restyle → only that document dims. Wallpaper/IDE/chrome
-           stay pixel-identical across BEFORE/AFTER. Earlier versions failed
-           by tinting the whole scene (looked like f.lux).
-           Source mock: assets/promo/superdimmer-hero-before-after-mockup.html
+           Hero Visual - SINGLE-SCENE isolation compare
+           Why rewritten (user, 2026-07-24, third pass): dual-scene
+           clip-path made the whole AFTER half look globally darker
+           (white PDF bloom on BEFORE + duplicated scene). Now there is
+           ONE desktop. The drag handle only clips a dim veil that lives
+           INSIDE the white PDF page. IDE / wallpaper / chrome never
+           change brightness. That is the only honest proof of isolation.
            ========================================================= */
         .hero-visual {
             position: relative;
@@ -369,8 +370,10 @@
             aspect-ratio: 16 / 10.2; user-select: none; touch-action: none;
             cursor: col-resize; background: #11100e; width: 100%;
         }
-        .hero-compare .hc-scene { position: absolute; inset: 0; overflow: hidden; }
-        .hero-compare .hc-scene.after { clip-path: inset(0 0 0 50%); }
+
+        .hero-compare .hc-scene {
+            position: absolute; inset: 0; overflow: hidden;
+        }
 
         .hero-compare .hc-wallpaper {
             position: absolute; inset: 0;
@@ -383,8 +386,7 @@
         .hero-compare .hc-menubar {
             position: absolute; top: 0; left: 0; right: 0; height: 28px;
             display: flex; align-items: center; justify-content: space-between;
-            padding: 0 14px; background: rgba(18,18,20,0.82);
-            backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+            padding: 0 14px; background: rgba(18,18,20,0.92);
             border-bottom: 1px solid rgba(255,255,255,0.06);
             font-size: 11px; color: rgba(245,242,235,0.85); z-index: 5;
         }
@@ -401,7 +403,6 @@
             box-shadow: 0 0 10px rgba(232,168,56,0.55); display: grid; place-items: center;
         }
         .hero-compare .hc-sd-icon svg { width: 9px; height: 9px; fill: #0a0908; }
-        .hero-compare .hc-scene.before .hc-sd-icon { opacity: 0.2; filter: grayscale(1); box-shadow: none; }
 
         .hero-compare .hc-window {
             position: absolute; border-radius: 12px; overflow: hidden;
@@ -421,7 +422,7 @@
         .hero-compare .hc-title { flex: 1; text-align: center; font-weight: 500; }
 
         .hero-compare .hc-ide {
-            left: 3%; top: 10%; width: 42%; height: 78%;
+            left: 3%; top: 10%; width: 40%; height: 78%;
             background: #1e1e1e; z-index: 2;
         }
         .hero-compare .hc-ide-body {
@@ -440,12 +441,14 @@
         .hero-compare .hc-ide-code .ln { color: #858585; display: inline-block; width: 20px; }
         .hero-compare .hc-ide-code .kw { color: #c586c0; }
         .hero-compare .hc-ide-code .fn { color: #dcdcaa; }
-        .hero-compare .hc-ide-code .str { color: #ce9178; }
         .hero-compare .hc-ide-code .cm { color: #6a9955; }
-        .hero-compare .hc-ide-code .ty { color: #4ec9b0; }
 
+        /*
+          PDF window parked so the white PAGE spans the center. The handle
+          bisects the page; dark Preview chrome around the page stays constant.
+        */
         .hero-compare .hc-pdf {
-            left: 28%; top: 12%; width: 66%; height: 76%;
+            left: 30%; top: 11%; width: 64%; height: 78%;
             background: #2c2c2e; z-index: 3;
         }
         .hero-compare .hc-pdf .hc-titlebar { background: #3a3a3c; border-bottom-color: #4a4a4c; color: #e5e5e7; }
@@ -463,48 +466,61 @@
             padding: 14px 18px; position: relative;
         }
         .hero-compare .hc-pdf-page {
-            width: 100%; max-width: 520px; background: #ffffff; color: #111;
+            width: 100%; max-width: 540px; background: #ffffff; color: #111;
             border-radius: 2px; padding: 22px 26px; position: relative;
             box-shadow: 0 8px 28px rgba(0,0,0,0.35); overflow: hidden;
-        }
-        .hero-compare .hc-scene.before .hc-pdf-page {
-            box-shadow: 0 8px 28px rgba(0,0,0,0.35), 0 0 48px rgba(255,255,255,0.35);
+            /* Amber ring marks the ONLY surface SuperDimmer is allowed to touch */
+            outline: 2px solid rgba(232,168,56,0.55);
+            outline-offset: 0;
         }
         .hero-compare .hc-pdf-page h3 {
             font-size: 18px; font-weight: 700; margin-bottom: 4px;
             letter-spacing: -0.02em; font-family: var(--font-body); color: #111;
+            position: relative; z-index: 1;
         }
-        .hero-compare .hc-pdf-meta { font-size: 10px; color: #888; margin-bottom: 14px; }
-        .hero-compare .hc-pdf-page p { font-size: 12px; line-height: 1.55; color: #222; margin-bottom: 10px; }
-        .hero-compare .hc-pdf-table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 11px; }
+        .hero-compare .hc-pdf-meta { font-size: 10px; color: #888; margin-bottom: 14px; position: relative; z-index: 1; }
+        .hero-compare .hc-pdf-page p { font-size: 12px; line-height: 1.55; color: #222; margin-bottom: 10px; position: relative; z-index: 1; }
+        .hero-compare .hc-pdf-table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 11px; position: relative; z-index: 1; }
         .hero-compare .hc-pdf-table th, .hero-compare .hc-pdf-table td {
             border: 1px solid #ddd; padding: 6px 8px; text-align: left; color: #111;
         }
         .hero-compare .hc-pdf-table th { background: #f3f3f3; }
         .hero-compare .hc-pdf-page .hi { background: #fff3bf; padding: 0 3px; }
 
-        /* ONLY the white page changes on AFTER — isolation proof */
+        /*
+          Dim veil + detect grid live INSIDE the white page only.
+          JS sets clip-path relative to this page so dragging never dims the IDE.
+          Stronger veil than v1 so the white→calm change is obvious at a glance.
+        */
         .hero-compare .hc-pdf-dim {
-            position: absolute; inset: 0; pointer-events: none; opacity: 0;
-            background: linear-gradient(165deg, rgba(28,16,6,0.52), rgba(8,6,4,0.68));
+            position: absolute; inset: 0; pointer-events: none; z-index: 2;
+            background: rgba(12, 8, 4, 0.62);
+            clip-path: inset(0 0 0 48%);
         }
-        .hero-compare .hc-scene.after .hc-pdf-dim { opacity: 1; }
         .hero-compare .hc-detect {
-            position: absolute; inset: 8px; pointer-events: none; opacity: 0;
+            position: absolute; inset: 6px; pointer-events: none; z-index: 3; opacity: 1;
             display: grid; grid-template-columns: repeat(5,1fr); grid-template-rows: repeat(6,1fr); gap: 3px;
+            clip-path: inset(0 0 0 48%);
         }
-        .hero-compare .hc-scene.after .hc-detect { opacity: 1; }
-        .hero-compare .hc-detect b { border: 1px solid rgba(232,168,56,0.15); border-radius: 2px; }
+        .hero-compare .hc-detect b { border: 1px solid rgba(232,168,56,0.12); border-radius: 2px; }
         .hero-compare .hc-detect b.hot {
-            background: rgba(232,168,56,0.2); border-color: rgba(232,168,56,0.65);
-            box-shadow: inset 0 0 12px rgba(232,168,56,0.25);
+            background: rgba(232,168,56,0.18); border-color: rgba(232,168,56,0.65);
+            box-shadow: inset 0 0 10px rgba(232,168,56,0.22);
+        }
+
+        .hero-compare .hc-page-tag {
+            position: absolute; top: 8px; right: 8px; z-index: 4;
+            font-size: 10px; font-weight: 700; letter-spacing: 0.03em; text-transform: uppercase;
+            padding: 5px 8px; border-radius: 999px; color: #0a0908;
+            background: linear-gradient(135deg, var(--hc-amber), var(--hc-orange));
+            box-shadow: 0 6px 16px rgba(212,118,44,0.4);
+            clip-path: inset(0 0 0 48%);
         }
 
         .hero-compare .hc-callout {
             position: absolute; z-index: 6; font-size: 10px; font-weight: 600;
             letter-spacing: 0.03em; text-transform: uppercase; padding: 7px 10px;
-            border-radius: 999px; max-width: min(46%, 230px);
-            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-sizing: border-box;
+            border-radius: 999px; max-width: min(46%, 240px); box-sizing: border-box;
         }
         .hero-compare .hc-callout .sub {
             display: block; font-size: 10px; font-weight: 500; letter-spacing: 0;
@@ -512,24 +528,21 @@
         }
         .hero-compare .hc-callout.before-label {
             left: 12px; bottom: 12px; color: #fff;
-            background: rgba(20,18,16,0.8); border: 1px solid rgba(255,255,255,0.12);
+            background: rgba(20,18,16,0.85); border: 1px solid rgba(255,255,255,0.12);
         }
         .hero-compare .hc-callout.after-label {
             right: 12px; bottom: 12px; color: #0a0908;
             background: linear-gradient(135deg, var(--hc-amber), var(--hc-orange));
             box-shadow: 0 8px 24px rgba(212,118,44,0.35);
         }
-        .hero-compare .hc-scene.before .hc-callout.after-label { display: none; }
-        .hero-compare .hc-scene.after .hc-callout.before-label { display: none; }
 
         .hero-compare .hc-status {
-            position: absolute; z-index: 6; top: 40px; right: 14px;
-            display: none; align-items: center; gap: 8px; padding: 8px 12px;
+            position: absolute; z-index: 6; top: 40px; left: 14px;
+            display: flex; align-items: center; gap: 8px; padding: 8px 12px;
             border-radius: 12px; background: rgba(26,24,22,0.88);
             border: 1px solid rgba(232,168,56,0.4); font-size: 11px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.35); color: var(--text-primary);
         }
-        .hero-compare .hc-scene.after .hc-status { display: flex; }
         .hero-compare .hc-status .dot {
             width: 8px; height: 8px; border-radius: 50%; background: var(--hc-amber);
             box-shadow: 0 0 10px rgba(232,168,56,0.8);
@@ -537,7 +550,7 @@
         .hero-compare .hc-status strong { color: var(--hc-amber); font-weight: 650; }
 
         .hero-compare .hc-handle {
-            position: absolute; top: 0; bottom: 0; left: 50%; width: 2px;
+            position: absolute; top: 0; bottom: 0; left: 55%; width: 2px;
             background: linear-gradient(180deg, transparent, var(--hc-amber), transparent);
             transform: translateX(-50%); z-index: 10;
         }
@@ -560,7 +573,7 @@
 
         @media (max-width: 900px) {
             .hero-compare .hc-caption { flex-direction: column; gap: 6px; }
-            .hero-compare .hc-status { display: none !important; }
+            .hero-compare .hc-status { font-size: 10px; padding: 6px 8px; }
             .hero-compare .hc-ide-code { font-size: 10px; }
             .hero-compare .hc-callout .sub { display: none; }
             .hero-compare .hc-pdf-table { display: none; }
@@ -1364,19 +1377,17 @@
                 </div>
                 <div class="hero-visual">
                     <!--
-                      Isolation before/after: dark mode + white PDF you cannot
-                      restyle. ONLY the PDF page dims on AFTER. Wallpaper/IDE
-                      identical. User feedback 2026-07-24: earlier heroes looked
-                      like a general screen dimmer / f.lux wash.
+                      SINGLE-SCENE isolation compare.
+                      One desktop. Dim veil clipped inside the white PDF page only.
+                      Dual-scene clip was rejected because AFTER looked globally darker.
                     -->
                     <div class="hero-compare" id="heroCompare">
                         <div class="hc-eyebrow">
                             <h2>Dark mode can’t fix a white PDF. <span>SuperDimmer can.</span></h2>
-                            <p>Drag to compare</p>
+                            <p>Drag across the PDF</p>
                         </div>
-                        <div class="hc-compare" id="heroCompareStage" aria-label="Before and after SuperDimmer isolation comparison">
-                            <div class="hc-scene before">
-
+                        <div class="hc-compare" id="heroCompareStage" aria-label="Isolation compare: only the white PDF page dims">
+                            <div class="hc-scene">
                                 <div class="hc-wallpaper"></div>
                                 <div class="hc-menubar">
                                     <div class="hc-menubar-left">
@@ -1391,10 +1402,11 @@
                                         <span>Fri 9:41 PM</span>
                                     </div>
                                 </div>
+
                                 <div class="hc-window hc-ide">
                                     <div class="hc-titlebar">
                                         <div class="hc-traffic"><i class="r"></i><i class="y"></i><i class="g"></i></div>
-                                        <div class="hc-title">AppCoordinator.swift — dark IDE</div>
+                                        <div class="hc-title">AppCoordinator.swift — dark IDE (never dimmed)</div>
                                     </div>
                                     <div class="hc-ide-body">
                                         <div class="hc-ide-rail"><span class="on"></span><span></span><span></span></div>
@@ -1408,6 +1420,7 @@
                                         </div>
                                     </div>
                                 </div>
+
                                 <div class="hc-window hc-pdf">
                                     <div class="hc-titlebar">
                                         <div class="hc-traffic"><i class="r"></i><i class="y"></i><i class="g"></i></div>
@@ -1416,10 +1429,10 @@
                                     <div class="hc-pdf-toolbar">
                                         <span class="hc-chip">100%</span>
                                         <span>Page 1 of 12</span>
-                                        <span>· White PDF · no dark mode</span>
+                                        <span>· White page = dim target</span>
                                     </div>
                                     <div class="hc-pdf-page-wrap">
-                                        <div class="hc-pdf-page">
+                                        <div class="hc-pdf-page" id="heroPdfPage">
                                             <h3>Q3 Product Roadmap</h3>
                                             <div class="hc-pdf-meta">Internal brief · Cannot switch this document to dark mode</div>
                                             <p>This is a <span class="hi">pure white PDF</span>. Dark mode on macOS does not restyle it. At 9pm next to a dark IDE, it blinds.</p>
@@ -1430,74 +1443,8 @@
                                                 <tr><td>Color temperature</td><td>Eng</td><td>Live</td></tr>
                                                 <tr><td>Super Spaces</td><td>Product</td><td>Live</td></tr>
                                             </table>
-                                            
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="hc-callout before-label">
-                                    Before
-                                    <span class="sub">White PDF punches through dark mode</span>
-                                </div>
-                            </div>
-                            <div class="hc-scene after" id="heroAfterScene">
-
-                                <div class="hc-wallpaper"></div>
-                                <div class="hc-menubar">
-                                    <div class="hc-menubar-left">
-                                        <span class="hc-apple"></span>
-                                        <span class="hc-app-name">Preview</span>
-                                        <span>File</span><span>Edit</span><span>View</span>
-                                    </div>
-                                    <div class="hc-menubar-right">
-                                        <span class="hc-sd-icon" aria-hidden="true">
-                                            <svg viewBox="0 0 24 24"><path d="M12 3a1 1 0 0 1 1 1v1.06A7 7 0 0 1 18.94 11H20a1 1 0 1 1 0 2h-1.06A7 7 0 0 1 13 17.94V19a1 1 0 1 1-2 0v-1.06A7 7 0 0 1 5.06 13H4a1 1 0 1 1 0-2h1.06A7 7 0 0 1 11 5.06V4a1 1 0 0 1 1-1zm0 5a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"/></svg>
-                                        </span>
-                                        <span>Fri 9:41 PM</span>
-                                    </div>
-                                </div>
-                                <div class="hc-window hc-ide">
-                                    <div class="hc-titlebar">
-                                        <div class="hc-traffic"><i class="r"></i><i class="y"></i><i class="g"></i></div>
-                                        <div class="hc-title">AppCoordinator.swift — dark IDE</div>
-                                    </div>
-                                    <div class="hc-ide-body">
-                                        <div class="hc-ide-rail"><span class="on"></span><span></span><span></span></div>
-                                        <div class="hc-ide-code">
-                                            <div><span class="ln">12</span><span class="kw">func</span> <span class="fn">dimBrightRegions</span>() {</div>
-                                            <div><span class="ln">13</span>&nbsp;&nbsp;<span class="cm">// Dark UI never gets an overlay</span></div>
-                                            <div><span class="ln">14</span>&nbsp;&nbsp;<span class="kw">for</span> tile <span class="kw">in</span> grid <span class="kw">where</span> tile.luma &gt; threshold {</div>
-                                            <div><span class="ln">15</span>&nbsp;&nbsp;&nbsp;&nbsp;overlay.<span class="fn">dim</span>(tile)</div>
-                                            <div><span class="ln">16</span>&nbsp;&nbsp;}</div>
-                                            <div><span class="ln">17</span>}</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="hc-window hc-pdf">
-                                    <div class="hc-titlebar">
-                                        <div class="hc-traffic"><i class="r"></i><i class="y"></i><i class="g"></i></div>
-                                        <div class="hc-title">Q3-Roadmap.pdf — Preview</div>
-                                    </div>
-                                    <div class="hc-pdf-toolbar">
-                                        <span class="hc-chip">100%</span>
-                                        <span>Page 1 of 12</span>
-                                        <span>· White PDF · no dark mode</span>
-                                    </div>
-                                    <div class="hc-pdf-page-wrap">
-                                        <div class="hc-pdf-page">
-                                            <h3>Q3 Product Roadmap</h3>
-                                            <div class="hc-pdf-meta">Internal brief · Cannot switch this document to dark mode</div>
-                                            <p>This is a <span class="hi">pure white PDF</span>. Dark mode on macOS does not restyle it. At 9pm next to a dark IDE, it blinds.</p>
-                                            <p>Tables, invoices, research papers — same problem. You cannot change their color.</p>
-                                            <table class="hc-pdf-table">
-                                                <tr><th>Initiative</th><th>Owner</th><th>Status</th></tr>
-                                                <tr><td>Region dimming</td><td>Eng</td><td>Ship</td></tr>
-                                                <tr><td>Color temperature</td><td>Eng</td><td>Live</td></tr>
-                                                <tr><td>Super Spaces</td><td>Product</td><td>Live</td></tr>
-                                            </table>
-                                            
-                                            <div class="hc-pdf-dim"></div>
-                                            <div class="hc-detect" aria-hidden="true">
+                                            <div class="hc-pdf-dim" id="heroPdfDim"></div>
+                                            <div class="hc-detect" id="heroPdfDetect" aria-hidden="true">
                                                 <b class="hot"></b><b class="hot"></b><b class="hot"></b><b class="hot"></b><b class="hot"></b>
                                                 <b class="hot"></b><b class="hot"></b><b class="hot"></b><b class="hot"></b><b class="hot"></b>
                                                 <b class="hot"></b><b class="hot"></b><b class="hot"></b><b class="hot"></b><b class="hot"></b>
@@ -1505,25 +1452,29 @@
                                                 <b class="hot"></b><b class="hot"></b><b></b><b></b><b></b>
                                                 <b></b><b></b><b></b><b></b><b></b>
                                             </div>
-
+                                            <div class="hc-page-tag" id="heroPdfTag">Dimmed region</div>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="hc-status">
                                     <span class="dot"></span>
-                                    <span>Only the PDF dimmed · <strong>dark IDE untouched</strong></span>
+                                    <span>Watch the <strong>white page only</strong> — IDE brightness never changes</span>
+                                </div>
+                                <div class="hc-callout before-label">
+                                    Left of handle
+                                    <span class="sub">Raw white PDF glare</span>
                                 </div>
                                 <div class="hc-callout after-label">
-                                    After SuperDimmer
-                                    <span class="sub">Isolated dim — not a whole-screen filter</span>
+                                    Right of handle
+                                    <span class="sub">Only this page is dimmed</span>
                                 </div>
                             </div>
                             <div class="hc-handle" id="heroCompareHandle"></div>
                         </div>
                         <div class="hc-caption">
-                            <div><strong>Before:</strong> dark mode everywhere — except the white PDF you can’t restyle</div>
-                            <div><strong>After:</strong> SuperDimmer dims that document only</div>
+                            <div><strong>Same dark IDE</strong> on both sides of the line</div>
+                            <div><strong>Only the white PDF page</strong> gets darker</div>
                         </div>
                     </div>
                 </div>
@@ -1947,40 +1898,62 @@
         });
 
         /*
-          Hero before/after drag compare.
-          Why: the static AI MacBook image misrepresented SuperDimmer as a global
-          orange filter. This controller reveals the AFTER scene via clip-path so
-          visitors feel selective dimming in one drag. Null-guards because the
-          old heroDemo interval crashed when the animated demo markup was removed.
+          Single-scene isolation drag.
+          Handle position is in stage coords, but clip-path is computed relative
+          to the PDF PAGE box. Moving the handle across the IDE does not darken
+          the IDE — it only reveals more/less of the veil inside the white page.
+          That is the whole product demo.
         */
         (function initHeroBeforeAfterCompare() {
-            const compare = document.getElementById('heroCompareStage');
-            const after = document.getElementById('heroAfterScene');
+            const stage = document.getElementById('heroCompareStage');
             const handle = document.getElementById('heroCompareHandle');
-            if (!compare || !after || !handle) return;
+            const page = document.getElementById('heroPdfPage');
+            const dim = document.getElementById('heroPdfDim');
+            const detect = document.getElementById('heroPdfDetect');
+            const tag = document.getElementById('heroPdfTag');
+            if (!stage || !handle || !page || !dim) return;
 
             let dragging = false;
 
-            function setPos(clientX) {
-                const rect = compare.getBoundingClientRect();
-                let pct = ((clientX - rect.left) / rect.width) * 100;
+            function applyClip(clientX) {
+                const stageRect = stage.getBoundingClientRect();
+                const pageRect = page.getBoundingClientRect();
+                let pct = ((clientX - stageRect.left) / stageRect.width) * 100;
                 pct = Math.max(8, Math.min(92, pct));
-                after.style.clipPath = `inset(0 0 0 ${pct}%)`;
-                handle.style.left = `${pct}%`;
+                handle.style.left = pct + '%';
+
+                const handleX = stageRect.left + (pct / 100) * stageRect.width;
+                let leftClipPct = ((handleX - pageRect.left) / pageRect.width) * 100;
+                leftClipPct = Math.max(0, Math.min(100, leftClipPct));
+                const clip = 'inset(0 0 0 ' + leftClipPct + '%)';
+                dim.style.clipPath = clip;
+                if (detect) detect.style.clipPath = clip;
+                if (tag) tag.style.clipPath = clip;
             }
 
-            compare.addEventListener('pointerdown', (e) => {
+            // Default: bisect the PDF page so the split is obviously on the white area
+            function setDefault() {
+                const stageRect = stage.getBoundingClientRect();
+                const pageRect = page.getBoundingClientRect();
+                const midX = pageRect.left + pageRect.width * 0.48;
+                applyClip(midX);
+            }
+
+            stage.addEventListener('pointerdown', (e) => {
                 dragging = true;
-                compare.setPointerCapture(e.pointerId);
-                setPos(e.clientX);
+                stage.setPointerCapture(e.pointerId);
+                applyClip(e.clientX);
             });
-            compare.addEventListener('pointermove', (e) => {
+            stage.addEventListener('pointermove', (e) => {
                 if (!dragging) return;
-                setPos(e.clientX);
+                applyClip(e.clientX);
             });
             const stop = () => { dragging = false; };
-            compare.addEventListener('pointerup', stop);
-            compare.addEventListener('pointercancel', stop);
+            stage.addEventListener('pointerup', stop);
+            stage.addEventListener('pointercancel', stop);
+            window.addEventListener('resize', setDefault);
+            // Wait a frame so layout is ready
+            requestAnimationFrame(setDefault);
         })();
     </script>
 </body>
