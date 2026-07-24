@@ -10,7 +10,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="assets/logo-icon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         /* =========================================================
            CSS Variables - Warm amber theme for eye comfort app
@@ -32,6 +32,7 @@
                           radial-gradient(ellipse at 50% 100%, rgba(196, 92, 58, 0.06) 0%, transparent 40%);
             --font-display: 'Playfair Display', Georgia, serif;
             --font-body: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-mono: 'JetBrains Mono', ui-monospace, Menlo, monospace;
             --shadow-glow: 0 0 60px rgba(232, 168, 56, 0.15);
             --shadow-card: 0 4px 30px rgba(0, 0, 0, 0.4);
             --border-subtle: 1px solid rgba(245, 242, 235, 0.06);
@@ -305,195 +306,549 @@
         .stat-label { font-size: 0.9rem; color: var(--text-muted); }
 
         /* =========================================================
-           Hero Visual - Animated Demo
+           Hero Visual - Interactive Before/After Compare
+           Replaces the AI MacBook sun-glare collage (Jan 2026) that sold the
+           wrong story (whole-screen orange wash). This live drag-compare shows
+           the real product claim: dim only bright Mail tiles; leave dark IDE
+           alone. Design source: tmp/superdimmer-hero-before-after-mockup.html
+           and assets/promo/superdimmer-hero-before-after-mockup.html
            ========================================================= */
         .hero-visual {
             position: relative;
             animation: fadeInUp 1s var(--transition-smooth) forwards;
             animation-delay: 0.5s;
             opacity: 0;
+            width: 100%;
         }
 
-        .demo-container {
-            position: relative;
-            background: var(--bg-secondary);
-            border-radius: 20px;
-            padding: 20px;
-            box-shadow: var(--shadow-card), var(--shadow-glow);
-            border: var(--border-subtle);
+        .hero-compare {
+            width: 100%;
+            --hc-amber: #e8a838;
+            --hc-orange: #d4762c;
+            --hc-coral: #c45c3a;
         }
 
-        .demo-titlebar {
+        .hero-compare .hc-eyebrow {
             display: flex;
-            gap: 8px;
-            margin-bottom: 16px;
-        }
-
-        .demo-titlebar span {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-        }
-        .demo-titlebar span:nth-child(1) { background: #ff5f57; }
-        .demo-titlebar span:nth-child(2) { background: #febc2e; }
-        .demo-titlebar span:nth-child(3) { background: #28c840; }
-
-        /* Simulated screen with regions */
-        .demo-screen {
-            background: #ffffff;
-            border-radius: 12px;
-            padding: 16px;
-            min-height: 280px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            grid-template-rows: auto 1fr;
-            gap: 12px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        /* Simulated bright regions that get dimmed */
-        .demo-region {
-            background: #ffffff;
-            border-radius: 8px;
-            padding: 12px;
-            position: relative;
-            transition: all 0.5s ease;
-        }
-
-        .demo-region.header {
-            grid-column: 1 / -1;
-            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
-            display: flex;
-            align-items: center;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 14px;
+            padding: 0 4px;
             gap: 12px;
         }
 
-        .demo-region.sidebar {
-            background: #1a1a2e;
-            color: #a0a0a0;
+        .hero-compare .hc-eyebrow h2 {
+            font-family: var(--font-display);
+            font-size: clamp(1.05rem, 2vw, 1.25rem);
+            font-weight: 500;
+            letter-spacing: -0.02em;
+            color: var(--text-primary);
         }
 
-        .demo-region.content {
-            background: #ffffff;
+        .hero-compare .hc-eyebrow h2 span {
+            background: var(--gradient-warm);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        /* Dimming overlay effect */
-        .demo-region::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: rgba(0, 0, 0, 0);
-            border-radius: 8px;
-            transition: background 1.5s ease;
-            pointer-events: none;
-        }
-
-        /* Animation: regions get dimmed */
-        .demo-screen.dimming .demo-region.header::after,
-        .demo-screen.dimming .demo-region.content::after {
-            background: rgba(0, 0, 0, 0.35);
-        }
-
-        /* Keep dark regions unchanged */
-        .demo-screen.dimming .demo-region.sidebar::after {
-            background: rgba(0, 0, 0, 0);
-        }
-
-        /* Placeholder content inside regions */
-        .demo-avatar {
-            width: 32px;
-            height: 32px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 50%;
-        }
-
-        .demo-text-line {
-            height: 10px;
-            background: #e0e0e0;
-            border-radius: 4px;
-            margin-bottom: 8px;
-        }
-
-        .demo-text-line.short { width: 60%; }
-        .demo-text-line.medium { width: 80%; }
-        .demo-text-line.dark { background: #3a3a5a; }
-
-        .demo-icon {
-            width: 20px;
-            height: 20px;
-            background: #4a4a6a;
-            border-radius: 4px;
-            margin-bottom: 8px;
-        }
-
-        /* Detection indicator */
-        .demo-indicator {
-            position: absolute;
-            bottom: -50px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: var(--bg-card);
-            padding: 12px 20px;
-            border-radius: 100px;
-            border: var(--border-subtle);
-            font-size: 0.85rem;
-            color: var(--text-secondary);
+        .hero-compare .hc-eyebrow p {
+            color: var(--text-muted);
+            font-size: 0.88rem;
+            font-weight: 500;
             white-space: nowrap;
         }
 
-        .demo-indicator .dot {
-            width: 8px;
-            height: 8px;
-            background: #28c840;
-            border-radius: 50%;
-            animation: pulse 2s infinite;
-        }
-
-        .demo-indicator .status {
-            color: var(--accent-warm);
-            font-weight: 600;
-        }
-
-        /* Floating feature badges */
-        .floating-badge {
-            position: absolute;
-            background: var(--bg-card);
-            padding: 12px 16px;
-            border-radius: 12px;
+        /*
+          Interactive compare stage.
+          Same desktop scene rendered twice; clip-path reveals AFTER on the right
+          of the drag handle. Chosen over another static AI collage because SaaS
+          landing patterns in 2026 favor immersive product proof, and because the
+          old MacBook split mis-sold SuperDimmer as a global orange filter.
+        */
+        .hero-compare .hc-compare {
+            position: relative;
+            border-radius: 22px;
+            overflow: hidden;
             border: var(--border-subtle);
-            box-shadow: var(--shadow-card);
-            animation: float 4s ease-in-out infinite;
+            box-shadow: var(--shadow-card), var(--shadow-glow);
+            aspect-ratio: 16 / 10.2;
+            user-select: none;
+            touch-action: none;
+            cursor: col-resize;
+            background: #11100e;
+            width: 100%;
         }
 
-        .floating-badge.badge-1 {
-            top: -20px;
-            right: -20px;
-            animation-delay: 0s;
+        .hero-compare .hc-scene {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
         }
 
-        .floating-badge.badge-2 {
-            bottom: 80px;
-            left: -30px;
-            animation-delay: 1s;
+        .hero-compare .hc-scene.after {
+            clip-path: inset(0 0 0 52%);
         }
 
-        .floating-badge-icon {
+        .hero-compare .hc-wallpaper {
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 80% 60% at 20% 30%, #3a2a18 0%, transparent 55%),
+                radial-gradient(ellipse 70% 50% at 80% 70%, #1a2438 0%, transparent 50%),
+                linear-gradient(160deg, #1c1814 0%, #12151c 45%, #0e1014 100%);
+        }
+
+        .hero-compare .hc-wallpaper.before-tint {
+            filter: brightness(1.22) saturate(1.2);
+        }
+
+        /*
+          Wallpaper after-state stays cooler/darker only. No global sepia — that
+          tinted the IDE and contradicted "dark UI stays untouched". Warmth lives
+          only on the dimmed Mail overlay below.
+        */
+        .hero-compare .hc-wallpaper.after-tint {
+            filter: brightness(0.68) saturate(0.88);
+        }
+
+        .hero-compare .hc-menubar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 14px;
+            background: rgba(20, 18, 16, 0.72);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            font-size: 11px;
+            color: rgba(245, 242, 235, 0.85);
+            z-index: 5;
+        }
+
+        .hero-compare .hc-menubar-left,
+        .hero-compare .hc-menubar-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .hero-compare .hc-apple {
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+            background: linear-gradient(135deg, #f5f2eb, #c8c2b6);
+        }
+
+        .hero-compare .hc-menubar .hc-app-name { font-weight: 600; }
+
+        .hero-compare .hc-sd-icon {
+            width: 14px;
+            height: 14px;
+            border-radius: 4px;
+            background: linear-gradient(135deg, var(--hc-amber), var(--hc-coral));
+            box-shadow: 0 0 10px rgba(232, 168, 56, 0.55);
+            display: grid;
+            place-items: center;
+        }
+
+        .hero-compare .hc-sd-icon svg {
+            width: 9px;
+            height: 9px;
+            fill: #0a0908;
+        }
+
+        .hero-compare .hc-scene.before .hc-sd-icon {
+            opacity: 0.25;
+            filter: grayscale(1);
+            box-shadow: none;
+        }
+
+        .hero-compare .hc-window {
+            position: absolute;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow:
+                0 18px 50px rgba(0, 0, 0, 0.45),
+                0 0 0 1px rgba(255, 255, 255, 0.08);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .hero-compare .hc-titlebar {
+            height: 34px;
             display: flex;
             align-items: center;
             gap: 8px;
-            font-size: 0.85rem;
-            color: var(--text-primary);
-            font-weight: 500;
+            padding: 0 12px;
+            background: rgba(255, 255, 255, 0.04);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            font-size: 11px;
+            color: rgba(245, 242, 235, 0.7);
+            flex-shrink: 0;
         }
 
-        .floating-badge-icon svg {
+        .hero-compare .hc-traffic {
+            display: flex;
+            gap: 6px;
+        }
+
+        .hero-compare .hc-traffic i {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: block;
+        }
+
+        .hero-compare .hc-traffic .r { background: #ff5f57; }
+        .hero-compare .hc-traffic .y { background: #febc2e; }
+        .hero-compare .hc-traffic .g { background: #28c840; }
+
+        .hero-compare .hc-titlebar .hc-title {
+            flex: 1;
+            text-align: center;
+            font-weight: 500;
+            letter-spacing: 0.01em;
+        }
+
+        /*
+          Window layout: Mail spans the center so the drag handle bisects the
+          bright reading pane. First mock parked Mail entirely on the right, so
+          BEFORE only showed dark IDE — useless as a before proof.
+        */
+        .hero-compare .hc-ide {
+            left: 3%;
+            top: 12%;
+            width: 44%;
+            height: 72%;
+            background: #1e1e1e;
+            z-index: 2;
+        }
+
+        .hero-compare .hc-ide-body {
+            display: grid;
+            grid-template-columns: 48px 1fr;
+            flex: 1;
+            min-height: 0;
+        }
+
+        .hero-compare .hc-ide-rail {
+            background: #252526;
+            border-right: 1px solid #333;
+            padding-top: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .hero-compare .hc-ide-rail span {
             width: 18px;
             height: 18px;
-            fill: var(--accent-warm);
+            border-radius: 4px;
+            background: #3c3c3c;
+        }
+
+        .hero-compare .hc-ide-rail span.active {
+            background: linear-gradient(135deg, var(--hc-amber), var(--hc-orange));
+        }
+
+        .hero-compare .hc-ide-code {
+            padding: 14px 16px;
+            font-family: var(--font-mono);
+            font-size: 11.5px;
+            line-height: 1.65;
+            color: #d4d4d4;
+            overflow: hidden;
+        }
+
+        .hero-compare .hc-ide-code .ln { color: #858585; display: inline-block; width: 22px; }
+        .hero-compare .hc-ide-code .kw { color: #c586c0; }
+        .hero-compare .hc-ide-code .fn { color: #dcdcaa; }
+        .hero-compare .hc-ide-code .str { color: #ce9178; }
+        .hero-compare .hc-ide-code .cm { color: #6a9955; }
+        .hero-compare .hc-ide-code .ty { color: #4ec9b0; }
+
+        .hero-compare .hc-mail {
+            left: 22%;
+            top: 14%;
+            width: 72%;
+            height: 74%;
+            background: #ffffff;
+            z-index: 3;
+            color: #1d1d1f;
+        }
+
+        /*
+          BEFORE intensifier — hotter white + soft bloom so AFTER dim reads as
+          relief. No fake sun-flare photography (that is what made the old hero
+          look ass).
+        */
+        .hero-compare .hc-scene.before .hc-mail {
+            filter: brightness(1.12) contrast(1.05);
+            box-shadow:
+                0 18px 50px rgba(0, 0, 0, 0.45),
+                0 0 0 1px rgba(255, 255, 255, 0.35),
+                0 0 40px rgba(255, 255, 255, 0.28);
+        }
+
+        .hero-compare .hc-scene.before .hc-mail-read {
+            background: #ffffff;
+        }
+
+        .hero-compare .hc-scene.before .hc-mail-read::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 30% 20%, rgba(255, 255, 255, 0.55), transparent 55%);
+            pointer-events: none;
+        }
+
+        .hero-compare .hc-mail .hc-titlebar {
+            background: #f4f4f5;
+            border-bottom: 1px solid #e5e5ea;
+            color: #3a3a3c;
+        }
+
+        /*
+          Single-pane Mail (no inbox list). During live QA the 52% handle cut
+          through list vs reading pane, so BEFORE/AFTER looked like different
+          UIs instead of the same bright email calming down. Reading-pane-only
+          keeps the drag proof honest.
+        */
+        .hero-compare .hc-mail-body {
+            display: block;
+            flex: 1;
+            min-height: 0;
+            position: relative;
+        }
+
+        .hero-compare .hc-mail-list { display: none; }
+
+        .hero-compare .hc-mail-read {
+            padding: 18px 20px;
+            background: #ffffff;
+            position: relative;
+            height: 100%;
+        }
+
+        .hero-compare .hc-mail-read h3 {
+            font-size: 15px;
+            font-weight: 650;
+            color: #111;
+            margin-bottom: 6px;
+            letter-spacing: -0.01em;
+            font-family: var(--font-body);
+        }
+
+        .hero-compare .hc-mail-meta {
+            font-size: 10.5px;
+            color: #8e8e93;
+            margin-bottom: 14px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .hero-compare .hc-mail-read p {
+            font-size: 11.5px;
+            line-height: 1.55;
+            color: #222;
+            margin-bottom: 10px;
+        }
+
+        .hero-compare .hc-mail-read .hi {
+            background: #fff3bf;
+            padding: 0 3px;
+            border-radius: 2px;
+        }
+
+        /*
+          AFTER dimming: three stacked cues only on Mail (never IDE).
+          1) brightness/sepia filter  2) veil  3) amber detection grid
+          This is the product differentiator vs f.lux-style whole-screen washes.
+        */
+        .hero-compare .hc-scene.after .hc-mail {
+            filter: brightness(0.55) sepia(0.28) saturate(0.8);
+            box-shadow:
+                0 18px 50px rgba(0, 0, 0, 0.55),
+                0 0 0 1px rgba(232, 168, 56, 0.28);
+        }
+
+        .hero-compare .hc-scene.after .hc-ide {
+            filter: none;
+        }
+
+        .hero-compare .hc-dim-overlay {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            opacity: 0;
+            background: linear-gradient(165deg, rgba(55, 28, 8, 0.45), rgba(12, 8, 6, 0.62));
+        }
+
+        .hero-compare .hc-scene.after .hc-dim-overlay { opacity: 1; }
+
+        .hero-compare .hc-detect-grid {
+            position: absolute;
+            inset: 6px;
+            pointer-events: none;
+            opacity: 0;
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            grid-template-rows: repeat(5, 1fr);
+            gap: 3px;
+        }
+
+        .hero-compare .hc-scene.after .hc-detect-grid { opacity: 1; }
+
+        .hero-compare .hc-detect-grid b {
+            border: 1px solid rgba(232, 168, 56, 0.12);
+            border-radius: 3px;
+        }
+
+        .hero-compare .hc-detect-grid b.hot {
+            background: rgba(232, 168, 56, 0.22);
+            border-color: rgba(232, 168, 56, 0.7);
+            box-shadow: inset 0 0 14px rgba(232, 168, 56, 0.28);
+        }
+
+        .hero-compare .hc-callout {
+            position: absolute;
+            z-index: 6;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            padding: 7px 11px;
+            border-radius: 999px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .hero-compare .hc-callout.before-label {
+            left: 16px;
+            bottom: 16px;
+            color: #fff;
+            background: rgba(20, 18, 16, 0.72);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .hero-compare .hc-callout.after-label {
+            right: 16px;
+            bottom: 16px;
+            color: #0a0908;
+            background: linear-gradient(135deg, var(--hc-amber), var(--hc-orange));
+            box-shadow: 0 8px 24px rgba(212, 118, 44, 0.35);
+        }
+
+        .hero-compare .hc-callout .sub {
+            display: block;
+            font-size: 10px;
+            font-weight: 500;
+            letter-spacing: 0;
+            text-transform: none;
+            opacity: 0.8;
+            margin-top: 2px;
+        }
+
+        .hero-compare .hc-scene.before .hc-callout.after-label { display: none; }
+        .hero-compare .hc-scene.after .hc-callout.before-label { display: none; }
+
+        .hero-compare .hc-chip {
+            position: absolute;
+            z-index: 6;
+            top: 42px;
+            right: 18px;
+            display: none;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 12px;
+            background: rgba(26, 24, 22, 0.82);
+            border: 1px solid rgba(232, 168, 56, 0.35);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+            font-size: 11px;
+            color: var(--text-primary);
+        }
+
+        .hero-compare .hc-scene.after .hc-chip { display: flex; }
+
+        .hero-compare .hc-chip .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--hc-amber);
+            box-shadow: 0 0 10px rgba(232, 168, 56, 0.8);
+        }
+
+        .hero-compare .hc-chip strong {
+            color: var(--hc-amber);
+            font-weight: 650;
+        }
+
+        .hero-compare .hc-handle {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 52%;
+            width: 2px;
+            background: linear-gradient(180deg, transparent, var(--hc-amber), transparent);
+            transform: translateX(-50%);
+            z-index: 10;
+        }
+
+        .hero-compare .hc-handle::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 42px;
+            height: 42px;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--hc-amber), var(--hc-coral));
+            box-shadow:
+                0 0 0 6px rgba(10, 9, 8, 0.55),
+                0 10px 28px rgba(212, 118, 44, 0.45);
+        }
+
+        .hero-compare .hc-handle::after {
+            content: '⟷';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 16px;
+            color: #0a0908;
+            font-weight: 700;
+            z-index: 1;
+        }
+
+        .hero-compare .hc-caption {
+            margin-top: 14px;
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            color: var(--text-muted);
+            font-size: 0.82rem;
+            padding: 0 4px;
+        }
+
+        .hero-compare .hc-caption strong {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        @media (max-width: 900px) {
+            .hero-compare .hc-caption { flex-direction: column; gap: 6px; }
+            .hero-compare .hc-chip { display: none !important; }
+            .hero-compare .hc-ide-code { font-size: 10px; }
+            .hero-compare .hc-callout .sub { display: none; }
         }
 
         /* =========================================================
@@ -1293,9 +1648,200 @@
                     </div>
                 </div>
                 <div class="hero-visual">
-                    <img src="assets/promo/web-superdimmer-hero-1.png" 
-                         alt="SuperDimmer Before and After - Intelligent Screen Dimming" 
-                         style="width: 100%; border-radius: 20px; box-shadow: var(--shadow-card), var(--shadow-glow);">
+                    <!--
+                      Interactive before/after: proves selective region dimming.
+                      Replaces the AI MacBook sun-glare collage that mis-sold the
+                      product as a whole-screen orange filter. Static PNG still at
+                      assets/promo/web-superdimmer-hero-1.png for social/og.
+                    -->
+                    <div class="hero-compare" id="heroCompare">
+                        <div class="hc-eyebrow">
+                            <h2>Bright where it hurts. <span>Calm where it counts.</span></h2>
+                            <p>Drag to compare</p>
+                        </div>
+
+                        <div class="hc-compare" id="heroCompareStage" aria-label="Before and after SuperDimmer comparison">
+                            <div class="hc-scene before">
+                                <div class="hc-wallpaper before-tint"></div>
+                                <div class="hc-menubar">
+                                    <div class="hc-menubar-left">
+                                        <span class="hc-apple"></span>
+                                        <span class="hc-app-name">Mail</span>
+                                        <span>File</span>
+                                        <span>Edit</span>
+                                        <span>View</span>
+                                    </div>
+                                    <div class="hc-menubar-right">
+                                        <span class="hc-sd-icon" aria-hidden="true">
+                                            <svg viewBox="0 0 24 24"><path d="M12 3a1 1 0 0 1 1 1v1.06A7 7 0 0 1 18.94 11H20a1 1 0 1 1 0 2h-1.06A7 7 0 0 1 13 17.94V19a1 1 0 1 1-2 0v-1.06A7 7 0 0 1 5.06 13H4a1 1 0 1 1 0-2h1.06A7 7 0 0 1 11 5.06V4a1 1 0 0 1 1-1zm0 5a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"/></svg>
+                                        </span>
+                                        <span>Fri 9:41 PM</span>
+                                    </div>
+                                </div>
+
+                                <div class="hc-window hc-ide">
+                                    <div class="hc-titlebar">
+                                        <div class="hc-traffic"><i class="r"></i><i class="y"></i><i class="g"></i></div>
+                                        <div class="hc-title">AppCoordinator.swift — SuperDimmer</div>
+                                    </div>
+                                    <div class="hc-ide-body">
+                                        <div class="hc-ide-rail">
+                                            <span class="active"></span><span></span><span></span><span></span>
+                                        </div>
+                                        <div class="hc-ide-code">
+                                            <div><span class="ln">12</span><span class="kw">func</span> <span class="fn">applyRegionDimming</span>(<span class="ty">regions</span>: [<span class="ty">BrightRegion</span>]) {</div>
+                                            <div><span class="ln">13</span>&nbsp;&nbsp;<span class="cm">// Only bright tiles get an overlay</span></div>
+                                            <div><span class="ln">14</span>&nbsp;&nbsp;<span class="kw">for</span> region <span class="kw">in</span> regions <span class="kw">where</span> region.luma &gt; threshold {</div>
+                                            <div><span class="ln">15</span>&nbsp;&nbsp;&nbsp;&nbsp;overlay.<span class="fn">dim</span>(region, by: strength)</div>
+                                            <div><span class="ln">16</span>&nbsp;&nbsp;}</div>
+                                            <div><span class="ln">17</span>}</div>
+                                            <div><span class="ln">18</span></div>
+                                            <div><span class="ln">19</span><span class="kw">let</span> status = <span class="str">"Space 3 · Development"</span></div>
+                                            <div><span class="ln">20</span><span class="cm">// Dark UI stays untouched</span></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="hc-window hc-mail">
+                                    <div class="hc-titlebar">
+                                        <div class="hc-traffic"><i class="r"></i><i class="y"></i><i class="g"></i></div>
+                                        <div class="hc-title">Inbox — white background email</div>
+                                    </div>
+                                    <div class="hc-mail-body">
+                                        <div class="hc-mail-list">
+                                            <div class="hc-mail-item active">
+                                                <div class="from">Product Update</div>
+                                                <div class="subj">Q3 roadmap + launch notes</div>
+                                                <div class="snip">Sharing the bright white PDF…</div>
+                                            </div>
+                                            <div class="hc-mail-item">
+                                                <div class="from">Design Review</div>
+                                                <div class="subj">Hero mock feedback</div>
+                                                <div class="snip">The glare version feels off…</div>
+                                            </div>
+                                            <div class="hc-mail-item">
+                                                <div class="from">Support</div>
+                                                <div class="subj">Night coding tips</div>
+                                                <div class="snip">Try selective dimming…</div>
+                                            </div>
+                                        </div>
+                                        <div class="hc-mail-read">
+                                            <h3>Q3 roadmap + launch notes</h3>
+                                            <div class="hc-mail-meta">From product@example.com · Today 9:12 PM</div>
+                                            <p>Hi team — attaching the full brief. The docs site is still a <span class="hi">pure white canvas</span> and the screenshots are blasting at full brightness.</p>
+                                            <p>Late-night review of this thread is brutal on the eyes, especially next to a dark editor.</p>
+                                            <p>Please skim the attached HTML tables before Monday sync.</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="hc-callout before-label">
+                                    Before
+                                    <span class="sub">White email glare next to dark code</span>
+                                </div>
+                            </div>
+
+                            <div class="hc-scene after" id="heroAfterScene">
+                                <div class="hc-wallpaper after-tint"></div>
+                                <div class="hc-menubar">
+                                    <div class="hc-menubar-left">
+                                        <span class="hc-apple"></span>
+                                        <span class="hc-app-name">Mail</span>
+                                        <span>File</span>
+                                        <span>Edit</span>
+                                        <span>View</span>
+                                    </div>
+                                    <div class="hc-menubar-right">
+                                        <span class="hc-sd-icon" aria-hidden="true">
+                                            <svg viewBox="0 0 24 24"><path d="M12 3a1 1 0 0 1 1 1v1.06A7 7 0 0 1 18.94 11H20a1 1 0 1 1 0 2h-1.06A7 7 0 0 1 13 17.94V19a1 1 0 1 1-2 0v-1.06A7 7 0 0 1 5.06 13H4a1 1 0 1 1 0-2h1.06A7 7 0 0 1 11 5.06V4a1 1 0 0 1 1-1zm0 5a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"/></svg>
+                                        </span>
+                                        <span>Fri 9:41 PM</span>
+                                    </div>
+                                </div>
+
+                                <div class="hc-window hc-ide">
+                                    <div class="hc-titlebar">
+                                        <div class="hc-traffic"><i class="r"></i><i class="y"></i><i class="g"></i></div>
+                                        <div class="hc-title">AppCoordinator.swift — SuperDimmer</div>
+                                    </div>
+                                    <div class="hc-ide-body">
+                                        <div class="hc-ide-rail">
+                                            <span class="active"></span><span></span><span></span><span></span>
+                                        </div>
+                                        <div class="hc-ide-code">
+                                            <div><span class="ln">12</span><span class="kw">func</span> <span class="fn">applyRegionDimming</span>(<span class="ty">regions</span>: [<span class="ty">BrightRegion</span>]) {</div>
+                                            <div><span class="ln">13</span>&nbsp;&nbsp;<span class="cm">// Only bright tiles get an overlay</span></div>
+                                            <div><span class="ln">14</span>&nbsp;&nbsp;<span class="kw">for</span> region <span class="kw">in</span> regions <span class="kw">where</span> region.luma &gt; threshold {</div>
+                                            <div><span class="ln">15</span>&nbsp;&nbsp;&nbsp;&nbsp;overlay.<span class="fn">dim</span>(region, by: strength)</div>
+                                            <div><span class="ln">16</span>&nbsp;&nbsp;}</div>
+                                            <div><span class="ln">17</span>}</div>
+                                            <div><span class="ln">18</span></div>
+                                            <div><span class="ln">19</span><span class="kw">let</span> status = <span class="str">"Space 3 · Development"</span></div>
+                                            <div><span class="ln">20</span><span class="cm">// Dark UI stays untouched</span></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="hc-window hc-mail">
+                                    <div class="hc-titlebar">
+                                        <div class="hc-traffic"><i class="r"></i><i class="y"></i><i class="g"></i></div>
+                                        <div class="hc-title">Inbox — white background email</div>
+                                    </div>
+                                    <div class="hc-mail-body">
+                                        <div class="hc-mail-list">
+                                            <div class="hc-mail-item active">
+                                                <div class="from">Product Update</div>
+                                                <div class="subj">Q3 roadmap + launch notes</div>
+                                                <div class="snip">Sharing the bright white PDF…</div>
+                                            </div>
+                                            <div class="hc-mail-item">
+                                                <div class="from">Design Review</div>
+                                                <div class="subj">Hero mock feedback</div>
+                                                <div class="snip">The glare version feels off…</div>
+                                            </div>
+                                            <div class="hc-mail-item">
+                                                <div class="from">Support</div>
+                                                <div class="subj">Night coding tips</div>
+                                                <div class="snip">Try selective dimming…</div>
+                                            </div>
+                                        </div>
+                                        <div class="hc-mail-read">
+                                            <h3>Q3 roadmap + launch notes</h3>
+                                            <div class="hc-mail-meta">From product@example.com · Today 9:12 PM</div>
+                                            <p>Hi team — attaching the full brief. The docs site is still a <span class="hi">pure white canvas</span> and the screenshots are blasting at full brightness.</p>
+                                            <p>Late-night review of this thread is brutal on the eyes, especially next to a dark editor.</p>
+                                            <p>Please skim the attached HTML tables before Monday sync.</p>
+                                            <div class="hc-dim-overlay"></div>
+                                            <div class="hc-detect-grid" aria-hidden="true">
+                                                <b class="hot"></b><b class="hot"></b><b class="hot"></b><b></b><b></b><b></b>
+                                                <b class="hot"></b><b class="hot"></b><b class="hot"></b><b class="hot"></b><b></b><b></b>
+                                                <b class="hot"></b><b class="hot"></b><b class="hot"></b><b class="hot"></b><b></b><b></b>
+                                                <b class="hot"></b><b class="hot"></b><b></b><b></b><b></b><b></b>
+                                                <b></b><b></b><b></b><b></b><b></b><b></b>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="hc-chip">
+                                    <span class="dot"></span>
+                                    <span>Bright regions dimmed · <strong>dark IDE preserved</strong></span>
+                                </div>
+
+                                <div class="hc-callout after-label">
+                                    After SuperDimmer
+                                    <span class="sub">Only the bright region is calmed</span>
+                                </div>
+                            </div>
+
+                            <div class="hc-handle" id="heroCompareHandle"></div>
+                        </div>
+
+                        <div class="hc-caption">
+                            <div><strong>Before:</strong> white Mail glare punches through dark mode</div>
+                            <div><strong>After:</strong> SuperDimmer dims bright tiles — code stays crisp</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1716,11 +2262,42 @@
             });
         });
 
-        // Hero demo toggle animation
-        const heroDemo = document.getElementById('heroDemo');
-        setInterval(() => {
-            heroDemo.classList.toggle('dimming');
-        }, 3000);
+        /*
+          Hero before/after drag compare.
+          Why: the static AI MacBook image misrepresented SuperDimmer as a global
+          orange filter. This controller reveals the AFTER scene via clip-path so
+          visitors feel selective dimming in one drag. Null-guards because the
+          old heroDemo interval crashed when the animated demo markup was removed.
+        */
+        (function initHeroBeforeAfterCompare() {
+            const compare = document.getElementById('heroCompareStage');
+            const after = document.getElementById('heroAfterScene');
+            const handle = document.getElementById('heroCompareHandle');
+            if (!compare || !after || !handle) return;
+
+            let dragging = false;
+
+            function setPos(clientX) {
+                const rect = compare.getBoundingClientRect();
+                let pct = ((clientX - rect.left) / rect.width) * 100;
+                pct = Math.max(8, Math.min(92, pct));
+                after.style.clipPath = `inset(0 0 0 ${pct}%)`;
+                handle.style.left = `${pct}%`;
+            }
+
+            compare.addEventListener('pointerdown', (e) => {
+                dragging = true;
+                compare.setPointerCapture(e.pointerId);
+                setPos(e.clientX);
+            });
+            compare.addEventListener('pointermove', (e) => {
+                if (!dragging) return;
+                setPos(e.clientX);
+            });
+            const stop = () => { dragging = false; };
+            compare.addEventListener('pointerup', stop);
+            compare.addEventListener('pointercancel', stop);
+        })();
     </script>
 </body>
 </html>

@@ -8,13 +8,13 @@ Generated: January 21, 2026
 
 ### Hero & Branding
 
-1. **superdimmer-hero-1.png** (5.0 MB)
-   - Main hero image showing before/after comparison
-   - Split screen demonstrating intelligent dimming
-   - Includes menu bar icon, detection grid, and Super Spaces HUD
-   - Perfect for: Website hero section, landing page, main marketing material
-   - Dimensions: Landscape format
-   - Color scheme: Dark background with warm amber/orange accents
+1. **web-superdimmer-hero-1.png** (optimized static fallback)
+   - Regenerated July 24, 2026 after the old AI MacBook sun-glare collage was rejected
+   - Shows selective dimming: bright Mail calmed, dark IDE preserved
+   - Live site hero now uses the interactive drag-compare in `index.html`
+     (source mock: `superdimmer-hero-before-after-mockup.html`)
+   - Keep this PNG for og/social and as a static reference of the compare scene
+   - Color scheme: Dark background with warm amber/orange accents on AFTER only
 
 2. **superdimmer-icon-branding.png** (5.1 MB)
    - App icon with floating feature badges
