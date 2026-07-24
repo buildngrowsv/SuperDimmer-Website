@@ -502,25 +502,11 @@
             background: rgba(12, 8, 4, 0.62);
             clip-path: inset(0 0 0 48%);
         }
-        .hero-compare .hc-detect {
-            position: absolute; inset: 6px; pointer-events: none; z-index: 3; opacity: 1;
-            display: grid; grid-template-columns: repeat(5,1fr); grid-template-rows: repeat(6,1fr); gap: 3px;
-            clip-path: inset(0 0 0 48%);
-        }
-        .hero-compare .hc-detect b { border: 1px solid rgba(232,168,56,0.12); border-radius: 2px; }
-        .hero-compare .hc-detect b.hot {
-            background: rgba(232,168,56,0.18); border-color: rgba(232,168,56,0.65);
-            box-shadow: inset 0 0 10px rgba(232,168,56,0.22);
-        }
-
-        .hero-compare .hc-page-tag {
-            position: absolute; top: 8px; right: 8px; z-index: 4;
-            font-size: 10px; font-weight: 700; letter-spacing: 0.03em; text-transform: uppercase;
-            padding: 5px 8px; border-radius: 999px; color: #0a0908;
-            background: linear-gradient(135deg, var(--hc-amber), var(--hc-orange));
-            box-shadow: 0 6px 16px rgba(212,118,44,0.4);
-            clip-path: inset(0 0 0 48%);
-        }
+        /*
+          Detection grid / zone tiles removed (user, 2026-07-24): the hero should
+          prove isolation by dimming the white page only — not by drawing a
+          brightness-analysis grid on top of the PDF.
+        */
 
         .hero-compare .hc-callout {
             position: absolute; z-index: 6; font-size: 10px; font-weight: 600;
@@ -1449,15 +1435,6 @@
                                                 <tr><td>Super Spaces</td><td>Product</td><td>Live</td></tr>
                                             </table>
                                             <div class="hc-pdf-dim" id="heroPdfDim"></div>
-                                            <div class="hc-detect" id="heroPdfDetect" aria-hidden="true">
-                                                <b class="hot"></b><b class="hot"></b><b class="hot"></b><b class="hot"></b><b class="hot"></b>
-                                                <b class="hot"></b><b class="hot"></b><b class="hot"></b><b class="hot"></b><b class="hot"></b>
-                                                <b class="hot"></b><b class="hot"></b><b class="hot"></b><b class="hot"></b><b class="hot"></b>
-                                                <b class="hot"></b><b class="hot"></b><b class="hot"></b><b class="hot"></b><b></b>
-                                                <b class="hot"></b><b class="hot"></b><b></b><b></b><b></b>
-                                                <b></b><b></b><b></b><b></b><b></b>
-                                            </div>
-                                            <div class="hc-page-tag" id="heroPdfTag">Dimmed region</div>
                                         </div>
                                     </div>
                                 </div>
@@ -1914,8 +1891,6 @@
             const handle = document.getElementById('heroCompareHandle');
             const page = document.getElementById('heroPdfPage');
             const dim = document.getElementById('heroPdfDim');
-            const detect = document.getElementById('heroPdfDetect');
-            const tag = document.getElementById('heroPdfTag');
             if (!stage || !handle || !page || !dim) return;
 
             let dragging = false;
@@ -1930,10 +1905,7 @@
                 const handleX = stageRect.left + (pct / 100) * stageRect.width;
                 let leftClipPct = ((handleX - pageRect.left) / pageRect.width) * 100;
                 leftClipPct = Math.max(0, Math.min(100, leftClipPct));
-                const clip = 'inset(0 0 0 ' + leftClipPct + '%)';
-                dim.style.clipPath = clip;
-                if (detect) detect.style.clipPath = clip;
-                if (tag) tag.style.clipPath = clip;
+                dim.style.clipPath = 'inset(0 0 0 ' + leftClipPct + '%)';
             }
 
             // Default: bisect the PDF page so the split is obviously on the white area
