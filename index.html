@@ -347,6 +347,12 @@
             width: 100%;
         }
 
+        /*
+          Interactive macOS desktop hero (user, 2026-07-24).
+          Real window chrome: title-bar drag, edge resize, typing, close→icon,
+          drag icons into a folder. Dim handle is the ONLY control that changes
+          the SuperDimmer veil — wallpaper clicks do nothing to dimming.
+        */
         .hero-compare { width: 100%; --hc-amber: #e8a838; --hc-orange: #d4762c; --hc-coral: #c45c3a; }
 
         .hero-compare .hc-eyebrow {
@@ -364,15 +370,11 @@
         }
         .hero-compare .hc-eyebrow p { color: var(--text-muted); font-size: 0.88rem; font-weight: 500; white-space: nowrap; }
 
-        .hero-compare .hc-compare {
+        .hero-compare .hc-desktop {
             position: relative; border-radius: 22px; overflow: hidden;
             border: var(--border-subtle); box-shadow: var(--shadow-card), var(--shadow-glow);
-            aspect-ratio: 16 / 10.2; user-select: none; touch-action: none;
-            cursor: col-resize; background: #11100e; width: 100%;
-        }
-
-        .hero-compare .hc-scene {
-            position: absolute; inset: 0; overflow: hidden;
+            aspect-ratio: 16 / 10.2; background: #11100e; width: 100%;
+            user-select: none;
         }
 
         .hero-compare .hc-wallpaper {
@@ -388,7 +390,8 @@
             display: flex; align-items: center; justify-content: space-between;
             padding: 0 14px; background: rgba(18,18,20,0.92);
             border-bottom: 1px solid rgba(255,255,255,0.06);
-            font-size: 11px; color: rgba(245,242,235,0.85); z-index: 5;
+            font-size: 11px; color: rgba(245,242,235,0.85); z-index: 80;
+            backdrop-filter: blur(12px);
         }
         .hero-compare .hc-menubar-left,
         .hero-compare .hc-menubar-right { display: flex; align-items: center; gap: 12px; }
@@ -396,20 +399,7 @@
             width: 12px; height: 12px; border-radius: 3px;
             background: linear-gradient(135deg, #f5f2eb, #c8c2b6);
         }
-        .hero-compare .hc-app-name { font-weight: 600; }
-
-        /*
-          Soft crossfade when the menubar app name / window title cycle.
-          User asked (2026-07-24) that the mock cycle through apps so the
-          landing page proves SuperDimmer is not Preview-only — it works
-          anywhere a bright region appears inside a window.
-        */
-        .hero-compare .hc-app-cycle {
-            transition: opacity 0.35s var(--transition-smooth);
-        }
-        .hero-compare .hc-app-cycle.is-fading {
-            opacity: 0;
-        }
+        .hero-compare .hc-app-name { font-weight: 600; min-width: 4.5em; }
         .hero-compare .hc-sd-icon {
             width: 14px; height: 14px; border-radius: 4px;
             background: linear-gradient(135deg, var(--hc-amber), var(--hc-coral));
@@ -417,32 +407,117 @@
         }
         .hero-compare .hc-sd-icon svg { width: 9px; height: 9px; fill: #0a0908; }
 
+        .hero-compare .hc-desktop-icons {
+            /*
+              Above windows so the Projects folder (and parked file icons) stay
+              clickable/draggable even if a window is dragged over the rail.
+              Still below menubar (80) and dim handle (100).
+            */
+            position: absolute; inset: 0; z-index: 55; pointer-events: none;
+        }
+        .hero-compare .hc-desk-icon {
+            position: absolute; width: 72px; pointer-events: auto; cursor: grab;
+            display: flex; flex-direction: column; align-items: center; gap: 4px;
+            padding: 4px 2px; border-radius: 8px;
+        }
+        .hero-compare .hc-desk-icon:active { cursor: grabbing; }
+        .hero-compare .hc-desk-icon.is-selected { background: rgba(232,168,56,0.18); }
+        .hero-compare .hc-desk-icon.is-dragging { opacity: 0.92; z-index: 90; }
+        .hero-compare .hc-desk-icon-art {
+            width: 48px; height: 44px; border-radius: 8px;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.35);
+        }
+        .hero-compare .hc-desk-icon.hc-folder .hc-desk-icon-art {
+            background: linear-gradient(180deg, #f0c14a 0%, #e0a020 40%, #c88818 100%);
+            border-radius: 6px 6px 8px 8px;
+            position: relative;
+        }
+        .hero-compare .hc-desk-icon.hc-folder .hc-desk-icon-art::before {
+            content: ''; position: absolute; left: 4px; top: -6px;
+            width: 22px; height: 10px; border-radius: 4px 4px 0 0;
+            background: #f5d06a;
+        }
+        .hero-compare .hc-desk-icon.hc-folder.is-drop-target .hc-desk-icon-art {
+            outline: 2px solid var(--hc-amber);
+            outline-offset: 3px;
+            transform: scale(1.06);
+        }
+        .hero-compare .hc-desk-icon.hc-folder.is-accepted .hc-desk-icon-art {
+            animation: hcFolderPop 0.4s var(--transition-smooth);
+        }
+        @keyframes hcFolderPop {
+            0% { transform: scale(1); }
+            40% { transform: scale(1.14); }
+            100% { transform: scale(1); }
+        }
+        .hero-compare .hc-folder-badge {
+            position: absolute; top: -4px; right: 8px; min-width: 16px; height: 16px;
+            padding: 0 4px; border-radius: 999px; background: #ff5f57; color: #fff;
+            font-size: 10px; font-weight: 700; display: grid; place-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+        }
+        .hero-compare .hc-file-icon[data-file-kind="swift"] .hc-desk-icon-art {
+            background: linear-gradient(160deg, #f05138, #b33a24);
+            border-radius: 10px;
+        }
+        .hero-compare .hc-file-icon[data-file-kind="swift"] .hc-desk-icon-art::after {
+            content: 'S'; display: grid; place-items: center; height: 100%;
+            color: #fff; font-weight: 800; font-size: 18px; font-family: var(--font-body);
+        }
+        .hero-compare .hc-file-icon[data-file-kind="pdf"] .hc-desk-icon-art {
+            background: linear-gradient(180deg, #f7f7f7 0%, #e8e8e8 70%, #d0d0d0 100%);
+            border: 1px solid rgba(0,0,0,0.12);
+        }
+        .hero-compare .hc-file-icon[data-file-kind="pdf"] .hc-desk-icon-art::after {
+            content: 'PDF'; display: grid; place-items: center; height: 100%;
+            color: #c0392b; font-weight: 800; font-size: 11px; letter-spacing: 0.04em;
+        }
+        .hero-compare .hc-desk-icon-label {
+            font-size: 10px; color: #f5f2eb; text-align: center; line-height: 1.2;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.8); max-width: 72px;
+            overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+        }
+
         .hero-compare .hc-window {
             position: absolute; border-radius: 12px; overflow: hidden;
             box-shadow: 0 18px 50px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.08);
-            display: flex; flex-direction: column;
+            display: flex; flex-direction: column; z-index: 20;
+            min-width: 180px; min-height: 140px;
+        }
+        .hero-compare .hc-window.is-closed { display: none !important; }
+        .hero-compare .hc-window.is-focused {
+            box-shadow: 0 22px 56px rgba(0,0,0,0.58), 0 0 0 1px rgba(232,168,56,0.28);
         }
         .hero-compare .hc-titlebar {
             height: 34px; display: flex; align-items: center; gap: 8px; padding: 0 12px;
             background: #2a2a2c; border-bottom: 1px solid #3a3a3c;
-            font-size: 11px; color: #c8c8ca; flex-shrink: 0;
+            font-size: 11px; color: #c8c8ca; flex-shrink: 0; cursor: grab;
         }
-        .hero-compare .hc-traffic { display: flex; gap: 6px; }
-        .hero-compare .hc-traffic i { width: 10px; height: 10px; border-radius: 50%; display: block; }
+        .hero-compare .hc-titlebar:active { cursor: grabbing; }
+        .hero-compare .hc-traffic { display: flex; gap: 6px; position: relative; z-index: 2; }
+        .hero-compare .hc-traffic i {
+            width: 12px; height: 12px; border-radius: 50%; display: block; cursor: pointer;
+            box-shadow: 0 0 0 4px transparent;
+        }
         .hero-compare .hc-traffic .r { background: #ff5f57; }
         .hero-compare .hc-traffic .y { background: #febc2e; }
         .hero-compare .hc-traffic .g { background: #28c840; }
-        .hero-compare .hc-title { flex: 1; text-align: center; font-weight: 500; }
+        .hero-compare .hc-traffic i:hover { filter: brightness(1.08); }
+        .hero-compare .hc-title { flex: 1; text-align: center; font-weight: 500; pointer-events: none; }
 
-        /*
-          IDE stays entirely on the left of the PDF so the drag line never
-          "cuts through" dark code. Overlap was making the right half look
-          globally darker even when only the page veil moved (user feedback).
-        */
-        .hero-compare .hc-ide {
-            left: 2%; top: 10%; width: 34%; height: 78%;
-            background: #1e1e1e; z-index: 2;
+        .hero-compare .hc-resize {
+            position: absolute; z-index: 5; background: transparent;
         }
+        .hero-compare .hc-resize[data-dir="n"] { top: 0; left: 12px; right: 12px; height: 5px; cursor: ns-resize; }
+        .hero-compare .hc-resize[data-dir="s"] { bottom: 0; left: 12px; right: 12px; height: 5px; cursor: ns-resize; }
+        .hero-compare .hc-resize[data-dir="e"] { right: 0; top: 12px; bottom: 12px; width: 5px; cursor: ew-resize; }
+        .hero-compare .hc-resize[data-dir="w"] { left: 0; top: 12px; bottom: 12px; width: 5px; cursor: ew-resize; }
+        .hero-compare .hc-resize[data-dir="ne"] { top: 0; right: 0; width: 12px; height: 12px; cursor: nesw-resize; }
+        .hero-compare .hc-resize[data-dir="nw"] { top: 0; left: 0; width: 12px; height: 12px; cursor: nwse-resize; }
+        .hero-compare .hc-resize[data-dir="se"] { bottom: 0; right: 0; width: 14px; height: 14px; cursor: nwse-resize; }
+        .hero-compare .hc-resize[data-dir="sw"] { bottom: 0; left: 0; width: 12px; height: 12px; cursor: nesw-resize; }
+
+        .hero-compare .hc-ide { background: #1e1e1e; }
         .hero-compare .hc-ide-body {
             display: grid; grid-template-columns: 44px 1fr; flex: 1; min-height: 0;
         }
@@ -454,21 +529,12 @@
         .hero-compare .hc-ide-rail span.on { background: linear-gradient(135deg, var(--hc-amber), var(--hc-orange)); }
         .hero-compare .hc-ide-code {
             padding: 12px 14px; font-family: var(--font-mono); font-size: 11px;
-            line-height: 1.65; color: #d4d4d4; overflow: hidden;
+            line-height: 1.65; color: #d4d4d4; overflow: auto;
+            user-select: text; cursor: text; outline: none; white-space: pre-wrap;
         }
-        .hero-compare .hc-ide-code .ln { color: #858585; display: inline-block; width: 20px; }
-        .hero-compare .hc-ide-code .kw { color: #c586c0; }
-        .hero-compare .hc-ide-code .fn { color: #dcdcaa; }
-        .hero-compare .hc-ide-code .cm { color: #6a9955; }
+        .hero-compare .hc-ide-code:focus { box-shadow: inset 0 0 0 1px rgba(232,168,56,0.35); }
 
-        /*
-          PDF window parked so the white PAGE spans the center. The handle
-          bisects the page; dark Preview chrome around the page stays constant.
-        */
-        .hero-compare .hc-pdf {
-            left: 38%; top: 11%; width: 58%; height: 78%;
-            background: #2c2c2e; z-index: 3;
-        }
+        .hero-compare .hc-pdf { background: #2c2c2e; }
         .hero-compare .hc-pdf .hc-titlebar { background: #3a3a3c; border-bottom-color: #4a4a4c; color: #e5e5e7; }
         .hero-compare .hc-pdf-toolbar {
             height: 28px; background: #323234; border-bottom: 1px solid #444;
@@ -481,95 +547,98 @@
         .hero-compare .hc-pdf-page-wrap {
             flex: 1; min-height: 0; background: #1c1c1e;
             display: flex; align-items: stretch; justify-content: center;
-            padding: 14px 18px; position: relative;
+            padding: 14px 18px; position: relative; overflow: auto;
         }
         .hero-compare .hc-pdf-page {
-            /*
-              No amber outline. User rejected zone/grid UI (2026-07-24); a
-              glowing page ring reads the same way. Isolation is the dim veil.
-            */
             width: 100%; max-width: 540px; background: #ffffff; color: #111;
-            border-radius: 2px; padding: 22px 26px; position: relative;
+            border-radius: 2px; position: relative;
             box-shadow: 0 8px 28px rgba(0,0,0,0.35); overflow: hidden;
         }
+        .hero-compare .hc-pdf-edit {
+            padding: 22px 26px; position: relative; z-index: 1;
+            user-select: text; cursor: text; outline: none; min-height: 100%;
+        }
+        .hero-compare .hc-pdf-edit:focus { box-shadow: inset 0 0 0 2px rgba(232,168,56,0.35); }
         .hero-compare .hc-pdf-page h3 {
             font-size: 18px; font-weight: 700; margin-bottom: 4px;
             letter-spacing: -0.02em; font-family: var(--font-body); color: #111;
-            position: relative; z-index: 1;
         }
-        .hero-compare .hc-pdf-meta { font-size: 10px; color: #888; margin-bottom: 14px; position: relative; z-index: 1; }
-        .hero-compare .hc-pdf-page p { font-size: 12px; line-height: 1.55; color: #222; margin-bottom: 10px; position: relative; z-index: 1; }
-        .hero-compare .hc-pdf-table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 11px; position: relative; z-index: 1; }
+        .hero-compare .hc-pdf-meta { font-size: 10px; color: #888; margin-bottom: 14px; }
+        .hero-compare .hc-pdf-page p { font-size: 12px; line-height: 1.55; color: #222; margin-bottom: 10px; }
+        .hero-compare .hc-pdf-table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 11px; }
         .hero-compare .hc-pdf-table th, .hero-compare .hc-pdf-table td {
             border: 1px solid #ddd; padding: 6px 8px; text-align: left; color: #111;
         }
         .hero-compare .hc-pdf-table th { background: #f3f3f3; }
         .hero-compare .hc-pdf-page .hi { background: #fff3bf; padding: 0 3px; }
 
-        /*
-          Dim veil lives INSIDE the white page only.
-          JS sets clip-path relative to this page so dragging never dims the IDE.
-          Stronger veil than v1 so the white→calm change is obvious at a glance.
-        */
         .hero-compare .hc-pdf-dim {
             position: absolute; inset: 0; pointer-events: none; z-index: 2;
             background: rgba(12, 8, 4, 0.62);
             clip-path: inset(0 0 0 48%);
         }
-        /*
-          Detection grid / zone tiles removed (user, 2026-07-24): the hero should
-          prove isolation by dimming the white page only — not by drawing a
-          brightness-analysis grid on top of the PDF.
-        */
 
-        .hero-compare .hc-callout {
-            position: absolute; z-index: 6; font-size: 10px; font-weight: 600;
-            letter-spacing: 0.03em; text-transform: uppercase; padding: 7px 10px;
-            border-radius: 999px; max-width: min(46%, 240px); box-sizing: border-box;
+        .hero-compare .hc-folder-window { background: #2b2b2d; }
+        .hero-compare .hc-folder-window .hc-titlebar { background: #3a3a3c; color: #eee; }
+        .hero-compare .hc-folder-window-body {
+            flex: 1; min-height: 0; padding: 12px; overflow: auto;
+            display: flex; flex-direction: column; gap: 8px; background: #1e1e20;
         }
-        .hero-compare .hc-callout .sub {
-            display: block; font-size: 10px; font-weight: 500; letter-spacing: 0;
-            text-transform: none; opacity: 0.85; margin-top: 2px;
+        .hero-compare .hc-folder-empty {
+            color: #888; font-size: 12px; text-align: center; margin: auto; padding: 24px;
         }
-        .hero-compare .hc-callout.before-label {
-            left: 12px; bottom: 12px; color: #fff;
-            background: rgba(20,18,16,0.85); border: 1px solid rgba(255,255,255,0.12);
+        .hero-compare .hc-folder-item {
+            display: grid; grid-template-columns: 36px 1fr; grid-template-rows: auto auto;
+            column-gap: 10px; align-items: center; text-align: left;
+            padding: 8px 10px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.08);
+            background: #2a2a2c; color: #f0ebe3; cursor: grab; font: inherit;
         }
-        .hero-compare .hc-callout.after-label {
-            right: 12px; bottom: 12px; color: #0a0908;
-            background: linear-gradient(135deg, var(--hc-amber), var(--hc-orange));
-            box-shadow: 0 8px 24px rgba(212,118,44,0.35);
+        .hero-compare .hc-folder-item:hover { border-color: rgba(232,168,56,0.45); }
+        .hero-compare .hc-folder-item.is-dragging { opacity: 0.7; }
+        .hero-compare .hc-folder-item-art {
+            grid-row: 1 / span 2; width: 36px; height: 36px; border-radius: 8px;
+            background: #eee;
         }
+        .hero-compare .hc-folder-item-art[data-kind="swift"] { background: linear-gradient(160deg, #f05138, #b33a24); }
+        .hero-compare .hc-folder-item-art[data-kind="pdf"] { background: linear-gradient(180deg, #f7f7f7, #d0d0d0); }
+        .hero-compare .hc-folder-item-label { font-size: 12px; font-weight: 600; }
+        .hero-compare .hc-folder-item-hint { font-size: 10px; color: #888; }
 
         .hero-compare .hc-status {
-            position: absolute; z-index: 6; top: 40px; left: 14px;
-            display: flex; align-items: center; gap: 8px; padding: 8px 12px;
+            position: absolute; z-index: 70; top: 40px; left: 50%; transform: translateX(-50%);
+            display: flex; align-items: center; gap: 8px; padding: 7px 12px;
             border-radius: 12px; background: rgba(26,24,22,0.88);
             border: 1px solid rgba(232,168,56,0.4); font-size: 11px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.35); color: var(--text-primary);
+            pointer-events: none; max-width: 90%;
         }
         .hero-compare .hc-status .dot {
             width: 8px; height: 8px; border-radius: 50%; background: var(--hc-amber);
-            box-shadow: 0 0 10px rgba(232,168,56,0.8);
+            box-shadow: 0 0 10px rgba(232,168,56,0.8); flex-shrink: 0;
         }
         .hero-compare .hc-status strong { color: var(--hc-amber); font-weight: 650; }
 
         .hero-compare .hc-handle {
-            position: absolute; top: 0; bottom: 0; left: 55%; width: 2px;
-            background: linear-gradient(180deg, transparent, var(--hc-amber), transparent);
-            transform: translateX(-50%); z-index: 10;
+            position: absolute; top: 28px; bottom: 0; left: 55%; width: 28px;
+            margin-left: -14px; z-index: 100; cursor: col-resize;
+            background: transparent; touch-action: none;
         }
         .hero-compare .hc-handle::before {
-            content: ''; position: absolute; top: 50%; left: 50%;
-            width: 42px; height: 42px; transform: translate(-50%, -50%);
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--hc-amber), var(--hc-coral));
-            box-shadow: 0 0 0 6px rgba(10,9,8,0.55), 0 10px 28px rgba(212,118,44,0.45);
+            content: ''; position: absolute; top: 0; bottom: 0; left: 50%;
+            width: 2px; transform: translateX(-50%);
+            background: linear-gradient(180deg, transparent, var(--hc-amber), transparent);
+            pointer-events: none;
         }
         .hero-compare .hc-handle::after {
             content: '⟷'; position: absolute; top: 50%; left: 50%;
-            transform: translate(-50%, -50%); font-size: 16px; color: #0a0908; font-weight: 700; z-index: 1;
+            width: 40px; height: 40px; transform: translate(-50%, -50%);
+            border-radius: 50%; display: grid; place-items: center;
+            background: linear-gradient(135deg, var(--hc-amber), var(--hc-coral));
+            box-shadow: 0 0 0 6px rgba(10,9,8,0.55), 0 10px 28px rgba(212,118,44,0.45);
+            font-size: 15px; color: #0a0908; font-weight: 700;
+            pointer-events: none;
         }
+
         .hero-compare .hc-caption {
             margin-top: 12px; display: flex; justify-content: space-between; gap: 16px;
             color: var(--text-muted); font-size: 0.82rem; padding: 0 4px;
@@ -580,8 +649,8 @@
             .hero-compare .hc-caption { flex-direction: column; gap: 6px; }
             .hero-compare .hc-status { font-size: 10px; padding: 6px 8px; }
             .hero-compare .hc-ide-code { font-size: 10px; }
-            .hero-compare .hc-callout .sub { display: none; }
             .hero-compare .hc-pdf-table { display: none; }
+            .hero-compare .hc-handle::after { width: 34px; height: 34px; font-size: 13px; }
         }
 
         /* =========================================================
@@ -1382,100 +1451,131 @@
                 </div>
                 <div class="hero-visual">
                     <!--
-                      SINGLE-SCENE isolation compare.
-                      One desktop. Dim veil clipped inside the white PDF page only.
-                      Dual-scene clip was rejected because AFTER looked globally darker.
+                      Interactive macOS desktop hero (user, 2026-07-24).
+                      Two windows + a folder. Drag/resize via title bar & edges.
+                      Type in content. Close → desktop file icon. Drag icons into folder.
+                      Only the dim handle bar changes the SuperDimmer veil.
                     -->
                     <div class="hero-compare" id="heroCompare">
                         <div class="hc-eyebrow">
-                            <h2>Same comfort in <span>every app you use.</span></h2>
-                            <p>Drag the handle · watch only the bright page dim</p>
+                            <h2>A real desktop. <span>Dim only the bright page.</span></h2>
+                            <p>Drag · resize · type · close to icons</p>
                         </div>
-                        <div class="hc-compare" id="heroCompareStage" aria-label="Isolation compare: only the bright content page dims across apps">
-                            <div class="hc-scene">
-                                <div class="hc-wallpaper"></div>
-                                <div class="hc-menubar">
-                                    <div class="hc-menubar-left">
-                                        <span class="hc-apple"></span>
-                                        <!--
-                                          Menubar app name cycles through real Mac apps so visitors
-                                          immediately see SuperDimmer is system-wide, not tied to one
-                                          document viewer. Paired with the bright-window titlebar below.
-                                        -->
-                                        <span class="hc-app-name hc-app-cycle" id="heroMenubarAppName">Preview</span>
-                                        <span>File</span><span>Edit</span><span>View</span>
-                                    </div>
-                                    <div class="hc-menubar-right">
-                                        <span class="hc-sd-icon" aria-hidden="true">
-                                            <svg viewBox="0 0 24 24"><path d="M12 3a1 1 0 0 1 1 1v1.06A7 7 0 0 1 18.94 11H20a1 1 0 1 1 0 2h-1.06A7 7 0 0 1 13 17.94V19a1 1 0 1 1-2 0v-1.06A7 7 0 0 1 5.06 13H4a1 1 0 1 1 0-2h1.06A7 7 0 0 1 11 5.06V4a1 1 0 0 1 1-1zm0 5a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"/></svg>
-                                        </span>
-                                        <span>Fri 9:41 PM</span>
-                                    </div>
+                        <div class="hc-desktop" id="heroDesktop" aria-label="Interactive macOS desktop: drag windows, type, close to icons, dim with the bar">
+                            <div class="hc-wallpaper"></div>
+                            <div class="hc-menubar">
+                                <div class="hc-menubar-left">
+                                    <span class="hc-apple"></span>
+                                    <span class="hc-app-name" id="heroMenubarAppName">Preview</span>
+                                    <span>File</span><span>Edit</span><span>View</span>
                                 </div>
-
-                                <div class="hc-window hc-ide">
-                                    <div class="hc-titlebar">
-                                        <div class="hc-traffic"><i class="r"></i><i class="y"></i><i class="g"></i></div>
-                                        <div class="hc-title">AppCoordinator.swift — dark IDE (stays clear)</div>
-                                    </div>
-                                    <div class="hc-ide-body">
-                                        <div class="hc-ide-rail"><span class="on"></span><span></span><span></span></div>
-                                        <div class="hc-ide-code">
-                                            <div><span class="ln">12</span><span class="kw">func</span> <span class="fn">dimBrightRegions</span>() {</div>
-                                            <div><span class="ln">13</span>&nbsp;&nbsp;<span class="cm">// Dark UI never gets an overlay</span></div>
-                                            <div><span class="ln">14</span>&nbsp;&nbsp;<span class="kw">for</span> tile <span class="kw">in</span> grid <span class="kw">where</span> tile.luma &gt; threshold {</div>
-                                            <div><span class="ln">15</span>&nbsp;&nbsp;&nbsp;&nbsp;overlay.<span class="fn">dim</span>(tile)</div>
-                                            <div><span class="ln">16</span>&nbsp;&nbsp;}</div>
-                                            <div><span class="ln">17</span>}</div>
-                                        </div>
-                                    </div>
+                                <div class="hc-menubar-right">
+                                    <span class="hc-sd-icon" aria-hidden="true">
+                                        <svg viewBox="0 0 24 24"><path d="M12 3a1 1 0 0 1 1 1v1.06A7 7 0 0 1 18.94 11H20a1 1 0 1 1 0 2h-1.06A7 7 0 0 1 13 17.94V19a1 1 0 1 1-2 0v-1.06A7 7 0 0 1 5.06 13H4a1 1 0 1 1 0-2h1.06A7 7 0 0 1 11 5.06V4a1 1 0 0 1 1-1zm0 5a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"/></svg>
+                                    </span>
+                                    <span>Fri 9:41 PM</span>
                                 </div>
+                            </div>
 
-                                <div class="hc-window hc-pdf">
-                                    <div class="hc-titlebar">
-                                        <div class="hc-traffic"><i class="r"></i><i class="y"></i><i class="g"></i></div>
-                                        <div class="hc-title hc-app-cycle" id="heroBrightWindowTitle">Q3-Roadmap.pdf — Preview</div>
-                                    </div>
-                                    <div class="hc-pdf-toolbar">
-                                        <span class="hc-chip">100%</span>
-                                        <span class="hc-app-cycle" id="heroBrightToolbarMeta">Page 1 of 12</span>
-                                        <span class="hc-app-cycle" id="heroBrightToolbarHint">· Bright page in Preview</span>
-                                    </div>
-                                    <div class="hc-pdf-page-wrap">
-                                        <div class="hc-pdf-page" id="heroPdfPage">
-                                            <h3 class="hc-app-cycle" id="heroBrightDocHeading">Q3 Product Roadmap</h3>
-                                            <div class="hc-pdf-meta hc-app-cycle" id="heroBrightDocMeta">White document · dark mode cannot restyle this</div>
-                                            <p class="hc-app-cycle" id="heroBrightDocLead">This is a <span class="hi">pure white page</span> sitting next to a dark IDE. SuperDimmer dims only this bright region — in Preview, Mail, Safari, and every other app.</p>
-                                            <p>Invoices, research papers, email threads, web articles — same problem, same fix.</p>
+                            <div class="hc-desktop-icons" id="heroDesktopIcons">
+                                <div class="hc-desk-icon hc-folder" id="heroDeskFolder" title="Drop files here · double-click to open">
+                                    <div class="hc-desk-icon-art" aria-hidden="true"></div>
+                                    <span class="hc-folder-badge" id="heroFolderBadge" hidden>0</span>
+                                    <div class="hc-desk-icon-label">Projects</div>
+                                </div>
+                            </div>
+
+                            <div class="hc-window hc-ide"
+                                 data-window-id="ide"
+                                 data-file-id="coordinator"
+                                 data-file-label="AppCoordinator.swift"
+                                 data-file-kind="swift"
+                                 data-app-name="Cursor">
+                                <span class="hc-resize" data-dir="n"></span><span class="hc-resize" data-dir="s"></span>
+                                <span class="hc-resize" data-dir="e"></span><span class="hc-resize" data-dir="w"></span>
+                                <span class="hc-resize" data-dir="ne"></span><span class="hc-resize" data-dir="nw"></span>
+                                <span class="hc-resize" data-dir="se"></span><span class="hc-resize" data-dir="sw"></span>
+                                <div class="hc-titlebar">
+                                    <div class="hc-traffic"><i class="r" title="Close"></i><i class="y" title="Minimize"></i><i class="g" title="Zoom"></i></div>
+                                    <div class="hc-title">AppCoordinator.swift — dark IDE</div>
+                                </div>
+                                <div class="hc-ide-body">
+                                    <div class="hc-ide-rail"><span class="on"></span><span></span><span></span></div>
+                                    <div class="hc-ide-code" contenteditable="true" spellcheck="false" role="textbox" aria-label="Editable IDE code">func dimBrightRegions() {
+  // Dark UI never gets an overlay
+  for tile in grid where tile.luma &gt; threshold {
+    overlay.dim(tile)
+  }
+}</div>
+                                </div>
+                            </div>
+
+                            <div class="hc-window hc-pdf"
+                                 data-window-id="doc"
+                                 data-file-id="roadmap"
+                                 data-file-label="Q3-Roadmap.pdf"
+                                 data-file-kind="pdf"
+                                 data-app-name="Preview">
+                                <span class="hc-resize" data-dir="n"></span><span class="hc-resize" data-dir="s"></span>
+                                <span class="hc-resize" data-dir="e"></span><span class="hc-resize" data-dir="w"></span>
+                                <span class="hc-resize" data-dir="ne"></span><span class="hc-resize" data-dir="nw"></span>
+                                <span class="hc-resize" data-dir="se"></span><span class="hc-resize" data-dir="sw"></span>
+                                <div class="hc-titlebar">
+                                    <div class="hc-traffic"><i class="r" title="Close"></i><i class="y" title="Minimize"></i><i class="g" title="Zoom"></i></div>
+                                    <div class="hc-title" id="heroBrightWindowTitle">Q3-Roadmap.pdf — Preview</div>
+                                </div>
+                                <div class="hc-pdf-toolbar">
+                                    <span class="hc-chip">100%</span>
+                                    <span id="heroBrightToolbarMeta">Page 1 of 12</span>
+                                    <span id="heroBrightToolbarHint">· Drag the amber bar to dim</span>
+                                </div>
+                                <div class="hc-pdf-page-wrap">
+                                    <!--
+                                      Page shell holds the dim veil; editable body is a child so
+                                      typing cannot delete the SuperDimmer overlay node.
+                                    -->
+                                    <div class="hc-pdf-page" id="heroPdfPage">
+                                        <div class="hc-pdf-edit" contenteditable="true" spellcheck="false" role="textbox" aria-label="Editable bright document">
+                                            <h3 id="heroBrightDocHeading">Q3 Product Roadmap</h3>
+                                            <div class="hc-pdf-meta" id="heroBrightDocMeta">White document · type here · dark mode cannot restyle this</div>
+                                            <p id="heroBrightDocLead">This is a <span class="hi">pure white page</span> beside a dark IDE. Drag the amber bar — only this page dims. Close the window to park it as a desktop icon, then drop it in the Projects folder.</p>
+                                            <p>Works the same in Preview, Mail, Safari, Pages, and every other app.</p>
                                             <table class="hc-pdf-table">
                                                 <tr><th>Initiative</th><th>Owner</th><th>Status</th></tr>
                                                 <tr><td>Region dimming</td><td>Eng</td><td>Ship</td></tr>
                                                 <tr><td>Color temperature</td><td>Eng</td><td>Live</td></tr>
                                                 <tr><td>Super Spaces</td><td>Product</td><td>Live</td></tr>
                                             </table>
-                                            <div class="hc-pdf-dim" id="heroPdfDim"></div>
                                         </div>
+                                        <div class="hc-pdf-dim" id="heroPdfDim"></div>
                                     </div>
                                 </div>
-
-                                <div class="hc-status">
-                                    <span class="dot"></span>
-                                    <span>Works in <strong id="heroStatusAppName">Preview</strong> — only the bright page dims</span>
-                                </div>
-                                <div class="hc-callout before-label">
-                                    Left of handle
-                                    <span class="sub">Raw bright glare</span>
-                                </div>
-                                <div class="hc-callout after-label">
-                                    Right of handle
-                                    <span class="sub">Only this region dims</span>
-                                </div>
                             </div>
-                            <div class="hc-handle" id="heroCompareHandle"></div>
+
+                            <div class="hc-window hc-folder-window is-closed"
+                                 id="heroFolderWindow"
+                                 data-window-id="folder"
+                                 data-app-name="Finder">
+                                <span class="hc-resize" data-dir="n"></span><span class="hc-resize" data-dir="s"></span>
+                                <span class="hc-resize" data-dir="e"></span><span class="hc-resize" data-dir="w"></span>
+                                <span class="hc-resize" data-dir="ne"></span><span class="hc-resize" data-dir="nw"></span>
+                                <span class="hc-resize" data-dir="se"></span><span class="hc-resize" data-dir="sw"></span>
+                                <div class="hc-titlebar">
+                                    <div class="hc-traffic"><i class="r" title="Close"></i><i class="y" title="Minimize"></i><i class="g" title="Zoom"></i></div>
+                                    <div class="hc-title">Projects</div>
+                                </div>
+                                <div class="hc-folder-window-body" id="heroFolderWindowBody"></div>
+                            </div>
+
+                            <div class="hc-status">
+                                <span class="dot"></span>
+                                <span>Amber bar dims <strong id="heroStatusAppName">Preview</strong> page only · red closes to a file icon</span>
+                            </div>
+                            <div class="hc-handle" id="heroDimHandle" role="slider" aria-label="Dim bright page" title="Drag to dim only the bright page"></div>
                         </div>
                         <div class="hc-caption">
-                            <div><strong>Any app</strong> — menu bar and window title cycle through real apps</div>
-                            <div><strong>Same dark IDE</strong> — only the bright content page gets darker</div>
+                            <div><strong>Title bar</strong> moves · edges resize · content is editable</div>
+                            <div><strong>Close</strong> → file icon · drag icons into Projects</div>
                         </div>
                     </div>
                 </div>
@@ -1903,188 +2003,7 @@
             });
         });
 
-        /*
-          Single-scene isolation drag.
-          Handle position is in stage coords, but clip-path is computed relative
-          to the bright PAGE box. Moving the handle across the IDE does not darken
-          the IDE — it only reveals more/less of the veil inside the white page.
-          That is the whole product demo.
-        */
-        (function initHeroBeforeAfterCompare() {
-            const stage = document.getElementById('heroCompareStage');
-            const handle = document.getElementById('heroCompareHandle');
-            const page = document.getElementById('heroPdfPage');
-            const dim = document.getElementById('heroPdfDim');
-            if (!stage || !handle || !page || !dim) return;
-
-            let dragging = false;
-
-            function applyClip(clientX) {
-                const stageRect = stage.getBoundingClientRect();
-                const pageRect = page.getBoundingClientRect();
-                let pct = ((clientX - stageRect.left) / stageRect.width) * 100;
-                pct = Math.max(8, Math.min(92, pct));
-                handle.style.left = pct + '%';
-
-                const handleX = stageRect.left + (pct / 100) * stageRect.width;
-                let leftClipPct = ((handleX - pageRect.left) / pageRect.width) * 100;
-                leftClipPct = Math.max(0, Math.min(100, leftClipPct));
-                dim.style.clipPath = 'inset(0 0 0 ' + leftClipPct + '%)';
-            }
-
-            // Default: bisect the bright page so the split is obviously on the white area
-            function setDefault() {
-                const stageRect = stage.getBoundingClientRect();
-                const pageRect = page.getBoundingClientRect();
-                const midX = pageRect.left + pageRect.width * 0.48;
-                applyClip(midX);
-            }
-
-            stage.addEventListener('pointerdown', (e) => {
-                dragging = true;
-                stage.setPointerCapture(e.pointerId);
-                applyClip(e.clientX);
-            });
-            stage.addEventListener('pointermove', (e) => {
-                if (!dragging) return;
-                applyClip(e.clientX);
-            });
-            const stop = () => { dragging = false; };
-            stage.addEventListener('pointerup', stop);
-            stage.addEventListener('pointercancel', stop);
-            window.addEventListener('resize', setDefault);
-            requestAnimationFrame(setDefault);
-        })();
-
-        /*
-          Cycle menubar app name + bright-window chrome through real Mac apps.
-          Why: the isolation demo used to read as “Preview-only.” The user asked
-          (2026-07-24) that the mock advertise system-wide coverage by cycling
-          the top-left menubar name and the window title. The white page stays
-          the dim target so the drag proof still holds; only labels change.
-          Pause when the tab is hidden to avoid wasted timers.
-        */
-        (function initHeroAnyAppNameCycle() {
-            const menubarApp = document.getElementById('heroMenubarAppName');
-            const windowTitle = document.getElementById('heroBrightWindowTitle');
-            const toolbarMeta = document.getElementById('heroBrightToolbarMeta');
-            const toolbarHint = document.getElementById('heroBrightToolbarHint');
-            const docHeading = document.getElementById('heroBrightDocHeading');
-            const docMeta = document.getElementById('heroBrightDocMeta');
-            const docLead = document.getElementById('heroBrightDocLead');
-            const statusApp = document.getElementById('heroStatusAppName');
-            if (!menubarApp || !windowTitle) return;
-
-            const scenes = [
-                {
-                    app: 'Preview',
-                    title: 'Q3-Roadmap.pdf — Preview',
-                    toolbarMeta: 'Page 1 of 12',
-                    toolbarHint: '· Bright page in Preview',
-                    heading: 'Q3 Product Roadmap',
-                    meta: 'White PDF · dark mode cannot restyle this',
-                    lead: 'This is a <span class="hi">pure white PDF</span> beside a dark IDE. SuperDimmer dims only this bright region — and it works the same way in every app.'
-                },
-                {
-                    app: 'Safari',
-                    title: 'Design Spec — Safari',
-                    toolbarMeta: 'superdimmer.com',
-                    toolbarHint: '· Bright page in Safari',
-                    heading: 'Product Design Spec',
-                    meta: 'White webpage · site chrome stays dark around it',
-                    lead: 'A <span class="hi">white article pane</span> in Safari next to your editor. SuperDimmer softens the glare without dimming the rest of your desktop.'
-                },
-                {
-                    app: 'Mail',
-                    title: 'Re: Q3 Brief — Mail',
-                    toolbarMeta: 'Inbox · 1 of 48',
-                    toolbarHint: '· Bright message in Mail',
-                    heading: 'Re: Q3 Product Brief',
-                    meta: 'White email body · client chrome stays dark',
-                    lead: 'A <span class="hi">white email thread</span> that refuses dark mode. SuperDimmer dims the message body and leaves your dark workspace alone.'
-                },
-                {
-                    app: 'Pages',
-                    title: 'Proposal.docx — Pages',
-                    toolbarMeta: 'Page 1',
-                    toolbarHint: '· Bright doc in Pages',
-                    heading: 'Client Proposal',
-                    meta: 'White document · cannot force dark theme',
-                    lead: 'A <span class="hi">white Pages document</span> open beside code. Only the bright page softens — the IDE stays crisp.'
-                },
-                {
-                    app: 'Google Chrome',
-                    title: 'Research Notes — Chrome',
-                    toolbarMeta: 'docs.google.com',
-                    toolbarHint: '· Bright tab in Chrome',
-                    heading: 'Shared Research Notes',
-                    meta: 'White web document · browser UI stays untouched',
-                    lead: 'A <span class="hi">bright Chrome tab</span> with a white page. SuperDimmer targets the glare, not the whole screen.'
-                },
-                {
-                    app: 'Notes',
-                    title: 'Meeting Notes — Notes',
-                    toolbarMeta: 'Today',
-                    toolbarHint: '· Bright note in Notes',
-                    heading: 'Monday Meeting Notes',
-                    meta: 'White note · light content in a dark evening',
-                    lead: 'A <span class="hi">white Notes page</span> that punches through dark mode. Dim the note; keep everything else readable.'
-                },
-                {
-                    app: 'Numbers',
-                    title: 'Budget-Q3.numbers — Numbers',
-                    toolbarMeta: 'Sheet 1',
-                    toolbarHint: '· Bright sheet in Numbers',
-                    heading: 'Q3 Budget Spreadsheet',
-                    meta: 'White spreadsheet · cells stay legible when softened',
-                    lead: 'A <span class="hi">bright Numbers sheet</span> next to a dark terminal. SuperDimmer eases the contrast without washing out your tools.'
-                },
-                {
-                    app: 'Microsoft Word',
-                    title: 'Contract-v4.docx — Word',
-                    toolbarMeta: 'Page 1 of 18',
-                    toolbarHint: '· Bright doc in Word',
-                    heading: 'Service Agreement v4',
-                    meta: 'White Word page · office docs rarely offer true dark mode',
-                    lead: 'A <span class="hi">white Word document</span> that will never match your IDE. SuperDimmer dims the page region only.'
-                }
-            ];
-
-            let index = 0;
-            const fadeTargets = [menubarApp, windowTitle, toolbarMeta, toolbarHint, docHeading, docMeta, docLead]
-                .filter(Boolean);
-
-            function applyScene(scene) {
-                menubarApp.textContent = scene.app;
-                windowTitle.textContent = scene.title;
-                if (toolbarMeta) toolbarMeta.textContent = scene.toolbarMeta;
-                if (toolbarHint) toolbarHint.textContent = scene.toolbarHint;
-                if (docHeading) docHeading.textContent = scene.heading;
-                if (docMeta) docMeta.textContent = scene.meta;
-                if (docLead) docLead.innerHTML = scene.lead;
-                if (statusApp) statusApp.textContent = scene.app;
-            }
-
-            function cycle() {
-                fadeTargets.forEach((el) => el.classList.add('is-fading'));
-                window.setTimeout(() => {
-                    index = (index + 1) % scenes.length;
-                    applyScene(scenes[index]);
-                    fadeTargets.forEach((el) => el.classList.remove('is-fading'));
-                }, 360);
-            }
-
-            applyScene(scenes[0]);
-            let timerId = window.setInterval(cycle, 3200);
-            document.addEventListener('visibilitychange', () => {
-                if (document.hidden) {
-                    window.clearInterval(timerId);
-                    timerId = null;
-                } else if (!timerId) {
-                    timerId = window.setInterval(cycle, 3200);
-                }
-            });
-        })();
     </script>
+    <script src="assets/promo/InteractiveMacOSDesktopHeroController.js"></script>
 </body>
 </html>
