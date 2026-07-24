@@ -720,27 +720,34 @@
         .hero-compare .hc-callout {
             position: absolute;
             z-index: 6;
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 600;
-            letter-spacing: 0.04em;
+            letter-spacing: 0.03em;
             text-transform: uppercase;
-            padding: 7px 11px;
+            padding: 7px 10px;
             border-radius: 999px;
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
+            max-width: min(46%, 220px);
+            box-sizing: border-box;
         }
 
         .hero-compare .hc-callout.before-label {
-            left: 16px;
-            bottom: 16px;
+            left: 12px;
+            bottom: 12px;
             color: #fff;
-            background: rgba(20, 18, 16, 0.72);
+            background: rgba(20, 18, 16, 0.78);
             border: 1px solid rgba(255, 255, 255, 0.12);
         }
 
+        /*
+          After-label was clipping the rounded corner on the live hero at
+          ~720px visual width. Tightened padding/max-width and inset so the
+          pill stays fully inside the compare frame on desktop and laptop.
+        */
         .hero-compare .hc-callout.after-label {
-            right: 16px;
-            bottom: 16px;
+            right: 12px;
+            bottom: 12px;
             color: #0a0908;
             background: linear-gradient(135deg, var(--hc-amber), var(--hc-orange));
             box-shadow: 0 8px 24px rgba(212, 118, 44, 0.35);
