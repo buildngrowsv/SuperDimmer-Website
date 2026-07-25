@@ -356,7 +356,7 @@
         .hero-compare { width: 100%; --hc-amber: #e8a838; --hc-orange: #d4762c; --hc-coral: #c45c3a; }
 
         .hero-compare .hc-eyebrow {
-            display: flex; justify-content: space-between; align-items: baseline;
+            display: flex; justify-content: flex-start; align-items: baseline;
             margin-bottom: 12px; padding: 0 4px; gap: 12px;
         }
         .hero-compare .hc-eyebrow h2 {
@@ -462,6 +462,7 @@
             font-size: 10px; font-weight: 700; display: grid; place-items: center;
             box-shadow: 0 2px 8px rgba(0,0,0,0.4);
         }
+        .hero-compare .hc-folder-badge[hidden] { display: none !important; }
         .hero-compare .hc-file-icon[data-file-kind="swift"] .hc-desk-icon-art {
             background: linear-gradient(160deg, #f05138, #b33a24);
             border-radius: 10px;
@@ -1463,11 +1464,15 @@
                       Only the dim handle bar changes the SuperDimmer veil.
                     -->
                     <div class="hero-compare" id="heroCompare">
+                        <!--
+                          No on-screen how-to copy (user, 2026-07-25): drag/resize/
+                          type/close/folder are an easter egg. The desktop should
+                          look like a product shot, not a tutorial overlay.
+                        -->
                         <div class="hc-eyebrow">
                             <h2>A real desktop. <span>Dim only the bright page.</span></h2>
-                            <p>Drag · resize · type · close to icons</p>
                         </div>
-                        <div class="hc-desktop" id="heroDesktop" aria-label="Interactive macOS desktop: drag windows, type, close to icons, dim with the bar">
+                        <div class="hc-desktop" id="heroDesktop" aria-label="SuperDimmer desktop preview">
                             <div class="hc-wallpaper"></div>
                             <div class="hc-menubar">
                                 <div class="hc-menubar-left">
@@ -1484,7 +1489,7 @@
                             </div>
 
                             <div class="hc-desktop-icons" id="heroDesktopIcons">
-                                <div class="hc-desk-icon hc-folder" id="heroDeskFolder" title="Drop files here · double-click to open">
+                                <div class="hc-desk-icon hc-folder" id="heroDeskFolder">
                                     <div class="hc-desk-icon-art" aria-hidden="true"></div>
                                     <span class="hc-folder-badge" id="heroFolderBadge" hidden>0</span>
                                     <div class="hc-desk-icon-label">Projects</div>
@@ -1533,7 +1538,7 @@
                                 <div class="hc-pdf-toolbar">
                                     <span class="hc-chip">100%</span>
                                     <span id="heroBrightToolbarMeta">Page 1 of 12</span>
-                                    <span id="heroBrightToolbarHint">· Drag the amber bar to dim</span>
+                                    <span id="heroBrightToolbarHint">· Continuous</span>
                                 </div>
                                 <div class="hc-pdf-page-wrap">
                                     <!--
@@ -1541,11 +1546,11 @@
                                       typing cannot delete the SuperDimmer overlay node.
                                     -->
                                     <div class="hc-pdf-page" id="heroPdfPage">
-                                        <div class="hc-pdf-edit" contenteditable="true" spellcheck="false" role="textbox" aria-label="Editable bright document">
+                                        <div class="hc-pdf-edit" contenteditable="true" spellcheck="false" role="textbox" aria-label="Bright document">
                                             <h3 id="heroBrightDocHeading">Q3 Product Roadmap</h3>
-                                            <div class="hc-pdf-meta" id="heroBrightDocMeta">White document · type here · dark mode cannot restyle this</div>
-                                            <p id="heroBrightDocLead">This is a <span class="hi">pure white page</span> beside a dark IDE. Drag the amber bar — only this page dims. Close the window to park it as a desktop icon, then drop it in the Projects folder.</p>
-                                            <p>Works the same in Preview, Mail, Safari, Pages, and every other app.</p>
+                                            <div class="hc-pdf-meta" id="heroBrightDocMeta">Internal brief · July 2026</div>
+                                            <p id="heroBrightDocLead">This is a <span class="hi">pure white page</span> sitting next to a dark IDE — the kind of document dark mode cannot restyle.</p>
+                                            <p>Invoices, research papers, email threads, and web articles create the same clash.</p>
                                             <table class="hc-pdf-table">
                                                 <tr><th>Initiative</th><th>Owner</th><th>Status</th></tr>
                                                 <tr><td>Region dimming</td><td>Eng</td><td>Ship</td></tr>
@@ -1573,15 +1578,7 @@
                                 <div class="hc-folder-window-body" id="heroFolderWindowBody"></div>
                             </div>
 
-                            <div class="hc-status">
-                                <span class="dot"></span>
-                                <span>Amber bar dims <strong id="heroStatusAppName">Preview</strong> page only · red closes to a file icon</span>
-                            </div>
-                            <div class="hc-handle" id="heroDimHandle" role="slider" aria-label="Dim bright page" title="Drag to dim only the bright page"></div>
-                        </div>
-                        <div class="hc-caption">
-                            <div><strong>Title bar</strong> moves · edges resize · content is editable</div>
-                            <div><strong>Close</strong> → file icon · drag icons into Projects</div>
+                            <div class="hc-handle" id="heroDimHandle" role="slider" aria-label="Dim bright page"></div>
                         </div>
                     </div>
                 </div>

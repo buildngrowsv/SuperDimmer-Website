@@ -29,8 +29,6 @@
     const dimHandle = document.getElementById('heroDimHandle');
     const brightPage = document.getElementById('heroPdfPage');
     const dimVeil = document.getElementById('heroPdfDim');
-    const statusApp = document.getElementById('heroStatusAppName');
-
     let zCounter = 20;
     let dimDragging = false;
     /*
@@ -47,9 +45,6 @@
         windows.forEach((w) => w.classList.toggle('is-focused', w === win));
         const app = win.getAttribute('data-app-name') || 'Finder';
         if (menubarApp) menubarApp.textContent = app;
-        if (statusApp && win.getAttribute('data-window-id') === 'doc') {
-            statusApp.textContent = app;
-        }
     }
 
     function desktopRect() {
@@ -458,7 +453,7 @@
         if (!folderWindowBody) return;
         folderWindowBody.innerHTML = '';
         if (folderContents.size === 0) {
-            folderWindowBody.innerHTML = '<div class="hc-folder-empty">Folder is empty — drag file icons here</div>';
+            folderWindowBody.innerHTML = '<div class="hc-folder-empty">No Items</div>';
             return;
         }
         folderContents.forEach((fileId) => {
@@ -472,7 +467,7 @@
             row.innerHTML =
                 '<span class="hc-folder-item-art" data-kind="' + meta.kind + '"></span>' +
                 '<span class="hc-folder-item-label"></span>' +
-                '<span class="hc-folder-item-hint">Double-click to open · drag out</span>';
+                '<span class="hc-folder-item-hint">' + meta.app + '</span>';
             row.querySelector('.hc-folder-item-label').textContent = meta.label;
             row.addEventListener('dblclick', () => openWindowForFile(fileId));
             // Drag out of folder back to desktop
@@ -554,14 +549,18 @@
     let cyclePaused = false;
     let cycleIndex = 0;
     const scenes = [
-        { app: 'Preview', title: 'Q3-Roadmap.pdf — Preview', toolbarMeta: 'Page 1 of 12', toolbarHint: '· Bright page in Preview', heading: 'Q3 Product Roadmap', meta: 'White PDF · dark mode cannot restyle this' },
-        { app: 'Safari', title: 'Design Spec — Safari', toolbarMeta: 'superdimmer.com', toolbarHint: '· Bright page in Safari', heading: 'Product Design Spec', meta: 'White webpage · site chrome stays dark around it' },
-        { app: 'Mail', title: 'Re: Q3 Brief — Mail', toolbarMeta: 'Inbox · 1 of 48', toolbarHint: '· Bright message in Mail', heading: 'Re: Q3 Product Brief', meta: 'White email body · client chrome stays dark' },
-        { app: 'Pages', title: 'Proposal.docx — Pages', toolbarMeta: 'Page 1', toolbarHint: '· Bright doc in Pages', heading: 'Client Proposal', meta: 'White document · cannot force dark theme' },
-        { app: 'Google Chrome', title: 'Research Notes — Chrome', toolbarMeta: 'docs.google.com', toolbarHint: '· Bright tab in Chrome', heading: 'Shared Research Notes', meta: 'White web document · browser UI stays untouched' },
-        { app: 'Notes', title: 'Meeting Notes — Notes', toolbarMeta: 'Today', toolbarHint: '· Bright note in Notes', heading: 'Monday Meeting Notes', meta: 'White note · light content in a dark evening' },
-        { app: 'Numbers', title: 'Budget-Q3.numbers — Numbers', toolbarMeta: 'Sheet 1', toolbarHint: '· Bright sheet in Numbers', heading: 'Q3 Budget Spreadsheet', meta: 'White spreadsheet · cells stay legible when softened' },
-        { app: 'Microsoft Word', title: 'Contract-v4.docx — Word', toolbarMeta: 'Page 1 of 18', toolbarHint: '· Bright doc in Word', heading: 'Service Agreement v4', meta: 'White Word page · office docs rarely offer true dark mode' }
+        /*
+          Scene chrome only — no tutorial phrases. User wants the interactivity
+          to stay an easter egg; labels should read like real app UI.
+        */
+        { app: 'Preview', title: 'Q3-Roadmap.pdf — Preview', toolbarMeta: 'Page 1 of 12', toolbarHint: '· Continuous', heading: 'Q3 Product Roadmap', meta: 'Internal brief · July 2026' },
+        { app: 'Safari', title: 'Design Spec — Safari', toolbarMeta: 'superdimmer.com', toolbarHint: '· Reader', heading: 'Product Design Spec', meta: 'Shared draft · team wiki' },
+        { app: 'Mail', title: 'Re: Q3 Brief — Mail', toolbarMeta: 'Inbox · 1 of 48', toolbarHint: '· Unread', heading: 'Re: Q3 Product Brief', meta: 'From product@ · Today 9:12 PM' },
+        { app: 'Pages', title: 'Proposal.docx — Pages', toolbarMeta: 'Page 1', toolbarHint: '· Editing', heading: 'Client Proposal', meta: 'Last edited today' },
+        { app: 'Google Chrome', title: 'Research Notes — Chrome', toolbarMeta: 'docs.google.com', toolbarHint: '· Docs', heading: 'Shared Research Notes', meta: 'Edited by Alex · 2 min ago' },
+        { app: 'Notes', title: 'Meeting Notes — Notes', toolbarMeta: 'Today', toolbarHint: '· iCloud', heading: 'Monday Meeting Notes', meta: 'Notes · On My Mac' },
+        { app: 'Numbers', title: 'Budget-Q3.numbers — Numbers', toolbarMeta: 'Sheet 1', toolbarHint: '· Formulas', heading: 'Q3 Budget Spreadsheet', meta: 'Finance · Confidential' },
+        { app: 'Microsoft Word', title: 'Contract-v4.docx — Word', toolbarMeta: 'Page 1 of 18', toolbarHint: '· Print Layout', heading: 'Service Agreement v4', meta: 'Legal · Final draft' }
     ];
 
     function applyBrightScene(scene) {
@@ -581,7 +580,6 @@
         if (meta) meta.textContent = scene.meta;
         if (docWin.classList.contains('is-focused')) {
             if (menubarApp) menubarApp.textContent = scene.app;
-            if (statusApp) statusApp.textContent = scene.app;
         }
         // Keep desktop icon label in sync if parked
         const icon = iconsLayer && iconsLayer.querySelector('.hc-desk-icon[data-file-id="roadmap"]');
