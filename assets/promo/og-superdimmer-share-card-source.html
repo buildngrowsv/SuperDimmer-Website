@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <!--
+    OG share card source (1200×630).
+    Why rebuilt 2026-07-25: earlier card fixed the checkerboard logo fallback and
+    showed PDF isolation, but copy still said “white PDF” only. Site messaging
+    is now “bright regions in any app.” This card must sell that in one glance
+    for WhatsApp / iMessage / Slack / Twitter previews — solid background, no
+    alpha, no zone grids, brand-first, product proof on the right.
+  -->
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@500;600;700&family=Playfair+Display:wght@600;700&display=swap');
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      width: 1200px; height: 630px; overflow: hidden;
+      font-family: 'DM Sans', -apple-system, sans-serif;
+      color: #f5f2eb;
+      background:
+        radial-gradient(ellipse 55% 70% at 12% 20%, rgba(232,168,56,0.14) 0%, transparent 55%),
+        radial-gradient(ellipse 45% 50% at 90% 80%, rgba(196,92,58,0.12) 0%, transparent 50%),
+        #0a0908;
+    }
+    .card {
+      width: 1200px; height: 630px;
+      display: grid; grid-template-columns: 1.05fr 1fr;
+      padding: 56px 56px 48px;
+      gap: 36px;
+    }
+    .brand {
+      display: flex; align-items: center; gap: 14px;
+      margin-bottom: 36px;
+    }
+    .brand img {
+      width: 52px; height: 52px; border-radius: 14px;
+      box-shadow: 0 8px 28px rgba(232,168,56,0.35);
+    }
+    .brand span {
+      font-size: 28px; font-weight: 700; letter-spacing: -0.03em;
+    }
+    h1 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 64px; font-weight: 700; line-height: 1.05;
+      letter-spacing: -0.03em; margin-bottom: 22px;
+    }
+    h1 em {
+      font-style: normal;
+      background: linear-gradient(135deg, #e8a838, #d4762c 55%, #c45c3a);
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .sub {
+      font-size: 22px; line-height: 1.45; color: #a39e94;
+      max-width: 480px; font-weight: 500;
+    }
+    .pill {
+      display: inline-flex; margin-top: 34px;
+      padding: 10px 16px; border-radius: 999px;
+      border: 1px solid rgba(232,168,56,0.55);
+      color: #e8a838; font-size: 15px; font-weight: 650;
+      background: rgba(232,168,56,0.08);
+    }
+    .url {
+      position: absolute; left: 56px; bottom: 36px;
+      color: #6b665c; font-size: 16px; font-weight: 600; letter-spacing: 0.02em;
+    }
+    .visual {
+      align-self: center;
+      background: #12100e;
+      border-radius: 22px;
+      border: 1px solid rgba(245,242,235,0.08);
+      box-shadow: 0 24px 60px rgba(0,0,0,0.55), 0 0 50px rgba(232,168,56,0.12);
+      padding: 18px; height: 420px;
+      display: flex; flex-direction: column; gap: 10px;
+      position: relative;
+    }
+    .menubar {
+      height: 26px; border-radius: 8px 8px 0 0;
+      background: rgba(255,255,255,0.04);
+      display: flex; align-items: center; gap: 10px;
+      padding: 0 12px; font-size: 12px; color: #c8c2b6;
+    }
+    .menubar b { color: #f5f2eb; }
+    .apps {
+      flex: 1; display: grid; grid-template-columns: 0.85fr 1.15fr; gap: 10px; min-height: 0;
+    }
+    .win {
+      border-radius: 12px; overflow: hidden;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+      display: flex; flex-direction: column;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .tb {
+      height: 28px; display: flex; align-items: center; gap: 6px;
+      padding: 0 10px; font-size: 10px; color: #bbb;
+      background: #2a2a2c;
+    }
+    .dot { width: 8px; height: 8px; border-radius: 50%; }
+    .r { background: #ff5f57; } .y { background: #febc2e; } .g { background: #28c840; }
+    .ide-body {
+      flex: 1; background: #1e1e1e; padding: 14px 12px;
+      font-family: ui-monospace, Menlo, monospace; font-size: 11px;
+      line-height: 1.55; color: #cfcfcf;
+    }
+    .ide-body .cm { color: #6a9955; }
+    .ide-body .kw { color: #c586c0; }
+    .ide-label {
+      margin-top: 10px; font-size: 10px; color: #e8a838; font-weight: 700;
+      letter-spacing: 0.04em; text-transform: uppercase;
+    }
+    .doc { background: #2c2c2e; }
+    .doc .tb { background: #3a3a3c; color: #ddd; }
+    .page-wrap {
+      flex: 1; background: #1c1c1e; padding: 12px; display: flex;
+    }
+    .page {
+      flex: 1; border-radius: 3px; position: relative; overflow: hidden;
+      background: #fff; display: grid; grid-template-columns: 1fr 1fr;
+    }
+    .page .half { padding: 16px 14px; position: relative; }
+    .page .half.dim {
+      background: #5a5248;
+      box-shadow: inset 0 0 0 100vmax rgba(12,8,4,0.45);
+    }
+    .page h3 { font-size: 15px; color: #111; margin-bottom: 6px; }
+    .page .half.dim h3, .page .half.dim p { color: #e8e2d6; }
+    .page p { font-size: 11px; color: #333; line-height: 1.4; }
+    .tag {
+      position: absolute; bottom: 10px; left: 10px;
+      font-size: 9px; font-weight: 800; letter-spacing: 0.04em;
+      text-transform: uppercase; padding: 5px 8px; border-radius: 999px;
+    }
+    .tag.raw { background: rgba(20,18,16,0.85); color: #fff; }
+    .tag.done { background: linear-gradient(135deg, #e8a838, #d4762c); color: #0a0908; }
+    .split {
+      position: absolute; top: 0; bottom: 0; left: 50%; width: 2px;
+      background: #e8a838; transform: translateX(-50%); z-index: 2;
+    }
+    .split::after {
+      content: '⟷'; position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 34px; height: 34px; border-radius: 50%;
+      display: grid; place-items: center;
+      background: linear-gradient(135deg, #e8a838, #c45c3a);
+      color: #0a0908; font-size: 14px; font-weight: 800;
+      box-shadow: 0 6px 18px rgba(212,118,44,0.45);
+    }
+    .chips {
+      display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px;
+    }
+    .chip {
+      font-size: 10px; font-weight: 650; color: #0a0908;
+      background: #e8a838; padding: 4px 8px; border-radius: 999px;
+    }
+    .chip.ghost {
+      background: rgba(245,242,235,0.08); color: #c8c2b6;
+      border: 1px solid rgba(245,242,235,0.12);
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="copy">
+      <div class="brand">
+        <img src="../logo-icon.png" alt="">
+        <span>SuperDimmer</span>
+      </div>
+      <h1>Bright spots,<br>dimmed. <em>In any app.</em></h1>
+      <p class="sub">Preview, Mail, Safari, Pages — finds the glaring region inside any window and softens only that. Dark UI stays clear.</p>
+      <div class="pill">Works across every Mac app · not a whole-screen filter</div>
+      <div class="chips">
+        <span class="chip">Preview</span>
+        <span class="chip ghost">Safari</span>
+        <span class="chip ghost">Mail</span>
+        <span class="chip ghost">Pages</span>
+        <span class="chip ghost">Chrome</span>
+      </div>
+    </div>
+    <div class="visual">
+      <div class="menubar"><b>Preview</b> <span>File</span> <span>Edit</span> <span>View</span></div>
+      <div class="apps">
+        <div class="win">
+          <div class="tb"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span> dark IDE</div>
+          <div class="ide-body">
+            <div><span class="kw">func</span> dimBrightRegions() {</div>
+            <div>&nbsp;&nbsp;<span class="cm">// dark UI untouched</span></div>
+            <div>&nbsp;&nbsp;overlay.dim(tile)</div>
+            <div>}</div>
+            <div class="ide-label">Same brightness both sides</div>
+          </div>
+        </div>
+        <div class="win doc">
+          <div class="tb"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span> Q3-Roadmap.pdf</div>
+          <div class="page-wrap">
+            <div class="page">
+              <div class="half">
+                <h3>Q3 Roadmap</h3>
+                <p>White page you can’t restyle.</p>
+                <span class="tag raw">Bright</span>
+              </div>
+              <div class="half dim">
+                <h3>Q3 Roadmap</h3>
+                <p>Only this region softens.</p>
+                <span class="tag done">Dimmed</span>
+              </div>
+              <div class="split"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="url">superdimmer.com</div>
+  </div>
+</body>
+</html>
